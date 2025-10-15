@@ -15,11 +15,12 @@ import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { CalendarIcon, Stethoscope } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useUser, useFirestore, addDocumentNonBlocking } from "@/firebase";
 import { collection } from "firebase/firestore";
+import { useEffect } from "react";
 
 const appointmentFormSchema = z.object({
   fullName: z.string().min(2, "Full name must be at least 2 characters."),
@@ -35,6 +36,8 @@ type AppointmentFormValues = z.infer<typeof appointmentFormSchema>;
 
 export default function BookAppointmentPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const doctorIdFromQuery = searchParams.get('doctorId');
   const { toast } = useToast();
   const { user } = useUser();
   const firestore = useFirestore();
@@ -44,10 +47,23 @@ export default function BookAppointmentPage() {
     defaultValues: {
       fullName: "",
       email: "",
-      doctorId: "",
+      doctorId: doctorIdFromQuery || "",
       reason: "",
     },
   });
+  
+  useEffect(() => {
+    if(user) {
+        form.setValue('fullName', user.displayName || '');
+        form.setValue('email', user.email || '');
+    }
+  }, [user, form]);
+  
+  useEffect(() => {
+      if (doctorIdFromQuery) {
+          form.setValue('doctorId', doctorIdFromQuery);
+      }
+  }, [doctorIdFromQuery, form]);
 
   function onSubmit(data: AppointmentFormValues) {
     if (!user || !firestore) {
@@ -126,7 +142,7 @@ export default function BookAppointmentPage() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Preferred Doctor</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <Select onValueChange={field.onChange} value={field.value} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger suppressHydrationWarning>
                           <SelectValue placeholder="Select a doctor" />

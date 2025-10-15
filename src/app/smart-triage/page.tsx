@@ -349,8 +349,7 @@ export default function SmartTriagePage() {
                                                     <p className="text-sm text-muted-foreground">{doctor.specialty}</p>
                                                 </div>
                                                 <Button size="sm" variant="outline" className="ml-auto" asChild>
-                                                    <Link href="/book-appointment">{t('bookButton')}</Link>
-
+                                                    <Link href={`/book-appointment?doctorId=${doctor.id}`}>{t('bookButton')}</Link>
                                                 </Button>
                                             </div>
                                         )})}
