@@ -18,6 +18,8 @@ import { CalendarIcon, Stethoscope } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { useUser, useFirestore, addDocumentNonBlocking } from "@/firebase";
+import { collection } from "firebase/firestore";
 
 const appointmentFormSchema = z.object({
   fullName: z.string().min(2, "Full name must be at least 2 characters."),
@@ -34,6 +36,8 @@ type AppointmentFormValues = z.infer<typeof appointmentFormSchema>;
 export default function BookAppointmentPage() {
   const router = useRouter();
   const { toast } = useToast();
+  const { user } = useUser();
+  const firestore = useFirestore();
 
   const form = useForm<AppointmentFormValues>({
     resolver: zodResolver(appointmentFormSchema),
@@ -46,16 +50,28 @@ export default function BookAppointmentPage() {
   });
 
   function onSubmit(data: AppointmentFormValues) {
-    console.log(data);
+    if (!user || !firestore) {
+      toast({
+        variant: "destructive",
+        title: "Not logged in",
+        description: "You must be logged in to book an appointment.",
+      });
+      return;
+    }
+    
     toast({
       title: "Submitting Appointment...",
       description: "Please wait while we confirm your booking.",
     });
     
-    // Mock submission delay
-    setTimeout(() => {
-        router.push('/book-appointment/confirmation');
-    }, 1500)
+    const appointmentsCol = collection(firestore, `users/${user.uid}/appointments`);
+    addDocumentNonBlocking(appointmentsCol, {
+        ...data,
+        appointmentDate: data.appointmentDate.toISOString(),
+        userId: user.uid,
+    });
+    
+    router.push('/book-appointment/confirmation');
   }
 
   return (
@@ -186,9 +202,10 @@ export default function BookAppointmentPage() {
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="w-full" disabled={form.formState.isSubmitting} suppressHydrationWarning>
+              <Button type="submit" className="w-full" disabled={form.formState.isSubmitting || !user} suppressHydrationWarning>
                 {form.formState.isSubmitting ? "Booking..." : "Book Appointment"}
               </Button>
+               {!user && <p className="text-center text-sm text-muted-foreground">You must be logged in to book an appointment.</p>}
             </form>
           </Form>
         </CardContent>

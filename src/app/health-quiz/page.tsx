@@ -9,7 +9,10 @@ import { Label } from "@/components/ui/label";
 import { quizQuestions } from "@/lib/data";
 import { cn } from "@/lib/utils";
 import { CheckCircle2, Lightbulb, RotateCw, TestTube, XCircle } from "lucide-react";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
+import { useUser, useFirestore, addDocumentNonBlocking } from "@/firebase";
+import { collection, serverTimestamp } from "firebase/firestore";
+import { useToast } from "@/hooks/use-toast";
 
 type AnswerState = {
   questionIndex: number;
@@ -22,6 +25,9 @@ export default function HealthQuizPage() {
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [answers, setAnswers] = useState<AnswerState[]>([]);
   const [showResults, setShowResults] = useState(false);
+  const { user } = useUser();
+  const firestore = useFirestore();
+  const { toast } = useToast();
 
   const currentQuestion = quizQuestions[currentQuestionIndex];
   const progress = ((currentQuestionIndex) / quizQuestions.length) * 100;
@@ -30,10 +36,11 @@ export default function HealthQuizPage() {
     if (selectedOption === null) return;
 
     const isCorrect = selectedOption === currentQuestion.correctAnswer;
-    setAnswers([
+    const newAnswers = [
       ...answers,
       { questionIndex: currentQuestionIndex, selectedOption, isCorrect },
-    ]);
+    ];
+    setAnswers(newAnswers);
 
     setSelectedOption(null);
     if (currentQuestionIndex < quizQuestions.length - 1) {
@@ -43,16 +50,33 @@ export default function HealthQuizPage() {
     }
   };
 
+  const score = useMemo(() => {
+    return answers.filter(a => a.isCorrect).length;
+  }, [answers]);
+
+  useEffect(() => {
+    if (showResults && user && firestore) {
+      const quizzesCol = collection(firestore, `users/${user.uid}/healthQuizzes`);
+      addDocumentNonBlocking(quizzesCol, {
+        score: score,
+        totalQuestions: quizQuestions.length,
+        completionDate: new Date().toISOString(),
+        userId: user.uid,
+      });
+      toast({
+        title: "Quiz results saved!",
+        description: "Your score has been saved to your activity log.",
+      });
+    }
+  }, [showResults, user, firestore, score, toast]);
+
+
   const handleRestart = () => {
     setCurrentQuestionIndex(0);
     setSelectedOption(null);
     setAnswers([]);
     setShowResults(false);
   };
-  
-  const score = useMemo(() => {
-    return answers.filter(a => a.isCorrect).length;
-  }, [answers]);
 
   if (showResults) {
     return (

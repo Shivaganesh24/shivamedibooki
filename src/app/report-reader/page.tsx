@@ -9,6 +9,8 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { ClipboardCheck, FileUp, Loader2, Sparkles, Wand2 } from "lucide-react";
 import { useState, useTransition } from "react";
+import { useUser, useFirestore, addDocumentNonBlocking } from "@/firebase";
+import { collection } from "firebase/firestore";
 
 const fileToDataUri = (file: File): Promise<string> => {
   return new Promise((resolve, reject) => {
@@ -24,6 +26,8 @@ export default function ReportReaderPage() {
   const [keyFindings, setKeyFindings] = useState<ExtractKeyFindingsOutput | null>(null);
   const [isPending, startTransition] = useTransition();
   const { toast } = useToast();
+  const { user } = useUser();
+  const firestore = useFirestore();
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files?.[0];
@@ -51,11 +55,34 @@ export default function ReportReaderPage() {
       return;
     }
 
+    if (!user || !firestore) {
+      toast({
+        variant: "destructive",
+        title: "Not logged in",
+        description: "You must be logged in to analyze a report.",
+      });
+      return;
+    }
+
     startTransition(async () => {
       try {
         const fileDataUri = await fileToDataUri(file);
         const result = await extractKeyFindings({ fileDataUri });
         setKeyFindings(result);
+
+        const analysesCol = collection(firestore, `users/${user.uid}/reportAnalyses`);
+        addDocumentNonBlocking(analysesCol, {
+          reportName: file.name,
+          keyFindings: result.keyFindings,
+          uploadDate: new Date().toISOString(),
+          userId: user.uid,
+        });
+
+        toast({
+          title: "Analysis complete",
+          description: "Key findings have been extracted and saved.",
+        });
+
       } catch (error) {
         console.error("Error analyzing report:", error);
         toast({
@@ -94,7 +121,7 @@ export default function ReportReaderPage() {
               <Input id="report-file" type="file" accept="application/pdf,image/*" onChange={handleFileChange} />
               {file && <p className="text-sm text-muted-foreground">Selected: {file.name}</p>}
             </div>
-            <Button onClick={handleAnalyze} disabled={!file || isPending} className="w-full">
+            <Button onClick={handleAnalyze} disabled={!file || isPending || !user} className="w-full">
               {isPending ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -107,6 +134,7 @@ export default function ReportReaderPage() {
                 </>
               )}
             </Button>
+            {!user && <p className="text-center text-sm text-muted-foreground">You must be logged in to analyze a report.</p>}
           </CardContent>
         </Card>
         
