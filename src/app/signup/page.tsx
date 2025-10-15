@@ -45,10 +45,13 @@ export default function SignupPage() {
   });
 
   const onSubmit = (data: SignupFormValues) => {
+    if (!auth) return;
     initiateEmailSignUp(auth, data.email, data.password);
   };
   
   useEffect(() => {
+    if (!auth) return;
+    
     if (user) {
       router.push("/");
     }
@@ -137,7 +140,7 @@ export default function SignupPage() {
                         <Input type="password" {...field} />
                       </FormControl>
                       <FormMessage />
-                    </IFormItem>
+                    </FormItem>
                   )}
                 />
               </CardContent>

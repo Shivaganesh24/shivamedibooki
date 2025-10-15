@@ -40,10 +40,13 @@ export default function LoginPage() {
   });
 
   const onSubmit = (data: LoginFormValues) => {
+    if (!auth) return;
     initiateEmailSignIn(auth, data.email, data.password);
   };
   
   useEffect(() => {
+    if (!auth) return;
+
     if (auth.currentUser) {
       router.push("/");
     }
