@@ -1,3 +1,70 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "hero",
+      "description": "Abstract medical background",
+      "imageUrl": "https://picsum.photos/seed/hero/1920/1080",
+      "imageHint": "medical technology"
+    },
+    {
+      "id": "smart-triage",
+      "description": "An AI bot icon",
+      "imageUrl": "https://picsum.photos/seed/triage/600/400",
+      "imageHint": "robot doctor"
+    },
+    {
+      "id": "health-tips",
+      "description": "A person meditating",
+      "imageUrl": "https://picsum.photos/seed/tips/600/400",
+      "imageHint": "healthy lifestyle"
+    },
+    {
+      "id": "health-quiz",
+      "description": "Question marks on a screen",
+      "imageUrl": "https://picsum.photos/seed/quiz/600/400",
+      "imageHint": "quiz game"
+    },
+    {
+      "id": "book-appointment",
+      "description": "A calendar with a stethoscope",
+      "imageUrl": "https://picsum.photos/seed/appointment/600/400",
+      "imageHint": "medical appointment"
+    },
+    {
+      "id": "your-data",
+      "description": "A secure data server",
+      "imageUrl": "https://picsum.photos/seed/data/600/400",
+      "imageHint": "data security"
+    },
+    {
+      "id": "report-reader",
+      "description": "A magnifying glass over a document",
+      "imageUrl": "https://picsum.photos/seed/report/600/400",
+      "imageHint": "medical document"
+    },
+    {
+      "id": "doctor-1",
+      "description": "Portrait of Dr. Emily Carter",
+      "imageUrl": "https://picsum.photos/seed/doc1/100/100",
+      "imageHint": "doctor portrait"
+    },
+    {
+      "id": "doctor-2",
+      "description": "Portrait of Dr. Ben Adams",
+      "imageUrl": "https://picsum.photos/seed/doc2/100/100",
+      "imageHint": "doctor portrait"
+    },
+    {
+      "id": "doctor-3",
+      "description": "Portrait of Dr. Chloe Davis",
+      "imageUrl": "https://picsum.photos/seed/doc3/100/100",
+      "imageHint": "doctor portrait"
+    },
+    {
+      "id": "doctor-4",
+      "description": "Portrait of Dr. Olivia White",
+      "imageUrl": "https://picsum.photos/seed/doc4/100/100",
+      "imageHint": "doctor portrait"
+    }
+  ]
 }
