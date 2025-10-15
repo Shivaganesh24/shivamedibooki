@@ -58,14 +58,17 @@ export default function SignupPage() {
         }
     });
 
-    const unsubscribeError = auth.onIdTokenChanged(null, (error) => {
+    const unsubscribeError = auth.onIdTokenChanged(
+      (user) => {}, // next
+      (error) => { // error
         const authError = error as AuthError;
         toast({
             variant: "destructive",
             title: "Sign-up Failed",
             description: authError.message || "An unexpected error occurred. Please try again.",
         });
-    });
+      }
+    );
 
     return () => {
         unsubscribe();
@@ -134,7 +137,7 @@ export default function SignupPage() {
                         <Input type="password" {...field} />
                       </FormControl>
                       <FormMessage />
-                    </FormItem>
+                    </IFormItem>
                   )}
                 />
               </CardContent>

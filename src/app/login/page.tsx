@@ -53,14 +53,17 @@ export default function LoginPage() {
       }
     });
     
-    const unsubscribeError = auth.onIdTokenChanged(null, (error) => {
-      const authError = error as AuthError;
+    const unsubscribeError = auth.onIdTokenChanged(
+      (user) => {}, // next
+      (error) => { // error
+        const authError = error as AuthError;
         toast({
             variant: "destructive",
             title: "Login Failed",
             description: authError.message || "An unexpected error occurred. Please try again.",
         });
-    });
+      }
+    );
 
     return () => {
         unsubscribe();
