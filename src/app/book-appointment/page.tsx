@@ -37,6 +37,12 @@ export default function BookAppointmentPage() {
 
   const form = useForm<AppointmentFormValues>({
     resolver: zodResolver(appointmentFormSchema),
+    defaultValues: {
+      fullName: "",
+      email: "",
+      doctorId: "",
+      reason: "",
+    },
   });
 
   function onSubmit(data: AppointmentFormValues) {
