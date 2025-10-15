@@ -21,6 +21,8 @@ import { z } from "zod";
 import { useUser, useFirestore, addDocumentNonBlocking } from "@/firebase";
 import { collection } from "firebase/firestore";
 import { useEffect } from "react";
+import Image from "next/image";
+import { PlaceHolderImages } from "@/lib/placeholder-images";
 
 const appointmentFormSchema = z.object({
   fullName: z.string().min(2, "Full name must be at least 2 characters."),
@@ -41,6 +43,7 @@ export default function BookAppointmentPage() {
   const { toast } = useToast();
   const { user } = useUser();
   const firestore = useFirestore();
+  const appointmentImage = PlaceHolderImages.find(p => p.id === "book-appointment");
 
   const form = useForm<AppointmentFormValues>({
     resolver: zodResolver(appointmentFormSchema),
@@ -100,132 +103,145 @@ export default function BookAppointmentPage() {
         Schedule your visit with one of our specialists in just a few clicks.
       </p>
 
-      <Card className="max-w-2xl mx-auto mt-8">
-        <CardHeader>
-          <CardTitle className="font-headline">Appointment Details</CardTitle>
-          <CardDescription>Please fill out the form below to book your appointment.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8" suppressHydrationWarning>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <FormField
-                  control={form.control}
-                  name="fullName"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Full Name</FormLabel>
-                      <FormControl>
-                        <Input placeholder="John Doe" {...field} suppressHydrationWarning />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Email Address</FormLabel>
-                      <FormControl>
-                        <Input placeholder="john.doe@example.com" {...field} suppressHydrationWarning />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              <FormField
-                control={form.control}
-                name="doctorId"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Preferred Doctor</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger suppressHydrationWarning>
-                          <SelectValue placeholder="Select a doctor" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {doctors.map((doctor) => (
-                          <SelectItem key={doctor.id} value={doctor.id}>
-                            {doctor.name} - {doctor.specialty}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="appointmentDate"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col">
-                    <FormLabel>Appointment Date</FormLabel>
-                    <Popover>
-                      <PopoverTrigger asChild>
+      <div className="mt-8 grid lg:grid-cols-2 gap-12 items-start">
+        <Card className="max-w-2xl mx-auto">
+          <CardHeader>
+            <CardTitle className="font-headline">Appointment Details</CardTitle>
+            <CardDescription>Please fill out the form below to book your appointment.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8" suppressHydrationWarning>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <FormField
+                    control={form.control}
+                    name="fullName"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Full Name</FormLabel>
                         <FormControl>
-                          <Button
-                            variant={"outline"}
-                            className={cn(
-                              "w-full pl-3 text-left font-normal",
-                              !field.value && "text-muted-foreground"
-                            )}
-                            suppressHydrationWarning
-                          >
-                            {field.value ? (
-                              format(field.value, "PPP")
-                            ) : (
-                              <span>Pick a date</span>
-                            )}
-                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                          </Button>
+                          <Input placeholder="John Doe" {...field} suppressHydrationWarning />
                         </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                          mode="single"
-                          selected={field.value}
-                          onSelect={field.onChange}
-                          disabled={(date) => date < new Date(new Date().setDate(new Date().getDate() - 1))}
-                          initialFocus
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Email Address</FormLabel>
+                        <FormControl>
+                          <Input placeholder="john.doe@example.com" {...field} suppressHydrationWarning />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <FormField
+                  control={form.control}
+                  name="doctorId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Preferred Doctor</FormLabel>
+                      <Select onValueChange={field.onChange} value={field.value} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger suppressHydrationWarning>
+                            <SelectValue placeholder="Select a doctor" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {doctors.map((doctor) => (
+                            <SelectItem key={doctor.id} value={doctor.id}>
+                              {doctor.name} - {doctor.specialty}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="appointmentDate"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col">
+                      <FormLabel>Appointment Date</FormLabel>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <FormControl>
+                            <Button
+                              variant={"outline"}
+                              className={cn(
+                                "w-full pl-3 text-left font-normal",
+                                !field.value && "text-muted-foreground"
+                              )}
+                              suppressHydrationWarning
+                            >
+                              {field.value ? (
+                                format(field.value, "PPP")
+                              ) : (
+                                <span>Pick a date</span>
+                              )}
+                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <Calendar
+                            mode="single"
+                            selected={field.value}
+                            onSelect={field.onChange}
+                            disabled={(date) => date < new Date(new Date().setDate(new Date().getDate() - 1))}
+                            initialFocus
+                          />
+                        </PopoverContent>
+                      </Popover>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="reason"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Reason for Visit</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="Briefly describe the reason for your visit..."
+                          className="resize-none"
+                          {...field}
+                          suppressHydrationWarning
                         />
-                      </PopoverContent>
-                    </Popover>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="reason"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Reason for Visit</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder="Briefly describe the reason for your visit..."
-                        className="resize-none"
-                        {...field}
-                        suppressHydrationWarning
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <Button type="submit" className="w-full" disabled={form.formState.isSubmitting || !user} suppressHydrationWarning>
-                {form.formState.isSubmitting ? "Booking..." : "Book Appointment"}
-              </Button>
-               {!user && <p className="text-center text-sm text-muted-foreground">You must be logged in to book an appointment.</p>}
-            </form>
-          </Form>
-        </CardContent>
-      </Card>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button type="submit" className="w-full" disabled={form.formState.isSubmitting || !user} suppressHydrationWarning>
+                  {form.formState.isSubmitting ? "Booking..." : "Book Appointment"}
+                </Button>
+                 {!user && <p className="text-center text-sm text-muted-foreground">You must be logged in to book an appointment.</p>}
+              </form>
+            </Form>
+          </CardContent>
+        </Card>
+        <div className="hidden lg:block relative w-full h-full min-h-[500px] rounded-lg overflow-hidden">
+            {appointmentImage && (
+                <Image 
+                    src={appointmentImage.imageUrl} 
+                    alt={appointmentImage.description} 
+                    fill 
+                    className="object-cover"
+                    data-ai-hint={appointmentImage.imageHint}
+                />
+            )}
+        </div>
+      </div>
     </div>
   );
 }
