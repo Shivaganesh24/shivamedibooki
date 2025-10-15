@@ -37,6 +37,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 
 const statusStyles: { [key: string]: string } = {
   Completed: "bg-green-500/20 text-green-400 border-green-500/30",
+  Upcoming: "bg-blue-500/20 text-blue-400 border-blue-500/30",
   "In Progress": "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
   Failed: "bg-red-500/20 text-red-400 border-red-500/30",
 };
@@ -88,16 +89,21 @@ export default function YourDataPage() {
 
   const combinedActivity = useMemo(() => {
     let activities: any[] = [];
+    const now = new Date();
 
     if (appointments) {
-      activities.push(...appointments.map(a => ({
-        id: a.id,
-        action: 'Book Appointment',
-        details: `For ${a.reason}`,
-        status: 'Completed',
-        date: new Date(a.appointmentDate),
-        type: 'appointment'
-      })));
+      activities.push(...appointments.map(a => {
+        const appointmentDate = new Date(a.appointmentDate);
+        const status = appointmentDate > now ? 'Upcoming' : 'Completed';
+        return {
+          id: a.id,
+          action: 'Book Appointment',
+          details: `For ${a.reason}`,
+          status: status,
+          date: appointmentDate,
+          type: 'appointment'
+        };
+      }));
     }
     if (quizzes) {
        activities.push(...quizzes.map(q => ({
@@ -326,3 +332,5 @@ export default function YourDataPage() {
     </div>
   );
 }
+
+    
