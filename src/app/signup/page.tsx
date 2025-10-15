@@ -10,7 +10,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
-import { useAuth } from "@/firebase";
+import { useAuth, useUser } from "@/firebase";
 import { initiateEmailSignUp } from "@/firebase/non-blocking-login";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -31,6 +31,7 @@ type SignupFormValues = z.infer<typeof signupFormSchema>;
 
 export default function SignupPage() {
   const auth = useAuth();
+  const { user } = useUser();
   const router = useRouter();
   const { toast } = useToast();
 
@@ -45,32 +46,27 @@ export default function SignupPage() {
 
   const onSubmit = (data: SignupFormValues) => {
     if (!auth) return;
-    initiateEmailSignUp(auth, data.email, data.password);
+    initiateEmailSignUp(auth, data.email, data.password)
+    .catch((error: AuthError) => {
+      let description = "An unexpected error occurred. Please try again.";
+      if (error.code === 'auth/email-already-in-use') {
+        description = "This email address is already in use. Please log in or use a different email.";
+      } else {
+        description = error.message;
+      }
+      toast({
+          variant: "destructive",
+          title: "Sign-up Failed",
+          description: description,
+      });
+    });
   };
   
   useEffect(() => {
-    if (!auth) return;
-
-    const unsubscribe = auth.onIdTokenChanged(
-      (user) => {
-        if (user) {
-            router.push("/");
-        }
-      },
-      (error) => {
-        const authError = error as AuthError;
-        toast({
-            variant: "destructive",
-            title: "Sign-up Failed",
-            description: authError.message || "An unexpected error occurred. Please try again.",
-        });
-      }
-    );
-
-    return () => {
-        unsubscribe();
+    if (user) {
+        router.push("/");
     }
-  }, [auth, router, toast]);
+  }, [user, router]);
 
   return (
     <div className="flex items-center justify-center min-h-[calc(100vh-8rem)] py-12 px-4 sm:px-6 lg:px-8">

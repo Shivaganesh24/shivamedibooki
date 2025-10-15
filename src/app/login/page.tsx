@@ -41,7 +41,20 @@ export default function LoginPage() {
 
   const onSubmit = (data: LoginFormValues) => {
     if (!auth) return;
-    initiateEmailSignIn(auth, data.email, data.password);
+    initiateEmailSignIn(auth, data.email, data.password)
+    .catch((error: AuthError) => {
+      let description = "An unexpected error occurred. Please try again.";
+      if (error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+        description = "Invalid email or password. Please check your credentials and try again.";
+      } else {
+        description = error.message;
+      }
+      toast({
+        variant: "destructive",
+        title: "Login Failed",
+        description: description,
+      });
+    });
   };
   
   useEffect(() => {
@@ -49,26 +62,6 @@ export default function LoginPage() {
       router.push("/");
     }
   }, [user, router]);
-
-  useEffect(() => {
-    if (!auth) return;
-
-    const unsubscribeError = auth.onIdTokenChanged(
-      (user) => {}, // next
-      (error) => { // error
-        const authError = error as AuthError;
-        toast({
-            variant: "destructive",
-            title: "Login Failed",
-            description: authError.message || "An unexpected error occurred. Please try again.",
-        });
-      }
-    );
-
-    return () => {
-        unsubscribeError();
-    }
-  }, [auth, toast]);
 
   if (isUserLoading || user) {
     return (
