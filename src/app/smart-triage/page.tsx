@@ -1,7 +1,6 @@
 "use client";
 
 import { generateTriageRecommendation, type GenerateTriageRecommendationOutput } from "@/ai/flows/generate-triage-recommendation";
-import { textToSpeech } from "@/ai/flows/text-to-speech";
 import { MedbookIcon, PageTitle } from "@/components/icons";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -15,6 +14,7 @@ import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { cn } from "@/lib/utils";
 import { Bot, FileImage, FileText, Loader2, Sparkles, User, Volume2, Wand2 } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { useState, useTransition } from "react";
 
 const fileToDataUri = (file: File): Promise<string> => {
@@ -84,7 +84,19 @@ export default function SmartTriagePage() {
         if (!recommendation?.summary) return;
         setIsAudioLoading(true);
         try {
-            const result = await textToSpeech(recommendation.summary);
+            const response = await fetch('/api/text-to-speech', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ text: recommendation.summary }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to generate audio');
+            }
+
+            const result = await response.json();
             setAudioUrl(result.media);
         } catch (error) {
             console.error("Error generating speech:", error);
@@ -207,7 +219,9 @@ export default function SmartTriagePage() {
                                                     <p className="font-semibold">{doctor.name}</p>
                                                     <p className="text-sm text-muted-foreground">{doctor.specialty}</p>
                                                 </div>
-                                                <Button size="sm" variant="outline" className="ml-auto">Book</Button>
+                                                <Button size="sm" variant="outline" className="ml-auto" asChild>
+                                                    <Link href="/book-appointment">Book</Link>
+                                                </Button>
                                             </div>
                                         )})}
                                     </div>
@@ -226,4 +240,5 @@ export default function SmartTriagePage() {
             </div>
         </div>
     );
-}
+
+    
