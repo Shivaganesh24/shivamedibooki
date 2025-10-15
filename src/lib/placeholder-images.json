@@ -10,7 +10,7 @@
       "id": "smart-triage",
       "description": "An AI bot icon",
       "imageUrl": "https://picsum.photos/seed/triage/600/400",
-      "imageHint": "robot doctor"
+      "imageHint": "medical AI"
     },
     {
       "id": "health-tips",
@@ -22,25 +22,25 @@
       "id": "health-quiz",
       "description": "A person taking a quiz on a tablet.",
       "imageUrl": "https://picsum.photos/seed/quiz/600/400",
-      "imageHint": "health quiz"
+      "imageHint": "medical quiz"
     },
     {
       "id": "book-appointment",
       "description": "A person booking a medical appointment on their smartphone.",
-      "imageUrl": "https://picsum.photos/seed/appointment/600/400",
-      "imageHint": "booking appointment"
+      "imageUrl": "https://storage.googleapis.com/studio-hosting-assets/studio-3-prod/1715469443217_917395_1715469443217.jpeg",
+      "imageHint": "medical appointment"
     },
     {
       "id": "your-data",
       "description": "A secure data server",
       "imageUrl": "https://picsum.photos/seed/data/600/400",
-      "imageHint": "data security"
+      "imageHint": "health records"
     },
     {
       "id": "report-reader",
       "description": "A magnifying glass over a document",
       "imageUrl": "https://picsum.photos/seed/report/600/400",
-      "imageHint": "medical document"
+      "imageHint": "medical report"
     },
     {
       "id": "doctor-1",
