@@ -31,6 +31,8 @@ import { cn } from "@/lib/utils";
 import { collection, query, orderBy } from "firebase/firestore";
 import { Download, MoreHorizontal, User, Loader2 } from "lucide-react";
 import React, { useMemo } from "react";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 const statusStyles: { [key: string]: string } = {
   Completed: "bg-green-500/20 text-green-400 border-green-500/30",
@@ -127,6 +129,54 @@ export default function YourDataPage() {
 
   const isLoading = isUserLoading || appointmentsLoading || quizzesLoading || recommendationsLoading || analysesLoading;
 
+  const handleExportCSV = () => {
+    if (!combinedActivity || combinedActivity.length === 0) {
+      return;
+    }
+    const headers = ["Activity ID", "Action", "Details", "Status", "Date"];
+    const csvContent = [
+      headers.join(','),
+      ...combinedActivity.map(item => [
+        `"${item.id}"`,
+        `"${item.action}"`,
+        `"${item.details.replace(/"/g, '""')}"`,
+        `"${item.status}"`,
+        `"${item.date.toLocaleDateString()}"`
+      ].join(','))
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    if (link.href) {
+      URL.revokeObjectURL(link.href);
+    }
+    link.href = URL.createObjectURL(blob);
+    link.download = 'medibook-activity.csv';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const handleExportPDF = () => {
+    if (!combinedActivity || combinedActivity.length === 0) {
+      return;
+    }
+    const doc = new jsPDF();
+    doc.text("MediBook Activity Log", 14, 16);
+    autoTable(doc, {
+      head: [['Activity ID', 'Action', 'Details', 'Status', 'Date']],
+      body: combinedActivity.map(item => [
+        item.id,
+        item.action,
+        item.details,
+        item.status,
+        item.date.toLocaleDateString(),
+      ]),
+      startY: 20,
+    });
+    doc.save('medibook-activity.pdf');
+  };
+
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="flex items-center gap-4">
@@ -151,8 +201,8 @@ export default function YourDataPage() {
               <DropdownMenuContent align="end">
                 <DropdownMenuLabel>Export as</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>CSV</DropdownMenuItem>
-                <DropdownMenuItem>PDF</DropdownMenuItem>
+                <DropdownMenuItem onClick={handleExportCSV}>CSV</DropdownMenuItem>
+                <DropdownMenuItem onClick={handleExportPDF}>PDF</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </CardTitle>
