@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { doctors, triageDoctorMapping } from "@/lib/data";
@@ -46,6 +47,7 @@ export default function SmartTriagePage() {
     const [recommendation, setRecommendation] = useState<GenerateTriageRecommendationOutput | null>(null);
     const [audioUrl, setAudioUrl] = useState<string | null>(null);
     const [isAudioLoading, setIsAudioLoading] = useState(false);
+    const [isAyurvedaMode, setIsAyurvedaMode] = useState(false);
     const [isPending, startTransition] = useTransition();
     const { toast } = useToast();
 
@@ -82,6 +84,7 @@ export default function SmartTriagePage() {
                     symptoms,
                     symptomImage: symptomImageUri,
                     medicalReport: medicalReportUri,
+                    isAyurvedaMode: isAyurvedaMode,
                 });
                 setRecommendation(result);
 
@@ -147,8 +150,14 @@ export default function SmartTriagePage() {
                 {/* Input Section */}
                 <Card>
                     <CardHeader>
-                        <CardTitle className="font-headline flex items-center gap-2">
-                            <User className="h-6 w-6" /> Your Information
+                        <CardTitle className="font-headline flex items-center justify-between gap-2">
+                           <div className="flex items-center gap-2">
+                             <User className="h-6 w-6" /> Your Information
+                           </div>
+                           <div className="flex items-center space-x-2">
+                                <Switch id="ayurveda-mode" checked={isAyurvedaMode} onCheckedChange={setIsAyurvedaMode} />
+                                <Label htmlFor="ayurveda-mode">Ayurveda Mode</Label>
+                            </div>
                         </CardTitle>
                         <CardDescription>
                             Provide as much detail as possible for a more accurate analysis.

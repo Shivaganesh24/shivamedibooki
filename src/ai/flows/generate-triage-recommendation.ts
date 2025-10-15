@@ -1,3 +1,4 @@
+
 'use server';
 
 /**
@@ -25,6 +26,7 @@ const GenerateTriageRecommendationInputSchema = z.object({
     .describe(
       "An optional medical report (PDF or image), as a data URI that must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'."
     ),
+  isAyurvedaMode: z.boolean().optional().describe('Whether to provide recommendations based on Ayurvedic principles.'),
 });
 export type GenerateTriageRecommendationInput = z.infer<typeof GenerateTriageRecommendationInputSchema>;
 
@@ -46,10 +48,22 @@ const prompt = ai.definePrompt({
   name: 'generateTriageRecommendationPrompt',
   input: {schema: GenerateTriageRecommendationInputSchema},
   output: {schema: GenerateTriageRecommendationOutputSchema},
-  prompt: `You are an AI-powered health assistant that provides triage recommendations based on user-provided information.
+  prompt: `{{#if isAyurvedaMode}}
+You are an AI-powered Ayurvedic health consultant. Your goal is to provide a preliminary triage recommendation based on Ayurvedic principles (doshas, agni, etc.).
+
+You will receive a description of the user's symptoms, and optionally an image and a medical report.
+Based on this information, you will provide a triage recommendation from an Ayurvedic perspective, including:
+- Severity: The perceived severity of the imbalance (e.g., Mild, Moderate, Severe).
+- Suggested Action: Ayurvedic lifestyle or home remedy suggestions (e.g., dietary changes, herbal teas, rest, consult a Vaidya).
+- Summary: An explanation of the possible doshic imbalance and what the symptoms might indicate according to Ayurveda.
+- Suggested Practitioners: A list of relevant practitioner types (e.g., Ayurvedic Doctor, Panchakarma Therapist).
+
+{{else}}
+You are an AI-powered health assistant that provides triage recommendations based on user-provided information.
 
 You will receive a description of the user's symptoms, an optional image of the symptoms, and an optional medical report.
 Based on this information, you will provide a triage recommendation, including the severity of the condition, the suggested action to take, and a summary of the condition and the recommendation. You will also suggest relevant doctor specialities for the user to see.
+{{/if}}
 
 Symptoms: {{{symptoms}}}
 
@@ -66,7 +80,7 @@ Your recommendation should be structured as follows:
 Severity: <severity>
 Suggested Action: <suggested action>
 Summary: <summary>
-Suggested Doctors: <list of doctor specialities> `,
+Suggested Doctors: <list of doctor specialities or practitioner types>`,
 });
 
 const generateTriageRecommendationFlow = ai.defineFlow(
@@ -80,3 +94,4 @@ const generateTriageRecommendationFlow = ai.defineFlow(
     return output!;
   }
 );
+
