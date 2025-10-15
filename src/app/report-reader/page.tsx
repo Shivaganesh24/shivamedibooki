@@ -1,3 +1,4 @@
+
 "use client";
 
 import { extractKeyFindings, type ExtractKeyFindingsOutput } from "@/ai/flows/extract-key-findings";
@@ -7,8 +8,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { ClipboardCheck, FileUp, Loader2, Sparkles, Wand2 } from "lucide-react";
-import { useState, useTransition } from "react";
+import { cn } from "@/lib/utils";
+import { ClipboardCheck, FileUp, Loader2, Sparkles, Wand2, X } from "lucide-react";
+import { useState, useTransition, DragEvent } from "react";
 import { useUser, useFirestore, addDocumentNonBlocking } from "@/firebase";
 import { collection } from "firebase/firestore";
 
@@ -28,9 +30,9 @@ export default function ReportReaderPage() {
   const { toast } = useToast();
   const { user } = useUser();
   const firestore = useFirestore();
+  const [isDragging, setIsDragging] = useState(false);
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = event.target.files?.[0];
+  const handleFileSelect = (selectedFile: File | null) => {
     if (selectedFile) {
       if (selectedFile.size > 4 * 1024 * 1024) { // 4MB limit
         toast({
@@ -44,6 +46,35 @@ export default function ReportReaderPage() {
       setKeyFindings(null);
     }
   };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    handleFileSelect(event.target.files?.[0] || null);
+  };
+  
+  const handleDragEvents = (e: DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDragEnter = (e: DragEvent<HTMLDivElement>) => {
+    handleDragEvents(e);
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: DragEvent<HTMLDivElement>) => {
+    handleDragEvents(e);
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: DragEvent<HTMLDivElement>) => {
+    handleDragEvents(e);
+    setIsDragging(false);
+    const droppedFile = e.dataTransfer.files?.[0];
+    if (droppedFile) {
+        handleFileSelect(droppedFile);
+    }
+  };
+
 
   const handleAnalyze = async () => {
     if (!file) {
@@ -112,14 +143,29 @@ export default function ReportReaderPage() {
               Upload Your Report
             </CardTitle>
             <CardDescription>
-              Select a PDF or image file from your device.
+              Drag and drop your file or click to select.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
-            <div className="space-y-2">
-              <Label htmlFor="report-file">Medical Report File</Label>
-              <Input id="report-file" type="file" accept="application/pdf,image/*" onChange={handleFileChange} />
-              {file && <p className="text-sm text-muted-foreground">Selected: {file.name}</p>}
+            <div 
+              className={cn("relative flex flex-col items-center justify-center p-8 border-2 border-dashed rounded-lg transition-colors cursor-pointer",
+                isDragging ? "border-primary bg-primary/10" : "border-border hover:border-primary/50"
+              )}
+              onDragEnter={handleDragEnter}
+              onDragLeave={handleDragLeave}
+              onDragOver={handleDragEvents}
+              onDrop={handleDrop}
+            >
+              <FileUp className="h-10 w-10 text-muted-foreground mb-4" />
+              <Label htmlFor="report-file" className="text-center text-muted-foreground cursor-pointer">
+                {isDragging ? 'Drop your file here' : file ? `Selected: ${file.name}` : 'Drag & drop a file or click to browse'}
+              </Label>
+              <Input id="report-file" type="file" accept="application/pdf,image/*" onChange={handleFileChange} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+              {file && (
+                <Button variant="ghost" size="icon" className="absolute top-2 right-2 h-7 w-7" onClick={(e) => { e.stopPropagation(); setFile(null); setKeyFindings(null); }}>
+                  <X className="h-4 w-4" />
+                </Button>
+              )}
             </div>
             <Button onClick={handleAnalyze} disabled={!file || isPending || !user} className="w-full">
               {isPending ? (
@@ -156,7 +202,7 @@ export default function ReportReaderPage() {
               </div>
             )}
             {!isPending && keyFindings && (
-              <div className="space-y-4 text-sm whitespace-pre-wrap font-mono bg-secondary p-4 rounded-md">
+              <div className="space-y-4 text-sm whitespace-pre-wrap font-mono bg-secondary p-4 rounded-md h-full overflow-auto">
                 {keyFindings.keyFindings}
               </div>
             )}

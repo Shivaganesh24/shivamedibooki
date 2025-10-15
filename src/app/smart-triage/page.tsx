@@ -16,10 +16,10 @@ import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { cn } from "@/lib/utils";
 import { useUser, useFirestore, addDocumentNonBlocking } from "@/firebase";
 import { collection, serverTimestamp } from "firebase/firestore";
-import { Bot, FileImage, FileText, Loader2, Sparkles, User, Volume2, Wand2 } from "lucide-react";
+import { Bot, FileImage, FileText, Loader2, Sparkles, User, Volume2, Wand2, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useState, useTransition } from "react";
+import { useState, useTransition, DragEvent } from "react";
 import { useLanguage } from "@/context/language-context";
 import { useTranslation } from "@/hooks/use-translation";
 
@@ -39,6 +39,97 @@ const severityStyles: { [key: string]: string } = {
     "Emergency": "bg-red-500/20 text-red-400 border-red-500/30",
 };
 
+
+const FileDropzone = ({
+  id,
+  label,
+  Icon,
+  file,
+  setFile,
+  accept
+}: {
+  id: string;
+  label: string;
+  Icon: React.ElementType;
+  file: File | null;
+  setFile: (file: File | null) => void;
+  accept: string;
+}) => {
+  const { toast } = useToast();
+  const [isDragging, setIsDragging] = useState(false);
+
+  const handleFileSelect = (selectedFile: File | null) => {
+    if (selectedFile) {
+      if (selectedFile.size > 4 * 1024 * 1024) { // 4MB limit
+        toast({ variant: "destructive", title: "File too large", description: "Please upload a file smaller than 4MB." });
+        return;
+      }
+      setFile(selectedFile);
+    }
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    handleFileSelect(event.target.files?.[0] || null);
+  };
+
+  const handleDragEvents = (e: DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDragEnter = (e: DragEvent<HTMLDivElement>) => {
+    handleDragEvents(e);
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: DragEvent<HTMLDivElement>) => {
+    handleDragEvents(e);
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: DragEvent<HTMLDivElement>) => {
+    handleDragEvents(e);
+    setIsDragging(false);
+    const droppedFile = e.dataTransfer.files?.[0];
+    if (droppedFile && droppedFile.type.startsWith(accept.replace('/*', ''))) {
+        handleFileSelect(droppedFile);
+    } else {
+        toast({ variant: "destructive", title: "Invalid file type", description: `Please drop a valid file type (${accept}).` });
+    }
+  };
+
+  return (
+    <div className="space-y-2">
+      <Label htmlFor={id} className="flex items-center gap-2">
+        <Icon className="h-4 w-4" />
+        {label}
+      </Label>
+      <div 
+        className={cn("relative flex flex-col items-center justify-center p-4 border-2 border-dashed rounded-lg transition-colors cursor-pointer text-center text-sm h-24",
+          isDragging ? "border-primary bg-primary/10" : "border-border hover:border-primary/50",
+          file ? "border-primary/50" : ""
+        )}
+        onDragEnter={handleDragEnter}
+        onDragLeave={handleDragLeave}
+        onDragOver={handleDragEvents}
+        onDrop={handleDrop}
+        onClick={() => document.getElementById(id)?.click()}
+      >
+        <p className="text-muted-foreground">
+          {file ? file.name : isDragging ? 'Drop to upload' : 'Drag & drop or click'}
+        </p>
+        <Input id={id} type="file" accept={accept} onChange={handleFileChange} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+         {file && (
+            <Button variant="ghost" size="icon" className="absolute top-1 right-1 h-6 w-6" onClick={(e) => { e.stopPropagation(); setFile(null);}}>
+                <X className="h-4 w-4" />
+            </Button>
+        )}
+      </div>
+    </div>
+  );
+};
+
+
 export default function SmartTriagePage() {
     const { user } = useUser();
     const firestore = useFirestore();
@@ -54,17 +145,6 @@ export default function SmartTriagePage() {
     const [isAyurvedaMode, setIsAyurvedaMode] = useState(false);
     const [isPending, startTransition] = useTransition();
     const { toast } = useToast();
-
-    const handleFileChange = (setter: React.Dispatch<React.SetStateAction<File | null>>) => (event: React.ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files?.[0];
-        if (file) {
-            if (file.size > 4 * 1024 * 1024) { // 4MB limit
-                toast({ variant: "destructive", title: "File too large", description: "Please upload a file smaller than 4MB." });
-                return;
-            }
-            setter(file);
-        }
-    };
 
     const handleGetRecommendation = async () => {
         if (!symptoms) {
@@ -103,7 +183,9 @@ export default function SmartTriagePage() {
                 const recommendationsCol = collection(firestore, `users/${user.uid}/triageRecommendations`);
                 addDocumentNonBlocking(recommendationsCol, {
                     ...result,
+                    symptoms: symptoms,
                     createdAt: serverTimestamp(),
+                    userId: user.uid,
                 });
 
             } catch (error) {
@@ -186,16 +268,22 @@ export default function SmartTriagePage() {
                             />
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                                <Label htmlFor="symptom-image" className="flex items-center gap-2"><FileImage className="h-4 w-4" />{t('symptomImageLabel')}</Label>
-                                <Input id="symptom-image" type="file" accept="image/*" onChange={handleFileChange(setSymptomImage)} />
-                                {symptomImage && <p className="text-sm text-muted-foreground truncate">{t('selectedFile')}: {symptomImage.name}</p>}
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="medical-report" className="flex items-center gap-2"><FileText className="h-4 w-4" />{t('medicalReportLabel')}</Label>
-                                <Input id="medical-report" type="file" accept="application/pdf,image/*" onChange={handleFileChange(setMedicalReport)} />
-                                {medicalReport && <p className="text-sm text-muted-foreground truncate">{t('selectedFile')}: {medicalReport.name}</p>}
-                            </div>
+                            <FileDropzone 
+                                id="symptom-image"
+                                label={t('symptomImageLabel')}
+                                Icon={FileImage}
+                                file={symptomImage}
+                                setFile={setSymptomImage}
+                                accept="image/*"
+                            />
+                             <FileDropzone 
+                                id="medical-report"
+                                label={t('medicalReportLabel')}
+                                Icon={FileText}
+                                file={medicalReport}
+                                setFile={setMedicalReport}
+                                accept="application/pdf,image/*"
+                            />
                         </div>
                         <Button onClick={handleGetRecommendation} disabled={!symptoms || isPending || !user} className="w-full">
                             {isPending ? (
@@ -262,6 +350,7 @@ export default function SmartTriagePage() {
                                                 </div>
                                                 <Button size="sm" variant="outline" className="ml-auto" asChild>
                                                     <Link href="/book-appointment">{t('bookButton')}</Link>
+
                                                 </Button>
                                             </div>
                                         )})}
