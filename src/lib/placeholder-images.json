@@ -20,9 +20,9 @@
     },
     {
       "id": "health-quiz",
-      "description": "A person booking a medical appointment on their smartphone.",
-      "imageUrl": "https://storage.googleapis.com/aifirebase-773dc.appspot.com/yubj6_iT63j_61e1b1e9.jpeg",
-      "imageHint": "booking appointment"
+      "description": "A person taking a quiz on a tablet.",
+      "imageUrl": "https://picsum.photos/seed/quiz/600/400",
+      "imageHint": "health quiz"
     },
     {
       "id": "book-appointment",
