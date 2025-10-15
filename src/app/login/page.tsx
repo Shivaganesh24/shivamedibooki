@@ -45,17 +45,14 @@ export default function LoginPage() {
   };
   
   useEffect(() => {
-    if (!auth) return;
-
-    if (auth.currentUser) {
+    if (user) {
       router.push("/");
     }
-    const unsubscribe = auth.onAuthStateChanged(user => {
-      if (user) {
-        router.push("/");
-      }
-    });
-    
+  }, [user, router]);
+
+  useEffect(() => {
+    if (!auth) return;
+
     const unsubscribeError = auth.onIdTokenChanged(
       (user) => {}, // next
       (error) => { // error
@@ -69,10 +66,9 @@ export default function LoginPage() {
     );
 
     return () => {
-        unsubscribe();
         unsubscribeError();
     }
-  }, [auth, router, toast]);
+  }, [auth, toast]);
 
   if (isUserLoading || user) {
     return (

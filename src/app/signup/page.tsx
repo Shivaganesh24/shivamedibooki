@@ -10,7 +10,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
-import { useAuth, useUser } from "@/firebase";
+import { useAuth } from "@/firebase";
 import { initiateEmailSignUp } from "@/firebase/non-blocking-login";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -31,7 +31,6 @@ type SignupFormValues = z.infer<typeof signupFormSchema>;
 
 export default function SignupPage() {
   const auth = useAuth();
-  const { user, isUserLoading } = useUser();
   const router = useRouter();
   const { toast } = useToast();
 
@@ -51,19 +50,14 @@ export default function SignupPage() {
   
   useEffect(() => {
     if (!auth) return;
-    
-    if (user) {
-      router.push("/");
-    }
-    const unsubscribe = auth.onAuthStateChanged(user => {
+
+    const unsubscribe = auth.onIdTokenChanged(
+      (user) => {
         if (user) {
             router.push("/");
         }
-    });
-
-    const unsubscribeError = auth.onIdTokenChanged(
-      (user) => {}, // next
-      (error) => { // error
+      },
+      (error) => {
         const authError = error as AuthError;
         toast({
             variant: "destructive",
@@ -75,17 +69,8 @@ export default function SignupPage() {
 
     return () => {
         unsubscribe();
-        unsubscribeError();
     }
-  }, [user, auth, router, toast]);
-
-  if (isUserLoading || user) {
-    return (
-      <div className="flex items-center justify-center min-h-[calc(100vh-8rem)]">
-        <Loader2 className="h-12 w-12 animate-spin text-primary" />
-      </div>
-    );
-  }
+  }, [auth, router, toast]);
 
   return (
     <div className="flex items-center justify-center min-h-[calc(100vh-8rem)] py-12 px-4 sm:px-6 lg:px-8">
