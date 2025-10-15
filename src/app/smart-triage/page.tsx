@@ -1,3 +1,4 @@
+
 "use client";
 
 import { generateTriageRecommendation, type GenerateTriageRecommendationOutput } from "@/ai/flows/generate-triage-recommendation";
@@ -12,6 +13,8 @@ import { useToast } from "@/hooks/use-toast";
 import { doctors, triageDoctorMapping } from "@/lib/data";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { cn } from "@/lib/utils";
+import { useAuth, useFirestore, addDocumentNonBlocking, useUser } from "@/firebase";
+import { collection, serverTimestamp } from "firebase/firestore";
 import { Bot, FileImage, FileText, Loader2, Sparkles, User, Volume2, Wand2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -34,6 +37,9 @@ const severityStyles: { [key: string]: string } = {
 };
 
 export default function SmartTriagePage() {
+    const { user } = useUser();
+    const firestore = useFirestore();
+
     const [symptoms, setSymptoms] = useState("");
     const [symptomImage, setSymptomImage] = useState<File | null>(null);
     const [medicalReport, setMedicalReport] = useState<File | null>(null);
@@ -60,6 +66,11 @@ export default function SmartTriagePage() {
             return;
         }
 
+        if (!user || !firestore) {
+            toast({ variant: "destructive", title: "Not logged in", description: "You must be logged in to get a recommendation." });
+            return;
+        }
+
         startTransition(async () => {
             setRecommendation(null);
             setAudioUrl(null);
@@ -73,6 +84,14 @@ export default function SmartTriagePage() {
                     medicalReport: medicalReportUri,
                 });
                 setRecommendation(result);
+
+                // Save recommendation to Firestore
+                const recommendationsCol = collection(firestore, `users/${user.uid}/triageRecommendations`);
+                addDocumentNonBlocking(recommendationsCol, {
+                    ...result,
+                    createdAt: serverTimestamp(),
+                });
+
             } catch (error) {
                 console.error("Error getting recommendation:", error);
                 toast({ variant: "destructive", title: "Analysis Failed", description: "An error occurred. Please try again." });
@@ -158,13 +177,14 @@ export default function SmartTriagePage() {
                                 {medicalReport && <p className="text-sm text-muted-foreground truncate">Selected: {medicalReport.name}</p>}
                             </div>
                         </div>
-                        <Button onClick={handleGetRecommendation} disabled={!symptoms || isPending} className="w-full">
+                        <Button onClick={handleGetRecommendation} disabled={!symptoms || isPending || !user} className="w-full">
                             {isPending ? (
                                 <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Analyzing...</>
                             ) : (
                                 <><Wand2 className="mr-2 h-4 w-4" />Get Recommendation</>
                             )}
                         </Button>
+                         {!user && <p className="text-center text-sm text-muted-foreground">You must be logged in to get a recommendation.</p>}
                     </CardContent>
                 </Card>
 
@@ -242,5 +262,3 @@ export default function SmartTriagePage() {
         </div>
     );
 }
-
-    

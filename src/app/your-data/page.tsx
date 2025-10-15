@@ -1,17 +1,36 @@
+
 "use client";
 
 import { PageTitle } from "@/components/icons";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { userActivity } from "@/lib/data";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { useUser, useFirestore, useCollection, useMemoFirebase } from "@/firebase";
 import { cn } from "@/lib/utils";
-import { Download, FileDown, MoreHorizontal, Search, User } from "lucide-react";
-import React, { useMemo, useState } from "react";
+import { collection, query, orderBy } from "firebase/firestore";
+import { Download, MoreHorizontal, User, Loader2 } from "lucide-react";
+import React, { useMemo } from "react";
 
 const statusStyles: { [key: string]: string } = {
   Completed: "bg-green-500/20 text-green-400 border-green-500/30",
@@ -20,22 +39,93 @@ const statusStyles: { [key: string]: string } = {
 };
 
 export default function YourDataPage() {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [actionFilter, setActionFilter] = useState("all");
-  const [statusFilter, setStatusFilter] = useState("all");
+  const { user, isUserLoading } = useUser();
+  const firestore = useFirestore();
 
-  const filteredActivity = useMemo(() => {
-    return userActivity
-      .filter(activity =>
-        activity.user.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        activity.id.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-      .filter(activity => actionFilter === "all" || activity.action === actionFilter)
-      .filter(activity => statusFilter === "all" || activity.status === statusFilter);
-  }, [searchTerm, actionFilter, statusFilter]);
+  const appointmentsQuery = useMemoFirebase(
+    () =>
+      user && firestore
+        ? query(collection(firestore, `users/${user.uid}/appointments`), orderBy("appointmentDate", "desc"))
+        : null,
+    [user, firestore]
+  );
+  const { data: appointments, isLoading: appointmentsLoading } = useCollection(appointmentsQuery);
+
+  const quizzesQuery = useMemoFirebase(
+    () =>
+      user && firestore
+        ? query(collection(firestore, `users/${user.uid}/healthQuizzes`), orderBy("completionDate", "desc"))
+        : null,
+    [user, firestore]
+  );
+  const { data: quizzes, isLoading: quizzesLoading } = useCollection(quizzesQuery);
   
-  const uniqueActions = ["all", ...Array.from(new Set(userActivity.map(a => a.action)))];
-  const uniqueStatuses = ["all", ...Array.from(new Set(userActivity.map(a => a.status)))];
+  const recommendationsQuery = useMemoFirebase(
+    () =>
+      user && firestore
+        ? query(collection(firestore, `users/${user.uid}/triageRecommendations`), orderBy("createdAt", "desc"))
+        : null,
+    [user, firestore]
+  );
+  const { data: recommendations, isLoading: recommendationsLoading } = useCollection(recommendationsQuery);
+
+  const analysesQuery = useMemoFirebase(
+    () =>
+      user && firestore
+        ? query(collection(firestore, `users/${user.uid}/reportAnalyses`), orderBy("uploadDate", "desc"))
+        : null,
+    [user, firestore]
+  );
+  const { data: analyses, isLoading: analysesLoading } = useCollection(analysesQuery);
+
+  const combinedActivity = useMemo(() => {
+    const activities = [];
+
+    if (appointments) {
+      activities.push(...appointments.map(a => ({
+        id: a.id,
+        action: 'Book Appointment',
+        details: `For ${a.reason}`,
+        status: 'Completed',
+        date: new Date(a.appointmentDate),
+        type: 'appointment'
+      })));
+    }
+    if (quizzes) {
+       activities.push(...quizzes.map(q => ({
+        id: q.id,
+        action: 'Health Quiz',
+        details: `Score: ${q.score}`,
+        status: 'Completed',
+        date: new Date(q.completionDate),
+        type: 'quiz'
+      })));
+    }
+    if (recommendations) {
+        activities.push(...recommendations.map(r => ({
+            id: r.id,
+            action: 'Smart Triage',
+            details: `Severity: ${r.severity}. ${r.summary}`,
+            status: 'Completed',
+            date: new Date(r.createdAt.toDate()),
+            type: 'triage'
+        })))
+    }
+    if (analyses) {
+        activities.push(...analyses.map(an => ({
+            id: an.id,
+            action: 'Report Analysis',
+            details: `Report: ${an.reportName}`,
+            status: 'Completed',
+            date: new Date(an.uploadDate),
+            type: 'analysis'
+        })))
+    }
+
+    return activities.sort((a, b) => b.date.getTime() - a.date.getTime());
+  }, [appointments, quizzes, recommendations, analyses]);
+
+  const isLoading = isUserLoading || appointmentsLoading || quizzesLoading || recommendationsLoading || analysesLoading;
 
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -66,67 +156,44 @@ export default function YourDataPage() {
               </DropdownMenuContent>
             </DropdownMenu>
           </CardTitle>
-          <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Search by user or ID..."
-                className="pl-10"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
-            <Select value={actionFilter} onValueChange={setActionFilter}>
-              <SelectTrigger>
-                <SelectValue placeholder="Filter by action..." />
-              </SelectTrigger>
-              <SelectContent>
-                {uniqueActions.map(action => (
-                    <SelectItem key={action} value={action}>
-                        {action === 'all' ? 'All Actions' : action}
-                    </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger>
-                <SelectValue placeholder="Filter by status..." />
-              </SelectTrigger>
-              <SelectContent>
-                {uniqueStatuses.map(status => (
-                    <SelectItem key={status} value={status}>
-                        {status === 'all' ? 'All Statuses' : status}
-                    </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
                 <TableHead>Activity ID</TableHead>
-                <TableHead>User</TableHead>
                 <TableHead>Action</TableHead>
+                <TableHead>Details</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Date</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredActivity.length > 0 ? (
-                filteredActivity.map((activity) => (
+              {isLoading ? (
+                <TableRow>
+                  <TableCell colSpan={6} className="h-24 text-center">
+                    <Loader2 className="mx-auto h-8 w-8 animate-spin text-primary" />
+                  </TableCell>
+                </TableRow>
+              ) : !user ? (
+                 <TableRow>
+                  <TableCell colSpan={6} className="h-24 text-center">
+                    Please log in to see your activity.
+                  </TableCell>
+                </TableRow>
+              ) : combinedActivity.length > 0 ? (
+                combinedActivity.map((activity) => (
                   <TableRow key={activity.id}>
-                    <TableCell className="font-medium">{activity.id}</TableCell>
-                    <TableCell>{activity.user}</TableCell>
+                    <TableCell className="font-medium truncate max-w-[100px]">{activity.id}</TableCell>
                     <TableCell>{activity.action}</TableCell>
+                    <TableCell className="truncate max-w-xs">{activity.details}</TableCell>
                     <TableCell>
                       <Badge variant="outline" className={cn(statusStyles[activity.status])}>
                         {activity.status}
                       </Badge>
                     </TableCell>
-                    <TableCell>{new Date(activity.date).toLocaleDateString()}</TableCell>
+                    <TableCell>{activity.date.toLocaleDateString()}</TableCell>
                     <TableCell className="text-right">
                        <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -145,7 +212,7 @@ export default function YourDataPage() {
               ) : (
                 <TableRow>
                   <TableCell colSpan={6} className="h-24 text-center">
-                    No results found.
+                    No activity found.
                   </TableCell>
                 </TableRow>
               )}
