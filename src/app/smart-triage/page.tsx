@@ -93,14 +93,15 @@ export default function SmartTriagePage() {
             });
 
             if (!response.ok) {
-                throw new Error('Failed to generate audio');
+                const errorData = await response.json().catch(() => ({ error: 'Failed to generate audio' }));
+                throw new Error(errorData.error || 'Failed to generate audio');
             }
 
             const result = await response.json();
             setAudioUrl(result.media);
-        } catch (error) {
+        } catch (error: any) {
             console.error("Error generating speech:", error);
-            toast({ variant: "destructive", title: "Audio Failed", description: "Could not generate audio summary." });
+            toast({ variant: "destructive", title: "Audio Failed", description: error.message || "Could not generate audio summary." });
         } finally {
             setIsAudioLoading(false);
         }
@@ -240,5 +241,6 @@ export default function SmartTriagePage() {
             </div>
         </div>
     );
+}
 
     
