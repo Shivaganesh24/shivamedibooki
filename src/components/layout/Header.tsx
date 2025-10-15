@@ -43,6 +43,7 @@ export default function Header() {
   const { t } = useTranslation();
 
   const handleLogout = async () => {
+    if (!auth) return;
     await signOut(auth);
   };
 
@@ -75,7 +76,7 @@ export default function Header() {
         <div className="flex items-center gap-2">
            <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon">
+              <Button variant="ghost" size="icon" suppressHydrationWarning>
                 <Languages className="h-5 w-5" />
                 <span className="sr-only">{t('changeLanguage')}</span>
               </Button>
@@ -96,7 +97,7 @@ export default function Header() {
             ) : user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                  <Button variant="ghost" className="relative h-8 w-8 rounded-full" suppressHydrationWarning>
                     <Avatar className="h-8 w-8">
                       <AvatarImage src={user.photoURL ?? ""} alt={user.displayName ?? "User"} />
                       <AvatarFallback>{user.email?.[0].toUpperCase()}</AvatarFallback>
@@ -133,7 +134,7 @@ export default function Header() {
         </div>
         <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
           <SheetTrigger asChild className="md:hidden">
-            <Button variant="ghost" size="icon">
+            <Button variant="ghost" size="icon" suppressHydrationWarning>
               <Menu />
               <span className="sr-only">Open menu</span>
             </Button>
