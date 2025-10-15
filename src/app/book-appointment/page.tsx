@@ -69,7 +69,7 @@ export default function BookAppointmentPage() {
         </CardHeader>
         <CardContent>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8" suppressHydrationWarning>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <FormField
                   control={form.control}
@@ -78,7 +78,7 @@ export default function BookAppointmentPage() {
                     <FormItem>
                       <FormLabel>Full Name</FormLabel>
                       <FormControl>
-                        <Input placeholder="John Doe" {...field} />
+                        <Input placeholder="John Doe" {...field} suppressHydrationWarning />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -91,7 +91,7 @@ export default function BookAppointmentPage() {
                     <FormItem>
                       <FormLabel>Email Address</FormLabel>
                       <FormControl>
-                        <Input placeholder="john.doe@example.com" {...field} />
+                        <Input placeholder="john.doe@example.com" {...field} suppressHydrationWarning />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -106,7 +106,7 @@ export default function BookAppointmentPage() {
                     <FormLabel>Preferred Doctor</FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
-                        <SelectTrigger>
+                        <SelectTrigger suppressHydrationWarning>
                           <SelectValue placeholder="Select a doctor" />
                         </SelectTrigger>
                       </FormControl>
@@ -137,6 +137,7 @@ export default function BookAppointmentPage() {
                               "w-full pl-3 text-left font-normal",
                               !field.value && "text-muted-foreground"
                             )}
+                            suppressHydrationWarning
                           >
                             {field.value ? (
                               format(field.value, "PPP")
@@ -172,13 +173,14 @@ export default function BookAppointmentPage() {
                         placeholder="Briefly describe the reason for your visit..."
                         className="resize-none"
                         {...field}
+                        suppressHydrationWarning
                       />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
+              <Button type="submit" className="w-full" disabled={form.formState.isSubmitting} suppressHydrationWarning>
                 {form.formState.isSubmitting ? "Booking..." : "Book Appointment"}
               </Button>
             </form>
