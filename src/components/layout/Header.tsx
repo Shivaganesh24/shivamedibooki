@@ -6,7 +6,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useAuth, useUser } from "@/firebase";
 import { cn } from "@/lib/utils";
 import { signOut } from "firebase/auth";
-import { Loader2, LogOut, Menu, X } from "lucide-react";
+import { Languages, Loader2, LogOut, Menu, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -17,17 +17,21 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+} from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { useLanguage } from "@/context/language-context";
+import { useTranslation } from "@/hooks/use-translation";
 
 const navLinks = [
-  { href: "/", label: "Home" },
-  { href: "/smart-triage", label: "Smart Triage" },
-  { href: "/dashboard", label: "Health Tips" },
-  { href: "/health-quiz", label: "Health Quiz" },
-  { href: "/book-appointment", label: "Book Appointment" },
-  { href: "/your-data", label: "Your Data" },
-  { href: "/report-reader", label: "Report Reader" },
+  { href: "/", labelKey: "home" },
+  { href: "/smart-triage", labelKey: "smartTriage" },
+  { href: "/dashboard", labelKey: "healthTips" },
+  { href: "/health-quiz", labelKey: "healthQuiz" },
+  { href: "/book-appointment", labelKey: "bookAppointment" },
+  { href: "/your-data", labelKey: "yourData" },
+  { href: "/report-reader", labelKey: "reportReader" },
 ];
 
 export default function Header() {
@@ -35,12 +39,14 @@ export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { user, isUserLoading } = useUser();
   const auth = useAuth();
+  const { language, setLanguage } = useLanguage();
+  const { t } = useTranslation();
 
   const handleLogout = async () => {
     await signOut(auth);
   };
 
-  const NavLink = ({ href, label, isMobile = false }: { href: string; label: string; isMobile?: boolean }) => (
+  const NavLink = ({ href, labelKey, isMobile = false }: { href: string; labelKey: string; isMobile?: boolean }) => (
     <Link
       href={href}
       onClick={() => isMobile && setIsMobileMenuOpen(false)}
@@ -50,7 +56,7 @@ export default function Header() {
         isMobile && "block py-2 text-lg"
       )}
     >
-      {label}
+      {t(labelKey)}
     </Link>
   );
 
@@ -66,45 +72,64 @@ export default function Header() {
             <NavLink key={link.href} {...link} />
           ))}
         </nav>
-        <div className="hidden md:flex items-center gap-4">
-          {isUserLoading ? (
-            <Loader2 className="h-6 w-6 animate-spin text-primary" />
-          ) : user ? (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-                  <Avatar className="h-8 w-8">
-                    <AvatarImage src={user.photoURL ?? ""} alt={user.displayName ?? "User"} />
-                    <AvatarFallback>{user.email?.[0].toUpperCase()}</AvatarFallback>
-                  </Avatar>
+        <div className="flex items-center gap-2">
+           <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon">
+                <Languages className="h-5 w-5" />
+                <span className="sr-only">{t('changeLanguage')}</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>{t('selectLanguage')}</DropdownMenuLabel>
+              <DropdownMenuRadioGroup value={language} onValueChange={(value) => setLanguage(value as 'en' | 'hi' | 'kn')}>
+                <DropdownMenuRadioItem value="en">English</DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="hi">हिन्दी</DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="kn">ಕನ್ನಡ</DropdownMenuRadioItem>
+              </DropdownMenuRadioGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          <div className="hidden md:flex items-center gap-2">
+            {isUserLoading ? (
+              <Loader2 className="h-6 w-6 animate-spin text-primary" />
+            ) : user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage src={user.photoURL ?? ""} alt={user.displayName ?? "User"} />
+                      <AvatarFallback>{user.email?.[0].toUpperCase()}</AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56" align="end" forceMount>
+                  <DropdownMenuLabel className="font-normal">
+                    <div className="flex flex-col space-y-1">
+                      <p className="text-sm font-medium leading-none">{user.displayName || "User"}</p>
+                      <p className="text-xs leading-none text-muted-foreground">
+                        {user.email}
+                      </p>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleLogout} className="cursor-pointer">
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>{t('logOut')}</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <>
+                <Button variant="ghost" asChild>
+                  <Link href="/login">{t('logIn')}</Link>
                 </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-56" align="end" forceMount>
-                <DropdownMenuLabel className="font-normal">
-                  <div className="flex flex-col space-y-1">
-                    <p className="text-sm font-medium leading-none">{user.displayName || "User"}</p>
-                    <p className="text-xs leading-none text-muted-foreground">
-                      {user.email}
-                    </p>
-                  </div>
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleLogout} className="cursor-pointer">
-                  <LogOut className="mr-2 h-4 w-4" />
-                  <span>Log out</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          ) : (
-            <>
-              <Button variant="ghost" asChild>
-                <Link href="/login">Log In</Link>
-              </Button>
-              <Button className="bg-accent text-accent-foreground hover:bg-accent/90" asChild>
-                <Link href="/signup">Sign Up</Link>
-              </Button>
-            </>
-          )}
+                <Button className="bg-accent text-accent-foreground hover:bg-accent/90" asChild>
+                  <Link href="/signup">{t('signUp')}</Link>
+                </Button>
+              </>
+            )}
+          </div>
         </div>
         <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
           <SheetTrigger asChild className="md:hidden">
@@ -137,15 +162,15 @@ export default function Header() {
                   </div>
                 ) : user ? (
                   <Button variant="outline" onClick={() => { handleLogout(); setIsMobileMenuOpen(false); }}>
-                    Log Out
+                    {t('logOut')}
                   </Button>
                 ) : (
                   <>
                     <Button variant="outline" asChild>
-                      <Link href="/login" onClick={() => setIsMobileMenuOpen(false)}>Log In</Link>
+                      <Link href="/login" onClick={() => setIsMobileMenuOpen(false)}>{t('logIn')}</Link>
                     </Button>
                     <Button className="bg-accent text-accent-foreground hover:bg-accent/90" asChild>
-                      <Link href="/signup" onClick={() => setIsMobileMenuOpen(false)}>Sign Up</Link>
+                      <Link href="/signup" onClick={() => setIsMobileMenuOpen(false)}>{t('signUp')}</Link>
                     </Button>
                   </>
                 )}
