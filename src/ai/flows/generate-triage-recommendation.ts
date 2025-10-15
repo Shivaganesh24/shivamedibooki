@@ -27,6 +27,7 @@ const GenerateTriageRecommendationInputSchema = z.object({
       "An optional medical report (PDF or image), as a data URI that must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'."
     ),
   isAyurvedaMode: z.boolean().optional().describe('Whether to provide recommendations based on Ayurvedic principles.'),
+  language: z.string().optional().describe('The language for the AI to respond in (e.g., "English", "Hindi", "Kannada").'),
 });
 export type GenerateTriageRecommendationInput = z.infer<typeof GenerateTriageRecommendationInputSchema>;
 
@@ -48,7 +49,12 @@ const prompt = ai.definePrompt({
   name: 'generateTriageRecommendationPrompt',
   input: {schema: GenerateTriageRecommendationInputSchema},
   output: {schema: GenerateTriageRecommendationOutputSchema},
-  prompt: `{{#if isAyurvedaMode}}
+  prompt: `
+{{#if language}}
+You MUST respond in the following language: {{{language}}}.
+{{/if}}
+
+{{#if isAyurvedaMode}}
 You are an AI-powered Ayurvedic health consultant. Your goal is to provide a preliminary triage recommendation based on Ayurvedic principles (doshas, agni, etc.).
 
 You will receive a description of the user's symptoms, and optionally an image and a medical report.
@@ -94,4 +100,3 @@ const generateTriageRecommendationFlow = ai.defineFlow(
     return output!;
   }
 );
-

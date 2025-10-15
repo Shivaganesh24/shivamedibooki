@@ -14,12 +14,14 @@ import { useToast } from "@/hooks/use-toast";
 import { doctors, triageDoctorMapping } from "@/lib/data";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { cn } from "@/lib/utils";
-import { useAuth, useFirestore, addDocumentNonBlocking, useUser } from "@/firebase";
+import { useUser, useFirestore, addDocumentNonBlocking } from "@/firebase";
 import { collection, serverTimestamp } from "firebase/firestore";
 import { Bot, FileImage, FileText, Loader2, Sparkles, User, Volume2, Wand2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState, useTransition } from "react";
+import { useLanguage } from "@/context/language-context";
+import { useTranslation } from "@/hooks/use-translation";
 
 const fileToDataUri = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
@@ -40,6 +42,8 @@ const severityStyles: { [key: string]: string } = {
 export default function SmartTriagePage() {
     const { user } = useUser();
     const firestore = useFirestore();
+    const { language } = useLanguage();
+    const { t } = useTranslation();
 
     const [symptoms, setSymptoms] = useState("");
     const [symptomImage, setSymptomImage] = useState<File | null>(null);
@@ -80,11 +84,18 @@ export default function SmartTriagePage() {
                 const symptomImageUri = symptomImage ? await fileToDataUri(symptomImage) : undefined;
                 const medicalReportUri = medicalReport ? await fileToDataUri(medicalReport) : undefined;
 
+                const languageMap = {
+                    en: 'English',
+                    hi: 'Hindi',
+                    kn: 'Kannada'
+                }
+
                 const result = await generateTriageRecommendation({
                     symptoms,
                     symptomImage: symptomImageUri,
                     medicalReport: medicalReportUri,
                     isAyurvedaMode: isAyurvedaMode,
+                    language: languageMap[language],
                 });
                 setRecommendation(result);
 
@@ -140,10 +151,10 @@ export default function SmartTriagePage() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <div className="flex items-center gap-4">
                 <Bot className="h-10 w-10 text-primary" />
-                <PageTitle>AI Smart Triage</PageTitle>
+                <PageTitle>{t('smartTriage')}</PageTitle>
             </div>
             <p className="mt-4 text-lg text-muted-foreground max-w-3xl">
-                Describe your symptoms to get an AI-powered triage recommendation.
+                {t('smartTriageSubtitle')}
             </p>
 
             <div className="mt-8 grid gap-8 lg:grid-cols-2">
@@ -152,23 +163,23 @@ export default function SmartTriagePage() {
                     <CardHeader>
                         <CardTitle className="font-headline flex items-center justify-between gap-2">
                            <div className="flex items-center gap-2">
-                             <User className="h-6 w-6" /> Your Information
+                             <User className="h-6 w-6" /> {t('yourInformationTitle')}
                            </div>
                            <div className="flex items-center space-x-2">
                                 <Switch id="ayurveda-mode" checked={isAyurvedaMode} onCheckedChange={setIsAyurvedaMode} />
-                                <Label htmlFor="ayurveda-mode">Ayurveda Mode</Label>
+                                <Label htmlFor="ayurveda-mode">{t('ayurvedaModeLabel')}</Label>
                             </div>
                         </CardTitle>
                         <CardDescription>
-                            Provide as much detail as possible for a more accurate analysis.
+                            {t('provideDetailsDescription')}
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-6">
                         <div className="space-y-2">
-                            <Label htmlFor="symptoms">Describe your symptoms</Label>
+                            <Label htmlFor="symptoms">{t('describeSymptomsLabel')}</Label>
                             <Textarea
                                 id="symptoms"
-                                placeholder="e.g., I have a sharp pain in my chest, and I'm feeling dizzy..."
+                                placeholder={t('symptomsPlaceholder')}
                                 value={symptoms}
                                 onChange={(e) => setSymptoms(e.target.value)}
                                 rows={6}
@@ -176,24 +187,24 @@ export default function SmartTriagePage() {
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div className="space-y-2">
-                                <Label htmlFor="symptom-image" className="flex items-center gap-2"><FileImage className="h-4 w-4" />Symptom Image (optional)</Label>
+                                <Label htmlFor="symptom-image" className="flex items-center gap-2"><FileImage className="h-4 w-4" />{t('symptomImageLabel')}</Label>
                                 <Input id="symptom-image" type="file" accept="image/*" onChange={handleFileChange(setSymptomImage)} />
-                                {symptomImage && <p className="text-sm text-muted-foreground truncate">Selected: {symptomImage.name}</p>}
+                                {symptomImage && <p className="text-sm text-muted-foreground truncate">{t('selectedFile')}: {symptomImage.name}</p>}
                             </div>
                             <div className="space-y-2">
-                                <Label htmlFor="medical-report" className="flex items-center gap-2"><FileText className="h-4 w-4" />Medical Report (optional)</Label>
+                                <Label htmlFor="medical-report" className="flex items-center gap-2"><FileText className="h-4 w-4" />{t('medicalReportLabel')}</Label>
                                 <Input id="medical-report" type="file" accept="application/pdf,image/*" onChange={handleFileChange(setMedicalReport)} />
-                                {medicalReport && <p className="text-sm text-muted-foreground truncate">Selected: {medicalReport.name}</p>}
+                                {medicalReport && <p className="text-sm text-muted-foreground truncate">{t('selectedFile')}: {medicalReport.name}</p>}
                             </div>
                         </div>
                         <Button onClick={handleGetRecommendation} disabled={!symptoms || isPending || !user} className="w-full">
                             {isPending ? (
-                                <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Analyzing...</>
+                                <><Loader2 className="mr-2 h-4 w-4 animate-spin" />{t('analyzingButton')}</>
                             ) : (
-                                <><Wand2 className="mr-2 h-4 w-4" />Get Recommendation</>
+                                <><Wand2 className="mr-2 h-4 w-4" />{t('getRecommendationButton')}</>
                             )}
                         </Button>
-                         {!user && <p className="text-center text-sm text-muted-foreground">You must be logged in to get a recommendation.</p>}
+                         {!user && <p className="text-center text-sm text-muted-foreground">{t('loginToContinue')}</p>}
                     </CardContent>
                 </Card>
 
@@ -201,34 +212,34 @@ export default function SmartTriagePage() {
                 <Card className="flex flex-col">
                     <CardHeader>
                         <CardTitle className="font-headline flex items-center gap-2">
-                            <Sparkles className="h-6 w-6 text-amber-400" /> AI Recommendation
+                            <Sparkles className="h-6 w-6 text-amber-400" /> {t('aiRecommendationTitle')}
                         </CardTitle>
-                        <CardDescription>The AI-powered triage analysis will appear below.</CardDescription>
+                        <CardDescription>{t('aiRecommendationSubtitle')}</CardDescription>
                     </CardHeader>
                     <CardContent className="flex-grow">
                         {isPending && (
                             <div className="flex flex-col items-center justify-center h-full gap-4 text-muted-foreground">
                                 <Loader2 className="h-10 w-10 animate-spin text-primary" />
-                                <p>AI is analyzing your symptoms...</p>
+                                <p>{t('analyzingSymptoms')}</p>
                             </div>
                         )}
                         {!isPending && recommendation && (
                             <div className="space-y-6">
                                 <div>
-                                    <h3 className="font-semibold mb-2">Severity</h3>
+                                    <h3 className="font-semibold mb-2">{t('severityTitle')}</h3>
                                     <Badge variant="outline" className={cn("text-lg", severityStyles[recommendation.severity] || "bg-secondary")}>{recommendation.severity}</Badge>
                                 </div>
                                 <div>
-                                    <h3 className="font-semibold mb-2">Suggested Action</h3>
+                                    <h3 className="font-semibold mb-2">{t('suggestedActionTitle')}</h3>
                                     <p className="text-muted-foreground">{recommendation.suggestedAction}</p>
                                 </div>
                                 <div>
                                     <div className="flex justify-between items-center mb-2">
-                                        <h3 className="font-semibold">Summary</h3>
+                                        <h3 className="font-semibold">{t('summaryTitle')}</h3>
                                         <Button size="sm" variant="ghost" onClick={handleTextToSpeech} disabled={isAudioLoading || !!audioUrl}>
                                             {isAudioLoading && <Loader2 className="h-4 w-4 animate-spin" />}
                                             {!isAudioLoading && <Volume2 className="h-4 w-4" />}
-                                            <span className="ml-2">Listen</span>
+                                            <span className="ml-2">{t('listenButton')}</span>
                                         </Button>
                                     </div>
                                     <p className="text-muted-foreground">{recommendation.summary}</p>
@@ -236,7 +247,7 @@ export default function SmartTriagePage() {
                                 </div>
                                 {suggestedDoctors && suggestedDoctors.length > 0 && (
                                 <div>
-                                    <h3 className="font-semibold mb-2">Suggested Doctors</h3>
+                                    <h3 className="font-semibold mb-2">{t('suggestedDoctorsTitle')}</h3>
                                     <div className="space-y-4">
                                         {suggestedDoctors.map(doctor => {
                                             const docImage = PlaceHolderImages.find(p => p.id === doctor.imageId);
@@ -250,7 +261,7 @@ export default function SmartTriagePage() {
                                                     <p className="text-sm text-muted-foreground">{doctor.specialty}</p>
                                                 </div>
                                                 <Button size="sm" variant="outline" className="ml-auto" asChild>
-                                                    <Link href="/book-appointment">Book</Link>
+                                                    <Link href="/book-appointment">{t('bookButton')}</Link>
                                                 </Button>
                                             </div>
                                         )})}
@@ -262,7 +273,7 @@ export default function SmartTriagePage() {
                         {!isPending && !recommendation && (
                             <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground border-2 border-dashed rounded-lg p-8">
                                 <MedbookIcon className="h-16 w-16 text-muted-foreground/50" />
-                                <p className="mt-4">Your triage recommendation will appear here.</p>
+                                <p className="mt-4">{t('recommendationPlaceholder')}</p>
                             </div>
                         )}
                     </CardContent>
