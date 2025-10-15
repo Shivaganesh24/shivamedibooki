@@ -29,10 +29,11 @@ import {
 import { useUser, useFirestore, useCollection, useMemoFirebase } from "@/firebase";
 import { cn } from "@/lib/utils";
 import { collection, query, orderBy } from "firebase/firestore";
-import { Download, MoreHorizontal, User, Loader2 } from "lucide-react";
-import React, { useMemo } from "react";
+import { Download, MoreHorizontal, User, Loader2, Filter, ArrowUpDown } from "lucide-react";
+import React, { useMemo, useState } from "react";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const statusStyles: { [key: string]: string } = {
   Completed: "bg-green-500/20 text-green-400 border-green-500/30",
@@ -40,9 +41,14 @@ const statusStyles: { [key: string]: string } = {
   Failed: "bg-red-500/20 text-red-400 border-red-500/30",
 };
 
+type ActivityType = 'all' | 'appointment' | 'quiz' | 'triage' | 'analysis';
+type SortOption = 'date-desc' | 'date-asc' | 'action-asc' | 'action-desc';
+
 export default function YourDataPage() {
   const { user, isUserLoading } = useUser();
   const firestore = useFirestore();
+  const [sortOption, setSortOption] = useState<SortOption>('date-desc');
+  const [filterType, setFilterType] = useState<ActivityType>('all');
 
   const appointmentsQuery = useMemoFirebase(
     () =>
@@ -81,7 +87,7 @@ export default function YourDataPage() {
   const { data: analyses, isLoading: analysesLoading } = useCollection(analysesQuery);
 
   const combinedActivity = useMemo(() => {
-    const activities = [];
+    let activities: any[] = [];
 
     if (appointments) {
       activities.push(...appointments.map(a => ({
@@ -109,7 +115,7 @@ export default function YourDataPage() {
             action: 'Smart Triage',
             details: `Severity: ${r.severity}. ${r.summary}`,
             status: 'Completed',
-            date: new Date(r.createdAt.toDate()),
+            date: r.createdAt?.toDate ? new Date(r.createdAt.toDate()) : new Date(),
             type: 'triage'
         })))
     }
@@ -123,9 +129,27 @@ export default function YourDataPage() {
             type: 'analysis'
         })))
     }
+    
+    // Filtering
+    if (filterType !== 'all') {
+      activities = activities.filter(activity => activity.type === filterType);
+    }
 
-    return activities.sort((a, b) => b.date.getTime() - a.date.getTime());
-  }, [appointments, quizzes, recommendations, analyses]);
+    // Sorting
+    return activities.sort((a, b) => {
+      switch (sortOption) {
+        case 'date-asc':
+          return a.date.getTime() - b.date.getTime();
+        case 'action-asc':
+          return a.action.localeCompare(b.action);
+        case 'action-desc':
+          return b.action.localeCompare(a.action);
+        case 'date-desc':
+        default:
+          return b.date.getTime() - a.date.getTime();
+      }
+    });
+  }, [appointments, quizzes, recommendations, analyses, sortOption, filterType]);
 
   const isLoading = isUserLoading || appointmentsLoading || quizzesLoading || recommendationsLoading || analysesLoading;
 
@@ -189,23 +213,52 @@ export default function YourDataPage() {
 
       <Card className="mt-8">
         <CardHeader>
-          <CardTitle className="font-headline flex justify-between items-center">
-            <span>Activity Log</span>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline">
-                  <Download className="mr-2 h-4 w-4" />
-                  Export Data
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuLabel>Export as</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleExportCSV}>CSV</DropdownMenuItem>
-                <DropdownMenuItem onClick={handleExportPDF}>PDF</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </CardTitle>
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <CardTitle className="font-headline">Activity Log</CardTitle>
+            <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+              <div className="flex gap-2">
+                <Select value={filterType} onValueChange={(value) => setFilterType(value as ActivityType)}>
+                  <SelectTrigger className="w-full sm:w-[180px]">
+                    <Filter className="mr-2 h-4 w-4" />
+                    <SelectValue placeholder="Filter by type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Activities</SelectItem>
+                    <SelectItem value="appointment">Appointments</SelectItem>
+                    <SelectItem value="quiz">Health Quizzes</SelectItem>
+                    <SelectItem value="triage">Smart Triage</SelectItem>
+                    <SelectItem value="analysis">Report Analyses</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Select value={sortOption} onValueChange={(value) => setSortOption(value as SortOption)}>
+                  <SelectTrigger className="w-full sm:w-[180px]">
+                    <ArrowUpDown className="mr-2 h-4 w-4" />
+                    <SelectValue placeholder="Sort by" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="date-desc">Date: Newest first</SelectItem>
+                    <SelectItem value="date-asc">Date: Oldest first</SelectItem>
+                    <SelectItem value="action-asc">Activity: A-Z</SelectItem>
+                    <SelectItem value="action-desc">Activity: Z-A</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" className="w-full sm:w-auto">
+                    <Download className="mr-2 h-4 w-4" />
+                    Export Data
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuLabel>Export as</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleExportCSV}>CSV</DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleExportPDF}>PDF</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
           <Table>
@@ -262,7 +315,7 @@ export default function YourDataPage() {
               ) : (
                 <TableRow>
                   <TableCell colSpan={6} className="h-24 text-center">
-                    No activity found.
+                    No activity found for the selected filter.
                   </TableCell>
                 </TableRow>
               )}
