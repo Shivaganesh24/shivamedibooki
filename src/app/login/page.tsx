@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
-import { MedbookIcon } from "@/components/icons";
+import { MedibookiIcon } from "@/components/icons";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -76,8 +76,8 @@ export default function LoginPage() {
       <div className="w-full max-w-md space-y-8">
         <Card>
           <CardHeader className="text-center">
-            <MedbookIcon className="mx-auto h-12 w-12 text-primary" />
-            <CardTitle className="font-headline mt-4">Log in to MediBook</CardTitle>
+            <MedibookiIcon className="mx-auto h-12 w-12 text-primary" />
+            <CardTitle className="font-headline mt-4">Log in to MediBooki</CardTitle>
             <CardDescription>
               Don&apos;t have an account?{" "}
               <Link href="/signup" className="font-medium text-primary hover:underline">

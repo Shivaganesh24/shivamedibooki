@@ -1,6 +1,6 @@
 import { Github, Linkedin, Twitter } from "lucide-react";
 import Link from "next/link";
-import { MedbookIcon } from "../icons";
+import { MedibookiIcon } from "../icons";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -11,8 +11,8 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="md:col-span-1">
             <Link href="/" className="flex items-center gap-2">
-              <MedbookIcon className="h-8 w-8 text-primary" />
-              <span className="font-headline text-xl font-bold">MediBook</span>
+              <MedibookiIcon className="h-8 w-8 text-primary" />
+              <span className="font-headline text-xl font-bold">MediBooki</span>
             </Link>
             <p className="mt-2 text-sm text-muted-foreground">
               Your health, simplified.
@@ -47,7 +47,7 @@ export default function Footer() {
         </div>
         <div className="mt-12 pt-8 border-t border-border flex flex-col sm:flex-row items-center justify-between">
           <p className="text-sm text-muted-foreground">
-            &copy; {currentYear} MediBook. All rights reserved.
+            &copy; {currentYear} MediBooki. All rights reserved.
           </p>
           <div className="flex items-center space-x-4 mt-4 sm:mt-0">
             <Link href="#" className="text-muted-foreground hover:text-primary">

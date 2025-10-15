@@ -181,7 +181,7 @@ export default function YourDataPage() {
       URL.revokeObjectURL(link.href);
     }
     link.href = URL.createObjectURL(blob);
-    link.download = 'medibook-activity.csv';
+    link.download = 'medibooki-activity.csv';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -192,7 +192,7 @@ export default function YourDataPage() {
       return;
     }
     const doc = new jsPDF();
-    doc.text("MediBook Activity Log", 14, 16);
+    doc.text("MediBooki Activity Log", 14, 16);
     autoTable(doc, {
       head: [['Activity ID', 'Action', 'Details', 'Status', 'Date']],
       body: combinedActivity.map(item => [
@@ -204,7 +204,7 @@ export default function YourDataPage() {
       ]),
       startY: 20,
     });
-    doc.save('medibook-activity.pdf');
+    doc.save('medibooki-activity.pdf');
   };
 
   return (
