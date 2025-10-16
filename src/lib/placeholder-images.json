@@ -32,9 +32,9 @@
     },
     {
       "id": "your-data",
-      "description": "A secure data server",
-      "imageUrl": "https://picsum.photos/seed/data/600/400",
-      "imageHint": "health records"
+      "description": "A health data security icon",
+      "imageUrl": "https://cdn.vectorstock.com/i/500p/80/63/health-data-security-icon-vector-58458063.jpg",
+      "imageHint": "data security"
     },
     {
       "id": "report-reader",

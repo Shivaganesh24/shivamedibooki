@@ -39,6 +39,12 @@ const nextConfig: NextConfig = {
         hostname: "docus-live-cms-storage-us.s3.amazonaws.com",
         port: "",
         pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "cdn.vectorstock.com",
+        port: "",
+        pathname: "/**",
       }
     ],
   },
