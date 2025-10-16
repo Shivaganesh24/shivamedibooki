@@ -357,7 +357,7 @@ export default function SmartTriagePage() {
                         )}
                         {!isPending && !recommendation && (
                             <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground border-2 border-dashed rounded-lg p-8">
-                                <VAIQIcon className="h-16 w-16 text-muted-foreground/50" />
+                                <VAIQIcon className="h-16 w-auto text-muted-foreground/50" />
                                 <p className="mt-4">{t('recommendationPlaceholder')}</p>
                             </div>
                         )}

@@ -54,7 +54,7 @@ export default function ForgotPasswordPage() {
       <div className="w-full max-w-md space-y-8">
         <Card>
           <CardHeader className="text-center">
-            <VAIQIcon className="mx-auto h-12 w-12 text-primary" />
+            <VAIQIcon className="mx-auto h-12 w-auto text-primary" />
             <CardTitle className="font-headline mt-4">Reset your password</CardTitle>
             <CardDescription>
               Enter your email and we&apos;ll send you a link to get back into your account.

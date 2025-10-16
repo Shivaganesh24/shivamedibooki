@@ -76,7 +76,7 @@ export default function LoginPage() {
       <div className="w-full max-w-md space-y-8">
         <Card>
           <CardHeader className="text-center">
-            <VAIQIcon className="mx-auto h-12 w-12 text-primary" />
+            <VAIQIcon className="mx-auto h-12 w-auto text-primary" />
             <CardTitle className="font-headline mt-4">Log in to VA!Q</CardTitle>
             <CardDescription>
               Don&apos;t have an account?{" "}

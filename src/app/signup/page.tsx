@@ -73,7 +73,7 @@ export default function SignupPage() {
       <div className="w-full max-w-md space-y-8">
         <Card>
           <CardHeader className="text-center">
-            <VAIQIcon className="mx-auto h-12 w-12 text-primary" />
+            <VAIQIcon className="mx-auto h-12 w-auto text-primary" />
             <CardTitle className="font-headline mt-4">Create your VA!Q account</CardTitle>
             <CardDescription>
               Already have an account?{" "}

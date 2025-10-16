@@ -11,11 +11,11 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="md:col-span-1">
             <Link href="/" className="flex items-center gap-2">
-              <VAIQIcon className="h-8 w-8 text-primary" />
-              <span className="font-headline text-xl font-bold">VA!Q</span>
+              <VAIQIcon className="h-8 w-auto text-primary" />
+              <span className="font-headline text-xl font-bold"></span>
             </Link>
             <p className="mt-2 text-sm text-muted-foreground">
-              Your health, simplified.
+              Medical Triage
             </p>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 md:col-span-3 gap-8">
