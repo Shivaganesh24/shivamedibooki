@@ -1,3 +1,4 @@
+
 import { Github, Linkedin, Twitter } from "lucide-react";
 import Link from "next/link";
 import { VAIQIcon } from "../icons";
@@ -35,7 +36,7 @@ export default function Footer() {
             <div>
               <h3 className="font-semibold font-headline text-foreground">Company</h3>
               <ul className="mt-4 space-y-2 text-sm">
-                <li><Link href="#" className="text-muted-foreground hover:text-primary">About Us</Link></li>
+                <li><Link href="/about" className="text-muted-foreground hover:text-primary">About Us</Link></li>
                 <li><Link href="#" className="text-muted-foreground hover:text-primary">Careers</Link></li>
                 <li><Link href="#" className="text-muted-foreground hover:text-primary">Contact</Link></li>
               </ul>
@@ -62,3 +63,5 @@ export default function Footer() {
     </footer>
   );
 }
+
+    
