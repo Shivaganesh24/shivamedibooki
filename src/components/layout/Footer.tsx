@@ -14,9 +14,6 @@ export default function Footer() {
               <VAIQIcon className="h-8 w-auto text-primary" />
               <span className="font-headline text-xl font-bold"></span>
             </Link>
-            <p className="mt-2 text-sm text-muted-foreground">
-              Medical Triage
-            </p>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 md:col-span-3 gap-8">
             <div>
