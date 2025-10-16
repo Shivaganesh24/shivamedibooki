@@ -33,6 +33,12 @@ const nextConfig: NextConfig = {
         hostname: "storage.googleapis.com",
         port: "",
         pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "docus-live-cms-storage-us.s3.amazonaws.com",
+        port: "",
+        pathname: "/**",
       }
     ],
   },
