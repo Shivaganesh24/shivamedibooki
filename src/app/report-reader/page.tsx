@@ -86,33 +86,31 @@ export default function ReportReaderPage() {
       return;
     }
 
-    if (!user || !firestore) {
-      toast({
-        variant: "destructive",
-        title: "Not logged in",
-        description: "You must be logged in to analyze a report.",
-      });
-      return;
-    }
-
     startTransition(async () => {
       try {
         const fileDataUri = await fileToDataUri(file);
         const result = await extractKeyFindings({ fileDataUri });
         setKeyFindings(result);
 
-        const analysesCol = collection(firestore, `users/${user.uid}/reportAnalyses`);
-        addDocumentNonBlocking(analysesCol, {
-          reportName: file.name,
-          keyFindings: result.keyFindings,
-          uploadDate: new Date().toISOString(),
-          userId: user.uid,
-        });
+        if (user && firestore) {
+            const analysesCol = collection(firestore, `users/${user.uid}/reportAnalyses`);
+            addDocumentNonBlocking(analysesCol, {
+              reportName: file.name,
+              keyFindings: result.keyFindings,
+              uploadDate: new Date().toISOString(),
+              userId: user.uid,
+            });
 
-        toast({
-          title: "Analysis complete",
-          description: "Key findings have been extracted and saved.",
-        });
+            toast({
+              title: "Analysis complete",
+              description: "Key findings have been extracted and saved to your activity log.",
+            });
+        } else {
+             toast({
+              title: "Analysis complete",
+              description: "Key findings have been extracted.",
+            });
+        }
 
       } catch (error) {
         console.error("Error analyzing report:", error);
@@ -167,7 +165,7 @@ export default function ReportReaderPage() {
                 </Button>
               )}
             </div>
-            <Button onClick={handleAnalyze} disabled={!file || isPending || !user} className="w-full">
+            <Button onClick={handleAnalyze} disabled={!file || isPending} className="w-full">
               {isPending ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -180,7 +178,7 @@ export default function ReportReaderPage() {
                 </>
               )}
             </Button>
-            {!user && <p className="text-center text-sm text-muted-foreground">You must be logged in to analyze a report.</p>}
+            {!user && <p className="text-center text-sm text-muted-foreground">Log in to save your analysis results.</p>}
           </CardContent>
         </Card>
         

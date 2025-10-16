@@ -152,11 +152,6 @@ export default function SmartTriagePage() {
             return;
         }
 
-        if (!user || !firestore) {
-            toast({ variant: "destructive", title: "Not logged in", description: "You must be logged in to get a recommendation." });
-            return;
-        }
-
         startTransition(async () => {
             setRecommendation(null);
             setAudioUrl(null);
@@ -179,14 +174,16 @@ export default function SmartTriagePage() {
                 });
                 setRecommendation(result);
 
-                // Save recommendation to Firestore
-                const recommendationsCol = collection(firestore, `users/${user.uid}/triageRecommendations`);
-                addDocumentNonBlocking(recommendationsCol, {
-                    ...result,
-                    symptoms: symptoms,
-                    createdAt: serverTimestamp(),
-                    userId: user.uid,
-                });
+                // Save recommendation to Firestore only if user is logged in
+                if(user && firestore) {
+                  const recommendationsCol = collection(firestore, `users/${user.uid}/triageRecommendations`);
+                  addDocumentNonBlocking(recommendationsCol, {
+                      ...result,
+                      symptoms: symptoms,
+                      createdAt: serverTimestamp(),
+                      userId: user.uid,
+                  });
+                }
 
             } catch (error) {
                 console.error("Error getting recommendation:", error);
@@ -285,14 +282,14 @@ export default function SmartTriagePage() {
                                 accept="application/pdf,image/*"
                             />
                         </div>
-                        <Button onClick={handleGetRecommendation} disabled={!symptoms || isPending || !user} className="w-full">
+                        <Button onClick={handleGetRecommendation} disabled={!symptoms || isPending} className="w-full">
                             {isPending ? (
                                 <><Loader2 className="mr-2 h-4 w-4 animate-spin" />{t('analyzingButton')}</>
                             ) : (
                                 <><Wand2 className="mr-2 h-4 w-4" />{t('getRecommendationButton')}</>
                             )}
                         </Button>
-                         {!user && <p className="text-center text-sm text-muted-foreground">{t('loginToContinue')}</p>}
+                         {!user && <p className="text-center text-sm text-muted-foreground">Log in to save your results.</p>}
                     </CardContent>
                 </Card>
 
