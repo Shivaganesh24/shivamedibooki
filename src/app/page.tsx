@@ -6,7 +6,7 @@ import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { ArrowRight, Bot, ClipboardCheck, HeartPulse, Stethoscope, TestTube, User } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { MedibookiIcon } from "@/components/icons";
+import { VAIQIcon } from "@/components/icons";
 import { useTranslation } from "@/hooks/use-translation";
 
 export default function Home() {
@@ -96,9 +96,9 @@ export default function Home() {
            <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent"></div>
         </div>
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative text-center">
-          <MedibookiIcon className="h-24 w-24 mx-auto text-primary" />
+          <VAIQIcon className="h-24 w-24 mx-auto text-primary" />
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-headline font-bold mt-4">
-            {t('welcomeToMediBooki')}
+            {t('welcomeToVAIQ')}
           </h1>
           <p className="mt-6 text-lg sm:text-xl max-w-3xl mx-auto text-muted-foreground">
             {t('welcomeSubtitle')}

@@ -1,6 +1,6 @@
 "use client";
 
-import { MedibookiIcon } from "@/components/icons";
+import { VAIQIcon } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useAuth, useUser } from "@/firebase";
@@ -65,8 +65,8 @@ export default function Header() {
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between">
         <Link href="/" className="flex items-center gap-2">
-          <MedibookiIcon className="h-8 w-8 text-primary" />
-          <span className="font-headline text-xl font-bold">MediBooki</span>
+          <VAIQIcon className="h-8 w-8 text-primary" />
+          <span className="font-headline text-xl font-bold">VA!Q</span>
         </Link>
         <nav className="hidden md:flex items-center gap-6 text-sm">
           {navLinks.map((link) => (
@@ -143,8 +143,8 @@ export default function Header() {
             <div className="flex flex-col h-full">
               <div className="flex items-center justify-between border-b pb-4">
                   <Link href="/" className="flex items-center gap-2" onClick={() => setIsMobileMenuOpen(false)}>
-                      <MedibookiIcon className="h-8 w-8 text-primary" />
-                      <span className="font-headline text-xl font-bold">MediBooki</span>
+                      <VAIQIcon className="h-8 w-8 text-primary" />
+                      <span className="font-headline text-xl font-bold">VA!Q</span>
                   </Link>
                   <Button variant="ghost" size="icon" onClick={() => setIsMobileMenuOpen(false)}>
                       <X />

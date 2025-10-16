@@ -8,7 +8,7 @@ import { FirebaseClientProvider } from "@/firebase";
 import { LanguageProvider } from "@/context/language-context";
 
 export const metadata: Metadata = {
-  title: "MediBooki",
+  title: "VA!Q",
   description: "An intelligent, simplified platform for personal health management.",
 };
 

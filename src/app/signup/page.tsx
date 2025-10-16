@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
-import { MedibookiIcon } from "@/components/icons";
+import { VAIQIcon } from "@/components/icons";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -73,8 +73,8 @@ export default function SignupPage() {
       <div className="w-full max-w-md space-y-8">
         <Card>
           <CardHeader className="text-center">
-            <MedibookiIcon className="mx-auto h-12 w-12 text-primary" />
-            <CardTitle className="font-headline mt-4">Create your MediBooki account</CardTitle>
+            <VAIQIcon className="mx-auto h-12 w-12 text-primary" />
+            <CardTitle className="font-headline mt-4">Create your VA!Q account</CardTitle>
             <CardDescription>
               Already have an account?{" "}
               <Link href="/login" className="font-medium text-primary hover:underline">

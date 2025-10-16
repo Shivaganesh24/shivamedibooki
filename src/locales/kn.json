@@ -11,7 +11,7 @@
   "logOut": "ಲಾಗ್ ಔಟ್",
   "logIn": "ಲಾಗಿನ್ ಮಾಡಿ",
   "signUp": "ಸೈನ್ ಅಪ್ ಮಾಡಿ",
-  "welcomeToMediBooki": "ಮೆಡಿಬುಕಿ‌ಗೆ ಸುಸ್ವಾಗತ",
+  "welcomeToVAIQ": "VA!Q ಗೆ ಸುಸ್ವಾಗತ",
   "welcomeSubtitle": "ವೈಯಕ್ತಿಕ ಆರೋಗ್ಯ ನಿರ್ವಹಣೆಗಾಗಿ ನಿಮ್ಮ ಬುದ್ಧಿವಂತ, ಸರಳೀಕೃತ ವೇದಿಕೆ. AI-ಚಾಲಿತ ಒಳನೋಟಗಳೊಂದಿಗೆ ನಿಮ್ಮ ಆರೋಗ್ಯ ಪ್ರಯಾಣದ ನಿಯಂತ್ರಣವನ್ನು ತೆಗೆದುಕೊಳ್ಳಿ.",
   "getStarted": "ಪ್ರಾರಂಭಿಸಿ",
   "ourCoreFeatures": "ನಮ್ಮ ಪ್ರಮುಖ ವೈಶಿಷ್ಟ್ಯಗಳು",
@@ -56,7 +56,7 @@
   "suggestedActionTitle": "ಸೂಚಿಸಿದ ಕ್ರಮ",
   "summaryTitle": "ಸಾರಾಂಶ",
   "listenButton": "ಕೇಳಿ",
-  "suggestedDoctorsTitle": "ಸೂಚಿಸಿದ ವೈದ್ಯರು",
+  "suggestedDoctorsTitle": "ಸೂચಿಸಿದ ವೈದ್ಯರು",
   "bookButton": "ಕಾಯ್ದಿರಿಸಿ",
   "recommendationPlaceholder": "ನಿಮ್ಮ ಟ್ರೈಯಜ್ ಶಿಫಾರಸು ಇಲ್ಲಿ ಕಾಣಿಸುತ್ತದೆ."
 }

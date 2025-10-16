@@ -2,7 +2,7 @@
 "use client";
 
 import { generateTriageRecommendation, type GenerateTriageRecommendationOutput } from "@/ai/flows/generate-triage-recommendation";
-import { MedibookiIcon, PageTitle } from "@/components/icons";
+import { VAIQIcon, PageTitle } from "@/components/icons";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -357,7 +357,7 @@ export default function SmartTriagePage() {
                         )}
                         {!isPending && !recommendation && (
                             <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground border-2 border-dashed rounded-lg p-8">
-                                <MedibookiIcon className="h-16 w-16 text-muted-foreground/50" />
+                                <VAIQIcon className="h-16 w-16 text-muted-foreground/50" />
                                 <p className="mt-4">{t('recommendationPlaceholder')}</p>
                             </div>
                         )}
