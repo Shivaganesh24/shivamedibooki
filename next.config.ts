@@ -45,6 +45,12 @@ const nextConfig: NextConfig = {
         hostname: "cdn.vectorstock.com",
         port: "",
         pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "www.feroot.com",
+        port: "",
+        pathname: "/**",
       }
     ],
   },
