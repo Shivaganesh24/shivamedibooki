@@ -1,29 +1,54 @@
 "use client";
 
+import { Suspense, useEffect, useMemo } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter, useSearchParams } from "next/navigation";
+import { format } from "date-fns";
+import Image from "next/image";
+import { CalendarIcon, Stethoscope } from "lucide-react";
+
 import { PageTitle } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { doctors } from "@/lib/data";
 import { cn } from "@/lib/utils";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { format } from "date-fns";
-import { CalendarIcon, Stethoscope } from "lucide-react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { useUser, useFirestore, addDocumentNonBlocking } from "@/firebase";
-import { collection } from "firebase/firestore";
-import { useEffect } from "react";
-import Image from "next/image";
+import { collection, serverTimestamp } from "firebase/firestore";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 
+// ----------------- Validation Schema -----------------
 const appointmentFormSchema = z.object({
   fullName: z.string().min(2, "Full name must be at least 2 characters."),
   email: z.string().email("Please enter a valid email address."),
@@ -31,19 +56,25 @@ const appointmentFormSchema = z.object({
   appointmentDate: z.date({
     required_error: "An appointment date is required.",
   }),
-  reason: z.string().min(10, "Reason must be at least 10 characters.").max(500, "Reason must be less than 500 characters."),
+  reason: z
+    .string()
+    .min(10, "Reason must be at least 10 characters.")
+    .max(500, "Reason must be less than 500 characters."),
 });
 
 type AppointmentFormValues = z.infer<typeof appointmentFormSchema>;
 
-export default function BookAppointmentPage() {
+// ----------------- Inner Component -----------------
+function AppointmentForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const doctorIdFromQuery = searchParams.get('doctorId');
+  const doctorIdFromQuery = searchParams.get("doctorId");
   const { toast } = useToast();
   const { user } = useUser();
   const firestore = useFirestore();
-  const appointmentImage = PlaceHolderImages.find(p => p.id === "book-appointment");
+  const appointmentImage = useMemo(() => PlaceHolderImages.find(
+    (p) => p.id === "book-appointment"
+  ), []);
 
   const form = useForm<AppointmentFormValues>({
     resolver: zodResolver(appointmentFormSchema),
@@ -54,18 +85,18 @@ export default function BookAppointmentPage() {
       reason: "",
     },
   });
-  
+
   useEffect(() => {
-    if(user) {
-        form.setValue('fullName', user.displayName || '');
-        form.setValue('email', user.email || '');
+    if (user) {
+      form.setValue("fullName", user.displayName || "");
+      form.setValue("email", user.email || "");
     }
   }, [user, form]);
-  
+
   useEffect(() => {
-      if (doctorIdFromQuery) {
-          form.setValue('doctorId', doctorIdFromQuery);
-      }
+    if (doctorIdFromQuery) {
+      form.setValue("doctorId", doctorIdFromQuery);
+    }
   }, [doctorIdFromQuery, form]);
 
   function onSubmit(data: AppointmentFormValues) {
@@ -77,20 +108,21 @@ export default function BookAppointmentPage() {
       });
       return;
     }
-    
+
     toast({
       title: "Submitting Appointment...",
       description: "Please wait while we confirm your booking.",
     });
-    
+
     const appointmentsCol = collection(firestore, `users/${user.uid}/appointments`);
     addDocumentNonBlocking(appointmentsCol, {
-        ...data,
-        appointmentDate: data.appointmentDate.toISOString(),
-        userId: user.uid,
+      ...data,
+      // Use serverTimestamp for accuracy and to avoid client-side clock skew
+      appointmentDate: serverTimestamp(),
+      userId: user.uid,
     });
-    
-    router.push('/book-appointment/confirmation');
+
+    router.push("/book-appointment/confirmation");
   }
 
   return (
@@ -107,12 +139,15 @@ export default function BookAppointmentPage() {
         <Card className="max-w-2xl mx-auto">
           <CardHeader>
             <CardTitle className="font-headline">Appointment Details</CardTitle>
-            <CardDescription>Please fill out the form below to book your appointment.</CardDescription>
+            <CardDescription>
+              Please fill out the form below to book your appointment.
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8" suppressHydrationWarning>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  {/* Full Name */}
                   <FormField
                     control={form.control}
                     name="fullName"
@@ -120,12 +155,14 @@ export default function BookAppointmentPage() {
                       <FormItem>
                         <FormLabel>Full Name</FormLabel>
                         <FormControl>
-                          <Input placeholder="John Doe" {...field} suppressHydrationWarning />
+                          <Input placeholder="John Doe" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
+
+                  {/* Email */}
                   <FormField
                     control={form.control}
                     name="email"
@@ -133,22 +170,28 @@ export default function BookAppointmentPage() {
                       <FormItem>
                         <FormLabel>Email Address</FormLabel>
                         <FormControl>
-                          <Input placeholder="john.doe@example.com" {...field} suppressHydrationWarning />
+                          <Input placeholder="john.doe@example.com" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
                 </div>
+
+                {/* Doctor */}
                 <FormField
                   control={form.control}
                   name="doctorId"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Preferred Doctor</FormLabel>
-                      <Select onValueChange={field.onChange} value={field.value} defaultValue={field.value}>
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value}
+                        defaultValue={field.value}
+                      >
                         <FormControl>
-                          <SelectTrigger suppressHydrationWarning>
+                          <SelectTrigger>
                             <SelectValue placeholder="Select a doctor" />
                           </SelectTrigger>
                         </FormControl>
@@ -164,6 +207,8 @@ export default function BookAppointmentPage() {
                     </FormItem>
                   )}
                 />
+
+                {/* Date */}
                 <FormField
                   control={form.control}
                   name="appointmentDate"
@@ -179,7 +224,6 @@ export default function BookAppointmentPage() {
                                 "w-full pl-3 text-left font-normal",
                                 !field.value && "text-muted-foreground"
                               )}
-                              suppressHydrationWarning
                             >
                               {field.value ? (
                                 format(field.value, "PPP")
@@ -195,7 +239,9 @@ export default function BookAppointmentPage() {
                             mode="single"
                             selected={field.value}
                             onSelect={field.onChange}
-                            disabled={(date) => date < new Date(new Date().setDate(new Date().getDate() - 1))}
+                            disabled={(date) =>
+                              date < new Date(new Date().setDate(new Date().getDate() - 1))
+                            }
                             initialFocus
                           />
                         </PopoverContent>
@@ -204,6 +250,8 @@ export default function BookAppointmentPage() {
                     </FormItem>
                   )}
                 />
+
+                {/* Reason */}
                 <FormField
                   control={form.control}
                   name="reason"
@@ -215,33 +263,54 @@ export default function BookAppointmentPage() {
                           placeholder="Briefly describe the reason for your visit..."
                           className="resize-none"
                           {...field}
-                          suppressHydrationWarning
                         />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                <Button type="submit" className="w-full" disabled={form.formState.isSubmitting || !user} suppressHydrationWarning>
+
+                {/* Submit */}
+                <Button
+                  type="submit"
+                  className="w-full"
+                  disabled={form.formState.isSubmitting || !user}
+                >
                   {form.formState.isSubmitting ? "Booking..." : "Book Appointment"}
                 </Button>
-                 {!user && <p className="text-center text-sm text-muted-foreground">You must be logged in to book an appointment.</p>}
+
+                {!user && (
+                  <p className="text-center text-sm text-muted-foreground">
+                    You must be logged in to book an appointment.
+                  </p>
+                )}
               </form>
             </Form>
           </CardContent>
         </Card>
+
+        {/* Image */}
         <div className="hidden lg:block relative w-full h-full min-h-[500px] rounded-lg overflow-hidden">
-            {appointmentImage && (
-                <Image 
-                    src={appointmentImage.imageUrl} 
-                    alt={appointmentImage.description} 
-                    fill 
-                    className="object-cover"
-                    data-ai-hint={appointmentImage.imageHint}
-                />
-            )}
+          {appointmentImage && (
+            <Image
+              src={appointmentImage.imageUrl}
+              alt={appointmentImage.description}
+              fill
+              className="object-cover"
+              data-ai-hint={appointmentImage.imageHint}
+            />
+          )}
         </div>
       </div>
     </div>
+  );
+}
+
+// ----------------- Page Export -----------------
+export default function BookAppointmentPage() {
+  return (
+    <Suspense fallback={<div className="p-12 text-center">Loading appointment form...</div>}>
+      <AppointmentForm />
+    </Suspense>
   );
 }
