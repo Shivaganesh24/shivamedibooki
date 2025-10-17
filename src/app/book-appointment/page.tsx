@@ -1,3 +1,4 @@
+
 "use client";
 
 import { Suspense, useEffect, useMemo } from "react";
@@ -188,7 +189,6 @@ function AppointmentForm() {
                       <Select
                         onValueChange={field.onChange}
                         value={field.value}
-                        defaultValue={field.value}
                       >
                         <FormControl>
                           <SelectTrigger>
