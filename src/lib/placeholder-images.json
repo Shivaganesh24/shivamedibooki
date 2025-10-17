@@ -65,6 +65,12 @@
       "description": "Portrait of Dr. Olivia White",
       "imageUrl": "https://picsum.photos/seed/doc4/100/100",
       "imageHint": "doctor portrait"
+    },
+    {
+      "id": "doctor-5",
+      "description": "Portrait of Dr. Samuel Lee",
+      "imageUrl": "https://picsum.photos/seed/doc5/100/100",
+      "imageHint": "doctor portrait"
     }
   ]
 }

@@ -59,6 +59,7 @@ export const doctors = [
     { id: "2", name: "Dr. Ben Adams", specialty: "Dermatologist", imageId: "doctor-2" },
     { id: "3", name: "Dr. Chloe Davis", specialty: "Neurologist", imageId: "doctor-3" },
     { id: "4", name: "Dr. Olivia White", specialty: "General Practitioner", imageId: "doctor-4" },
+    { id: "5", name: "Dr. Samuel Lee", specialty: "Ophthalmologist", imageId: "doctor-5" }
 ];
 
 export const userActivity = [
@@ -122,4 +123,5 @@ export const triageDoctorMapping: { [key: string]: string[] } = {
   "Endocrinology": ["Endocrinologist"],
   "Pulmonology": ["Pulmonologist"],
   "General": ["General Practitioner"],
+  "Ophthalmology": ["Ophthalmologist"],
 };
