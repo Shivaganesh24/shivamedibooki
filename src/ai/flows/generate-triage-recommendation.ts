@@ -35,6 +35,7 @@ const GenerateTriageRecommendationOutputSchema = z.object({
   severity: z.string().describe('The severity of the condition (e.g., mild, moderate, severe).'),
   suggestedAction: z.string().describe('The suggested action to take (e.g., rest, see a doctor, go to the emergency room).'),
   summary: z.string().describe('A summary of the condition and the recommendation.'),
+  detectedDisease: z.string().describe('The name of the potential disease or condition detected from the symptoms.'),
   suggestedDoctors: z.array(z.string()).describe('A list of suggested doctor specialties based on the triage recommendation.'),
 });
 export type GenerateTriageRecommendationOutput = z.infer<typeof GenerateTriageRecommendationOutputSchema>;
@@ -62,13 +63,14 @@ Based on this information, you will provide a triage recommendation from an Ayur
 - Severity: The perceived severity of the imbalance (e.g., Mild, Moderate, Severe).
 - Suggested Action: Ayurvedic lifestyle or home remedy suggestions (e.g., dietary changes, herbal teas, rest, consult a Vaidya).
 - Summary: An explanation of the possible doshic imbalance and what the symptoms might indicate according to Ayurveda.
+- Detected Disease: The Ayurvedic name for the condition or imbalance.
 - Suggested Practitioners: A list of relevant practitioner types (e.g., Ayurvedic Doctor, Panchakarma Therapist).
 
 {{else}}
 You are an AI-powered health assistant that provides triage recommendations based on user-provided information.
 
 You will receive a description of the user's symptoms, an optional image of the symptoms, and an optional medical report.
-Based on this information, you will provide a triage recommendation, including the severity of the condition, the suggested action to take, and a summary of the condition and the recommendation. You will also suggest relevant doctor specialities for the user to see from the following list: [Cardiology, Dermatology, Neurology, General].
+Based on this information, you will provide a triage recommendation, including the severity of the condition, the suggested action to take, a summary of the condition and the recommendation, the detected disease, and a list of relevant doctor specialities for the user to see from the following list: [Cardiology, Dermatology, Neurology, General].
 {{/if}}
 
 Symptoms: {{{symptoms}}}
@@ -86,6 +88,7 @@ Your recommendation should be structured as follows:
 Severity: <severity>
 Suggested Action: <suggested action>
 Summary: <summary>
+Detected Disease: <detected disease>
 Suggested Doctors: <list of doctor specialities or practitioner types>`,
 });
 

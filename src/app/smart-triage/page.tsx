@@ -310,9 +310,15 @@ export default function SmartTriagePage() {
                         )}
                         {!isPending && recommendation && (
                             <div className="space-y-6">
-                                <div>
-                                    <h3 className="font-semibold mb-2">{t('severityTitle')}</h3>
-                                    <Badge variant="outline" className={cn("text-lg", severityStyles[recommendation.severity] || "bg-secondary")}>{recommendation.severity}</Badge>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <h3 className="font-semibold mb-2">{t('severityTitle')}</h3>
+                                        <Badge variant="outline" className={cn("text-lg", severityStyles[recommendation.severity] || "bg-secondary")}>{recommendation.severity}</Badge>
+                                    </div>
+                                    <div>
+                                        <h3 className="font-semibold mb-2">Detected Disease</h3>
+                                        <Badge variant="outline" className="text-lg bg-secondary">{recommendation.detectedDisease}</Badge>
+                                    </div>
                                 </div>
                                 <div>
                                     <h3 className="font-semibold mb-2">{t('suggestedActionTitle')}</h3>
