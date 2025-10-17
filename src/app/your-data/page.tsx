@@ -28,7 +28,7 @@ import {
 } from "@/components/ui/table";
 import { useUser, useFirestore, useCollection, useMemoFirebase } from "@/firebase";
 import { cn } from "@/lib/utils";
-import { collection, query, orderBy } from "firebase/firestore";
+import { collection, query, orderBy, Query, DocumentData } from "firebase/firestore";
 import { Download, MoreHorizontal, User, Loader2, Filter, ArrowUpDown } from "lucide-react";
 import React, { useMemo, useState } from "react";
 import jsPDF from "jspdf";
@@ -43,119 +43,99 @@ const statusStyles: { [key: string]: string } = {
 };
 
 type ActivityType = 'all' | 'appointment' | 'quiz' | 'triage' | 'analysis';
-type SortOption = 'date-desc' | 'date-asc' | 'action-asc' | 'action-desc';
+type SortDirection = 'asc' | 'desc';
+
+interface Activity {
+  id: string;
+  action: string;
+  details: string;
+  status: string;
+  date: Date;
+  type: ActivityType;
+}
 
 export default function YourDataPage() {
   const { user, isUserLoading } = useUser();
   const firestore = useFirestore();
-  const [sortOption, setSortOption] = useState<SortOption>('date-desc');
+  const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
   const [filterType, setFilterType] = useState<ActivityType>('all');
 
-  const appointmentsQuery = useMemoFirebase(
-    () =>
-      user && firestore
-        ? query(collection(firestore, `users/${user.uid}/appointments`), orderBy("appointmentDate", "desc"))
-        : null,
-    [user, firestore]
-  );
+  const createQuery = (collectionName: string, dateField: string): Query<DocumentData> | null => {
+    if (!user || !firestore || (filterType !== 'all' && filterType !== collectionName.split('/')[0])) {
+      return null;
+    }
+    return query(collection(firestore, `users/${user.uid}/${collectionName}`), orderBy(dateField, sortDirection));
+  };
+  
+  const appointmentsQuery = useMemoFirebase(() => createQuery('appointments', 'appointmentDate'), [user, firestore, sortDirection, filterType]);
   const { data: appointments, isLoading: appointmentsLoading } = useCollection(appointmentsQuery);
 
-  const quizzesQuery = useMemoFirebase(
-    () =>
-      user && firestore
-        ? query(collection(firestore, `users/${user.uid}/healthQuizzes`), orderBy("completionDate", "desc"))
-        : null,
-    [user, firestore]
-  );
+  const quizzesQuery = useMemoFirebase(() => createQuery('healthQuizzes', 'completionDate'), [user, firestore, sortDirection, filterType]);
   const { data: quizzes, isLoading: quizzesLoading } = useCollection(quizzesQuery);
   
-  const recommendationsQuery = useMemoFirebase(
-    () =>
-      user && firestore
-        ? query(collection(firestore, `users/${user.uid}/triageRecommendations`), orderBy("createdAt", "desc"))
-        : null,
-    [user, firestore]
-  );
+  const recommendationsQuery = useMemoFirebase(() => createQuery('triageRecommendations', 'createdAt'), [user, firestore, sortDirection, filterType]);
   const { data: recommendations, isLoading: recommendationsLoading } = useCollection(recommendationsQuery);
 
-  const analysesQuery = useMemoFirebase(
-    () =>
-      user && firestore
-        ? query(collection(firestore, `users/${user.uid}/reportAnalyses`), orderBy("uploadDate", "desc"))
-        : null,
-    [user, firestore]
-  );
+  const analysesQuery = useMemoFirebase(() => createQuery('reportAnalyses', 'uploadDate'), [user, firestore, sortDirection, filterType]);
   const { data: analyses, isLoading: analysesLoading } = useCollection(analysesQuery);
 
-  const combinedActivity = useMemo(() => {
-    let activities: any[] = [];
+
+  const combinedActivity = useMemo((): Activity[] => {
+    const activities: Activity[] = [];
     const now = new Date();
 
-    if (appointments) {
-      activities.push(...appointments.map(a => {
+    if (filterType === 'all' || filterType === 'appointment') {
+      appointments?.forEach(a => {
         const appointmentDate = new Date(a.appointmentDate);
-        const status = appointmentDate > now ? 'Upcoming' : 'Completed';
-        return {
+        activities.push({
           id: a.id,
           action: 'Book Appointment',
           details: `For ${a.reason}`,
-          status: status,
+          status: appointmentDate > now ? 'Upcoming' : 'Completed',
           date: appointmentDate,
           type: 'appointment'
-        };
-      }));
+        });
+      });
     }
-    if (quizzes) {
-       activities.push(...quizzes.map(q => ({
+    if (filterType === 'all' || filterType === 'quiz') {
+       quizzes?.forEach(q => activities.push({
         id: q.id,
         action: 'Health Quiz',
         details: `Score: ${q.score}`,
         status: 'Completed',
         date: new Date(q.completionDate),
         type: 'quiz'
-      })));
+      }));
     }
-    if (recommendations) {
-        activities.push(...recommendations.map(r => ({
+    if (filterType === 'all' || filterType === 'triage') {
+        recommendations?.forEach(r => activities.push({
             id: r.id,
             action: 'Smart Triage',
             details: `Severity: ${r.severity}. ${r.summary}`,
             status: 'Completed',
             date: r.createdAt?.toDate ? new Date(r.createdAt.toDate()) : new Date(),
             type: 'triage'
-        })))
+        }));
     }
-    if (analyses) {
-        activities.push(...analyses.map(an => ({
+    if (filterType === 'all' || filterType === 'analysis') {
+        analyses?.forEach(an => activities.push({
             id: an.id,
             action: 'Report Analysis',
             details: `Report: ${an.reportName}`,
             status: 'Completed',
             date: new Date(an.uploadDate),
             type: 'analysis'
-        })))
+        }));
     }
     
-    // Filtering
-    if (filterType !== 'all') {
-      activities = activities.filter(activity => activity.type === filterType);
+    if (filterType === 'all') {
+      return activities.sort((a, b) => {
+        return sortDirection === 'desc' ? b.date.getTime() - a.date.getTime() : a.date.getTime() - b.date.getTime();
+      });
     }
 
-    // Sorting
-    return activities.sort((a, b) => {
-      switch (sortOption) {
-        case 'date-asc':
-          return a.date.getTime() - b.date.getTime();
-        case 'action-asc':
-          return a.action.localeCompare(b.action);
-        case 'action-desc':
-          return b.action.localeCompare(a.action);
-        case 'date-desc':
-        default:
-          return b.date.getTime() - a.date.getTime();
-      }
-    });
-  }, [appointments, quizzes, recommendations, analyses, sortOption, filterType]);
+    return activities;
+  }, [appointments, quizzes, recommendations, analyses, filterType, sortDirection]);
 
   const isLoading = isUserLoading || appointmentsLoading || quizzesLoading || recommendationsLoading || analysesLoading;
 
@@ -236,16 +216,14 @@ export default function YourDataPage() {
                     <SelectItem value="analysis">Report Analyses</SelectItem>
                   </SelectContent>
                 </Select>
-                <Select value={sortOption} onValueChange={(value) => setSortOption(value as SortOption)}>
+                <Select value={sortDirection} onValueChange={(value) => setSortDirection(value as SortDirection)}>
                   <SelectTrigger className="w-full sm:w-[180px]">
                     <ArrowUpDown className="mr-2 h-4 w-4" />
                     <SelectValue placeholder="Sort by" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="date-desc">Date: Newest first</SelectItem>
-                    <SelectItem value="date-asc">Date: Oldest first</SelectItem>
-                    <SelectItem value="action-asc">Activity: A-Z</SelectItem>
-                    <SelectItem value="action-desc">Activity: Z-A</SelectItem>
+                    <SelectItem value="desc">Date: Newest first</SelectItem>
+                    <SelectItem value="asc">Date: Oldest first</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -332,3 +310,5 @@ export default function YourDataPage() {
     </div>
   );
 }
+
+    
