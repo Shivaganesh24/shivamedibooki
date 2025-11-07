@@ -7,13 +7,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { indianStates } from "@/lib/india-data";
-import { BarChart as BarChartIcon, Bug, Info, LineChart as LineChartIcon, AreaChart as AreaChartIcon, Loader2, Map, Microscope, ShieldCheck, PieChart as PieChartIcon, Target } from "lucide-react";
+import { BarChart as BarChartIcon, Bug, Info, LineChart as LineChartIcon, AreaChart as AreaChartIcon, Loader2, Map, Microscope, ShieldCheck, PieChart as PieChartIcon, Target, TrendingUp, GitCompare, CalendarDays, BarChart, LineChart, AreaChart, PieChart, RadialBarChart, Droplets, LocateFixed } from "lucide-react";
 import { simulateMalariaRates, type SimulateMalariaRatesOutput } from "@/ai/flows/simulate-malaria-rates";
 import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
-import { BarChart, Bar, AreaChart, Area, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, PieChart, Pie, Cell, RadialBarChart, RadialBar, Legend } from 'recharts';
+import { Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, Cell, RadialBar, Legend, Line, Pie } from 'recharts';
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
@@ -34,7 +34,13 @@ const intensityHeatMapStyles: { [key: string]: string } = {
     "Very High": "bg-red-500/60 hover:bg-red-500",
 };
 
-const CHART_COLORS = ["hsl(var(--chart-1))", "hsl(var(--chart-2))", "hsl(var(--chart-3))", "hsl(var(--chart-4))", "hsl(var(--chart-5))"];
+const CHART_COLORS = {
+    "1": "hsl(var(--chart-1))",
+    "2": "hsl(var(--chart-2))",
+    "3": "hsl(var(--chart-3))",
+    "4": "hsl(var(--chart-4))",
+    "5": "hsl(var(--chart-5))",
+}
 
 
 type ChartDataType = 'simulatedCases' | 'caseRate';
@@ -81,7 +87,7 @@ const HeatMap = ({ data }: { data: SimulateMalariaRatesOutput | null }) => {
                 })}
             </div>
         </TooltipProvider>
-    )
+    );
 }
 
 export default function MalariaMapPage() {
@@ -116,44 +122,69 @@ export default function MalariaMapPage() {
         return selected ? selected.districts : [];
     }, [state2]);
 
-    const { chartData, chartConfig } = useMemo(() => {
-        if (!simulationData) return { chartData: [], chartConfig: {} };
-
+    const { chartData, chartConfig, lineChartKeys } = useMemo(() => {
+        if (!simulationData) return { chartData: [], chartConfig: {}, lineChartKeys: [] };
+    
         const { simulation, comparisonRegion } = simulationData;
-        const data = [];
+        let data: any[] = [];
         const config: ChartConfig = {};
+        let keys: string[] = [];
+    
+        const isComparingYears = simulation.year2;
+        const isComparingRegions = comparisonRegion;
+    
+        if (chartType === 'line' || chartType === 'area') {
+            if (isComparingRegions) {
+                // Comparing two regions, x-axis is year
+                keys = [simulation.district, comparisonRegion.district];
+                const years = [simulation.year1.year, simulation.year2?.year].filter(Boolean) as number[];
+                
+                const yearData: { [year: number]: any } = {};
 
-        const addDataPoint = (label: string, value: number, color: string) => {
-            const safeLabel = label.replace(/[^a-zA-Z0-9]/g, '');
-            data.push({
-                name: label,
-                value: value,
-                fill: `var(--color-${safeLabel})`
-            });
-            config[safeLabel] = {
-                label: label,
-                color: color,
-            };
-        }
+                const processRegion = (region: typeof simulation | typeof comparisonRegion) => {
+                    if (region.year1) {
+                        if (!yearData[region.year1.year]) yearData[region.year1.year] = { name: String(region.year1.year) };
+                        yearData[region.year1.year][region.district] = region.year1[chartDataType];
+                    }
+                    if (region.year2) {
+                        if (!yearData[region.year2.year]) yearData[region.year2.year] = { name: String(region.year2.year) };
+                        yearData[region.year2.year][region.district] = region.year2[chartDataType];
+                    }
+                };
 
-        if (simulation.year1) {
-            addDataPoint(`${simulation.district} ${simulation.year1.year}`, simulation.year1[chartDataType], CHART_COLORS[0]);
-        }
-        if (simulation.year2) {
-             addDataPoint(`${simulation.district} ${simulation.year2.year}`, simulation.year2[chartDataType], CHART_COLORS[1]);
-        }
-        if (comparisonRegion?.year1) {
-            addDataPoint(`${comparisonRegion.district} ${comparisonRegion.year1.year}`, comparisonRegion.year1[chartDataType], CHART_COLORS[2]);
-        }
-        if (comparisonRegion?.year2) {
-             addDataPoint(`${comparisonRegion.district} ${comparisonRegion.year2.year}`, comparisonRegion.year2[chartDataType], CHART_COLORS[3]);
-        }
+                processRegion(simulation);
+                processRegion(comparisonRegion);
+                
+                data = Object.values(yearData).sort((a,b) => a.name.localeCompare(b.name));
+                config[simulation.district] = { label: simulation.district, color: CHART_COLORS[1] };
+                config[comparisonRegion.district] = { label: comparisonRegion.district, color: CHART_COLORS[2] };
 
-        return {
-            chartData: data.sort((a, b) => a.name.localeCompare(b.name)),
-            chartConfig: config
-        };
-    }, [simulationData, chartDataType]);
+            } else {
+                 // Comparing two years for the same region
+                keys = [chartDataType];
+                data = [simulation.year1, simulation.year2].filter(Boolean).map(d => ({
+                    name: String(d!.year),
+                    [chartDataType]: d![chartDataType]
+                }));
+                config[chartDataType] = { label: chartDataType === 'simulatedCases' ? 'Simulated Cases' : 'Case Rate', color: CHART_COLORS[1] };
+            }
+        } else {
+            // Logic for bar, pie, radial charts
+            const points: {label: string, value: number, color: keyof typeof CHART_COLORS}[] = [];
+            if (simulation.year1) points.push({ label: `${simulation.district} ${simulation.year1.year}`, value: simulation.year1[chartDataType], color: '1' });
+            if (simulation.year2) points.push({ label: `${simulation.district} ${simulation.year2.year}`, value: simulation.year2[chartDataType], color: '2' });
+            if (comparisonRegion?.year1) points.push({ label: `${comparisonRegion.district} ${comparisonRegion.year1.year}`, value: comparisonRegion.year1[chartDataType], color: '3' });
+            if (comparisonRegion?.year2) points.push({ label: `${comparisonRegion.district} ${comparisonRegion.year2.year}`, value: comparisonRegion.year2[chartDataType], color: '4' });
+            
+            data = points.map(p => {
+                const safeLabel = p.label.replace(/[^a-zA-Z0-9]/g, '');
+                config[safeLabel] = { label: p.label, color: CHART_COLORS[p.color] };
+                return { name: p.label, value: p.value, fill: `var(--color-${safeLabel})` };
+            }).sort((a,b) => a.name.localeCompare(b.name));
+        }
+    
+        return { chartData: data, chartConfig: config, lineChartKeys: keys };
+    }, [simulationData, chartDataType, chartType]);
 
 
     const handleRunSimulation = () => {
@@ -166,7 +197,7 @@ export default function MalariaMapPage() {
             return;
         }
 
-        const isComparingYears = compare && year2 && !state2 && !district2;
+        const isComparingYears = compare && year2 && !state2;
         const isComparingRegions = compare && state2 && district2;
         
         if (compare && !isComparingYears && !isComparingRegions) {
@@ -178,7 +209,6 @@ export default function MalariaMapPage() {
             return;
         }
 
-
         startTransition(async () => {
             setSimulationData(null);
             try {
@@ -186,7 +216,7 @@ export default function MalariaMapPage() {
                     state: state1,
                     district: district1,
                     year1: parseInt(year1),
-                    year2: isComparingYears ? parseInt(year2) : undefined,
+                    year2: isComparingYears ? parseInt(year2) : (isComparingRegions ? parseInt(year2) : undefined),
                     compareState: isComparingRegions ? state2 : undefined,
                     compareDistrict: isComparingRegions ? district2 : undefined,
                 });
@@ -202,21 +232,25 @@ export default function MalariaMapPage() {
         });
     }
 
-    const renderDataCard = (title: string, data: SimulateMalariaRatesOutput['simulation'] | SimulateMalariaRatesOutput['comparisonRegion']) => {
+    const renderDataCard = (title: string, data: SimulateMalariaRatesOutput['simulation'] | SimulateMalariaRatesOutput['comparisonRegion'], icon: React.ReactNode) => {
         if (!data) return null;
 
         const year1Data = data.year1;
         const year2Data = data.year2;
 
         return (
-            <Card>
+            <Card className="shadow-lg hover:shadow-primary/20 transition-shadow">
                 <CardHeader>
-                    <CardTitle className="font-headline">{title}</CardTitle>
-                    <CardDescription>{data.district}, {data.state}</CardDescription>
+                    <div className="flex items-start justify-between">
+                        <CardTitle className="font-headline flex items-center gap-2">
+                           {icon} {title}
+                        </CardTitle>
+                         <Badge variant="outline" className="bg-secondary">{data.district}, {data.state}</Badge>
+                    </div>
                 </CardHeader>
                 <CardContent className="space-y-4">
                     {year1Data && (
-                        <div>
+                        <div className="p-3 rounded-lg bg-secondary/50">
                             <h4 className="font-semibold text-lg">{year1Data.year}</h4>
                             <div className="grid grid-cols-2 gap-4 mt-2 text-sm">
                                 <p>Simulated Cases: <span className="font-bold">{year1Data.simulatedCases.toLocaleString()}</span></p>
@@ -230,8 +264,7 @@ export default function MalariaMapPage() {
                     )}
                     {year2Data && (
                         <>
-                        <Separator />
-                        <div>
+                        <div className="p-3 rounded-lg bg-secondary/50">
                             <h4 className="font-semibold text-lg">{year2Data.year}</h4>
                             <div className="grid grid-cols-2 gap-4 mt-2 text-sm">
                                 <p>Simulated Cases: <span className="font-bold">{year2Data.simulatedCases.toLocaleString()}</span></p>
@@ -251,63 +284,79 @@ export default function MalariaMapPage() {
     
     const renderChart = () => {
         if (!chartData || chartData.length === 0) return null;
-
-        const chartComponents = {
-            bar: (
-                <BarChart data={chartData}>
-                    <CartesianGrid vertical={false} />
-                    <XAxis dataKey="name" tickLine={false} axisLine={false} tickMargin={8} interval={0} angle={-30} textAnchor="end" height={80} />
-                    <YAxis />
-                    <ChartTooltip content={<ChartTooltipContent nameKey="value" />} />
-                    <Bar dataKey="value" name={chartDataType === 'caseRate' ? "Case Rate" : "Simulated Cases"} radius={8}>
-                       {chartData.map((entry, index) => (
-                         <Cell key={`cell-${index}`} fill={entry.fill} />
-                       ))}
-                    </Bar>
-                </BarChart>
-            ),
-            line: (
-                <LineChart data={chartData}>
-                    <CartesianGrid vertical={false} />
-                    <XAxis dataKey="name" tickLine={false} axisLine={false} tickMargin={8} interval={0} angle={-30} textAnchor="end" height={80}/>
-                    <YAxis />
-                    <ChartTooltip content={<ChartTooltipContent nameKey="value" />} />
-                    <Line type="monotone" dataKey="value" name={chartDataType === 'caseRate' ? "Case Rate" : "Simulated Cases"} stroke="hsl(var(--primary))" strokeWidth={2} />
-                </LineChart>
-            ),
-            area: (
-                <AreaChart data={chartData}>
-                    <CartesianGrid vertical={false} />
-                    <XAxis dataKey="name" tickLine={false} axisLine={false} tickMargin={8} interval={0} angle={-30} textAnchor="end" height={80}/>
-                    <YAxis />
-                    <ChartTooltip content={<ChartTooltipContent nameKey="value" />} />
-                    <Area type="monotone" dataKey="value" name={chartDataType === 'caseRate' ? "Case Rate" : "Simulated Cases"} stroke="hsl(var(--primary))" fill="hsl(var(--primary))" fillOpacity={0.3} />
-                </AreaChart>
-            ),
-            pie: (
-                <PieChart>
-                    <ChartTooltip content={<ChartTooltipContent nameKey="name" />} />
-                    <Pie data={chartData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={120} label>
-                        {chartData.map((entry) => (
-                           <Cell key={`cell-${entry.name}`} fill={entry.fill} />
-                        ))}
-                    </Pie>
-                    <Legend />
-                </PieChart>
-            ),
-            radial: (
-                <RadialBarChart cx="50%" cy="50%" innerRadius="10%" outerRadius="80%" barSize={10} data={chartData}>
-                    <ChartTooltip content={<ChartTooltipContent nameKey="name" />} />
-                    <RadialBar minAngle={15} background dataKey="value" />
-                    <Legend iconSize={10} layout="vertical" verticalAlign="middle" align="right" />
-                </RadialBarChart>
-            )
+    
+        const commonProps = {
+            data: chartData,
+            margin: { top: 20, right: 30, left: 20, bottom: 60 },
         };
-        
+    
+        const renderSpecificChart = () => {
+            switch (chartType) {
+                case 'bar':
+                    return (
+                        <BarChart {...commonProps}>
+                            <CartesianGrid vertical={false} />
+                            <XAxis dataKey="name" tickLine={false} axisLine={false} tickMargin={8} interval={0} angle={-45} textAnchor="end" />
+                            <YAxis />
+                            <ChartTooltip content={<ChartTooltipContent />} />
+                            <Bar dataKey="value" name={chartDataType === 'caseRate' ? "Case Rate" : "Simulated Cases"} radius={8}>
+                                {chartData.map((entry) => <Cell key={`cell-${entry.name}`} fill={entry.fill} />)}
+                            </Bar>
+                        </BarChart>
+                    );
+                case 'line':
+                    return (
+                        <LineChart {...commonProps}>
+                            <CartesianGrid vertical={false} />
+                            <XAxis dataKey="name" tickLine={false} axisLine={false} tickMargin={8} angle={-45} textAnchor="end" />
+                            <YAxis />
+                            <ChartTooltip content={<ChartTooltipContent />} />
+                            <Legend />
+                            {lineChartKeys.map((key, index) => (
+                                <Line key={key} type="monotone" dataKey={key} name={key} stroke={CHART_COLORS[(index + 1) as keyof typeof CHART_COLORS]} strokeWidth={2} />
+                            ))}
+                        </LineChart>
+                    );
+                case 'area':
+                     return (
+                        <AreaChart {...commonProps}>
+                            <CartesianGrid vertical={false} />
+                            <XAxis dataKey="name" tickLine={false} axisLine={false} tickMargin={8} angle={-45} textAnchor="end" />
+                            <YAxis />
+                            <ChartTooltip content={<ChartTooltipContent />} />
+                             <Legend />
+                            {lineChartKeys.map((key, index) => (
+                               <Area key={key} type="monotone" dataKey={key} name={key} stackId="1" stroke={CHART_COLORS[(index + 1) as keyof typeof CHART_COLORS]} fill={CHART_COLORS[(index + 1) as keyof typeof CHART_COLORS]} fillOpacity={0.4} />
+                            ))}
+                        </AreaChart>
+                    );
+                case 'pie':
+                    return (
+                        <PieChart>
+                            <ChartTooltip content={<ChartTooltipContent nameKey="name" />} />
+                            <Pie data={chartData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={120} label>
+                                {chartData.map((entry) => <Cell key={`cell-${entry.name}`} fill={entry.fill} />)}
+                            </Pie>
+                            <Legend />
+                        </PieChart>
+                    );
+                case 'radial':
+                    return (
+                        <RadialBarChart cx="50%" cy="50%" innerRadius="10%" outerRadius="80%" barSize={10} data={chartData}>
+                             <ChartTooltip content={<ChartTooltipContent nameKey="name" />} />
+                            <RadialBar minAngle={15} background dataKey="value" />
+                            <Legend iconSize={10} layout="vertical" verticalAlign="middle" align="right" />
+                        </RadialBarChart>
+                    );
+                default:
+                    return null;
+            }
+        };
+    
         return (
-            <ChartContainer config={chartConfig} className="min-h-[400px] w-full">
-                <ResponsiveContainer width="100%" height={400}>
-                    {chartComponents[chartType]}
+            <ChartContainer config={chartConfig} className="min-h-[450px] w-full">
+                <ResponsiveContainer width="100%" height={450}>
+                    {renderSpecificChart()}
                 </ResponsiveContainer>
             </ChartContainer>
         );
@@ -325,15 +374,13 @@ export default function MalariaMapPage() {
 
             <Card className="mt-8">
                 <CardHeader>
-                    <CardTitle className="font-headline">Simulation Controls</CardTitle>
+                    <CardTitle className="font-headline flex items-center gap-2"><Droplets />Simulation Controls</CardTitle>
                     <CardDescription>Select regions and years to generate the simulation.</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
-                    {/* Region Selection */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {/* Primary Region */}
-                        <div className="space-y-4 p-4 border rounded-lg">
-                            <h3 className="font-semibold">Primary Region</h3>
+                        <div className="space-y-4 p-4 border rounded-lg bg-secondary/50">
+                            <h3 className="font-semibold flex items-center gap-2"><LocateFixed size={18}/> Primary Region</h3>
                             <div className="grid grid-cols-2 gap-4">
                                 <Select value={state1} onValueChange={value => { setState1(value); setDistrict1(''); }}>
                                     <SelectTrigger><SelectValue placeholder="Select State" /></SelectTrigger>
@@ -349,10 +396,9 @@ export default function MalariaMapPage() {
                                 </Select>
                             </div>
                         </div>
-                        {/* Comparison Region */}
-                        <div className="space-y-4 p-4 border rounded-lg">
+                        <div className="space-y-4 p-4 border rounded-lg bg-secondary/50">
                              <div className="flex items-center justify-between">
-                                <h3 className="font-semibold">Comparison</h3>
+                                <h3 className="font-semibold flex items-center gap-2"><GitCompare size={18} /> Comparison</h3>
                                 <Button variant={compare ? "secondary" : "outline"} size="sm" onClick={() => setCompare(!compare)}>
                                     {compare ? "Disable" : "Enable"}
                                 </Button>
@@ -373,10 +419,9 @@ export default function MalariaMapPage() {
                             </div>
                         </div>
                     </div>
-                    {/* Year Selection */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
                          <div className="space-y-2">
-                             <label className="text-sm font-medium">Year 1</label>
+                             <label className="text-sm font-medium flex items-center gap-2"><CalendarDays size={16}/> Year 1</label>
                             <Select value={year1} onValueChange={setYear1}>
                                 <SelectTrigger><SelectValue placeholder="Select Year" /></SelectTrigger>
                                 <SelectContent>
@@ -385,15 +430,15 @@ export default function MalariaMapPage() {
                             </Select>
                         </div>
                         <div className={cn("space-y-2 transition-opacity", compare ? "opacity-100" : "opacity-50 pointer-events-none")}>
-                             <label className="text-sm font-medium">Year 2 (for year-on-year comparison)</label>
-                            <Select value={year2} onValueChange={setYear2} disabled={!compare || !!state2}>
+                             <label className="text-sm font-medium flex items-center gap-2"><CalendarDays size={16}/> Year 2 (for comparison)</label>
+                            <Select value={year2} onValueChange={setYear2} disabled={!compare}>
                                 <SelectTrigger><SelectValue placeholder="Select Year" /></SelectTrigger>
                                 <SelectContent>
                                     {availableYears.map(y => <SelectItem key={y} value={String(y)}>{y}</SelectItem>)}
                                 </SelectContent>
                             </Select>
                         </div>
-                         <Button onClick={handleRunSimulation} disabled={isPending} className="w-full md:w-auto">
+                         <Button onClick={handleRunSimulation} disabled={isPending} className="w-full md:w-auto text-lg py-6">
                             {isPending ? <Loader2 className="animate-spin" /> : <Microscope />}
                             Run Simulation
                         </Button>
@@ -401,7 +446,6 @@ export default function MalariaMapPage() {
                 </CardContent>
             </Card>
 
-            {/* Simulation Results */}
             {isPending && (
                  <div className="flex flex-col items-center justify-center h-64 gap-4 text-muted-foreground">
                     <Loader2 className="h-10 w-10 animate-spin text-primary" />
@@ -418,8 +462,8 @@ export default function MalariaMapPage() {
                     </Alert>
 
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                         {renderDataCard("Primary Region Simulation", simulationData.simulation)}
-                         {simulationData.comparisonRegion && renderDataCard("Comparison Region Simulation", simulationData.comparisonRegion)}
+                         {renderDataCard("Primary Region", simulationData.simulation, <LocateFixed/>)}
+                         {simulationData.comparisonRegion && renderDataCard("Comparison Region", simulationData.comparisonRegion, <GitCompare />)}
                     </div>
                    
                     <Card>
@@ -427,7 +471,7 @@ export default function MalariaMapPage() {
                             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                                 <div >
                                     <CardTitle className="font-headline flex items-center gap-2">
-                                        <BarChartIcon className="h-6 w-6" />
+                                        <TrendingUp className="h-6 w-6" />
                                         Visual Comparison
                                     </CardTitle>
                                     <CardDescription>
@@ -487,7 +531,6 @@ export default function MalariaMapPage() {
                         </Card>
                     </div>
 
-                    {/* Placeholder for map visualization */}
                     <Card>
                         <CardHeader>
                             <CardTitle className="font-headline flex items-center gap-2">
