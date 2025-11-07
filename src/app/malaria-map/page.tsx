@@ -7,13 +7,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { indianStates } from "@/lib/india-data";
-import { BarChart as BarChartIcon, Bug, Info, LineChart as LineChartIcon, AreaChart as AreaChartIcon, Loader2, Map, Microscope, ShieldCheck, PieChart as PieChartIcon, Target, TrendingUp, GitCompare, CalendarDays, BarChart, LineChart, AreaChart, PieChart, RadialBarChart, Droplets, LocateFixed } from "lucide-react";
+import { BarChart as BarChartIcon, Bug, Info, LineChart as LineChartIcon, AreaChart as AreaChartIcon, Loader2, Map, Microscope, ShieldCheck, PieChart as PieChartIcon, Target, TrendingUp, GitCompare, CalendarDays, BarChart, LineChart, AreaChart, PieChart, Droplets, LocateFixed } from "lucide-react";
 import { simulateMalariaRates, type SimulateMalariaRatesOutput } from "@/ai/flows/simulate-malaria-rates";
 import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
-import { Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, Cell, RadialBar, Legend, Line, Pie } from 'recharts';
+import { Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, Cell, RadialBar, Legend, Line, Pie, RadialBarChart } from 'recharts';
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
@@ -130,24 +130,27 @@ export default function MalariaMapPage() {
         const config: ChartConfig = {};
         let keys: string[] = [];
     
-        const isComparingYears = simulation.year2;
+        const isComparingYears = simulation.year2 && !comparisonRegion;
         const isComparingRegions = comparisonRegion;
     
         if (chartType === 'line' || chartType === 'area') {
             if (isComparingRegions) {
                 // Comparing two regions, x-axis is year
                 keys = [simulation.district, comparisonRegion.district];
-                const years = [simulation.year1.year, simulation.year2?.year].filter(Boolean) as number[];
-                
+                const years = [simulation.year1.year, simulation.year2?.year, comparisonRegion.year1?.year, comparisonRegion.year2?.year].filter(Boolean) as number[];
+                const uniqueYears = [...new Set(years)].sort();
+
                 const yearData: { [year: number]: any } = {};
+                uniqueYears.forEach(year => {
+                    yearData[year] = { name: String(year) };
+                });
 
                 const processRegion = (region: typeof simulation | typeof comparisonRegion) => {
+                    if(!region) return;
                     if (region.year1) {
-                        if (!yearData[region.year1.year]) yearData[region.year1.year] = { name: String(region.year1.year) };
                         yearData[region.year1.year][region.district] = region.year1[chartDataType];
                     }
                     if (region.year2) {
-                        if (!yearData[region.year2.year]) yearData[region.year2.year] = { name: String(region.year2.year) };
                         yearData[region.year2.year][region.district] = region.year2[chartDataType];
                     }
                 };
@@ -159,13 +162,12 @@ export default function MalariaMapPage() {
                 config[simulation.district] = { label: simulation.district, color: CHART_COLORS[1] };
                 config[comparisonRegion.district] = { label: comparisonRegion.district, color: CHART_COLORS[2] };
 
-            } else {
-                 // Comparing two years for the same region
+            } else { // Comparing two years for the same region
                 keys = [chartDataType];
                 data = [simulation.year1, simulation.year2].filter(Boolean).map(d => ({
                     name: String(d!.year),
                     [chartDataType]: d![chartDataType]
-                }));
+                })).sort((a,b) => a.name.localeCompare(b.name));
                 config[chartDataType] = { label: chartDataType === 'simulatedCases' ? 'Simulated Cases' : 'Case Rate', color: CHART_COLORS[1] };
             }
         } else {
@@ -178,7 +180,7 @@ export default function MalariaMapPage() {
             
             data = points.map(p => {
                 const safeLabel = p.label.replace(/[^a-zA-Z0-9]/g, '');
-                config[safeLabel] = { label: p.label, color: CHART_COLORS[p.color] };
+                config[safeLabel] = { label: p.label, color: `hsl(var(--chart-${p.color}))` };
                 return { name: p.label, value: p.value, fill: `var(--color-${safeLabel})` };
             }).sort((a,b) => a.name.localeCompare(b.name));
         }
@@ -197,7 +199,7 @@ export default function MalariaMapPage() {
             return;
         }
 
-        const isComparingYears = compare && year2 && !state2;
+        const isComparingYears = compare && year2 && (!state2 || !district2);
         const isComparingRegions = compare && state2 && district2;
         
         if (compare && !isComparingYears && !isComparingRegions) {
@@ -216,7 +218,7 @@ export default function MalariaMapPage() {
                     state: state1,
                     district: district1,
                     year1: parseInt(year1),
-                    year2: isComparingYears ? parseInt(year2) : (isComparingRegions ? parseInt(year2) : undefined),
+                    year2: (isComparingYears || isComparingRegions) ? parseInt(year2) : undefined,
                     compareState: isComparingRegions ? state2 : undefined,
                     compareDistrict: isComparingRegions ? district2 : undefined,
                 });
