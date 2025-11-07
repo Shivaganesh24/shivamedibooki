@@ -8,13 +8,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { indianStates } from "@/lib/india-data";
-import { BarChart as BarChartIcon, Bug, Info, Loader2, Map, Microscope, ShieldCheck, PieChart as PieChartIcon, Target, TrendingUp, GitCompare, CalendarDays, LocateFixed, Droplets } from "lucide-react";
-import { BarChart, LineChart, AreaChart, PieChart, RadialBarChart } from "recharts";
+import { BarChart as BarChartIcon, Bug, Info, Loader2, Map, Microscope, ShieldCheck, PieChart as PieChartIcon, Target, TrendingUp, GitCompare, CalendarDays, LocateFixed, Droplets, PlusCircle } from "lucide-react";
 import { simulateMalariaRates, type SimulateMalariaRatesOutput } from "@/ai/flows/simulate-malaria-rates";
 import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { cn } from "@/lib/utils";
-import { Area, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, Cell, RadialBar, Legend, Line, Pie } from 'recharts';
+import { Area, Bar, XAxis, YAxis, CartesianGrid, Legend, Line, Pie, RadialBar, ResponsiveContainer, BarChart, LineChart, AreaChart, PieChart, RadialBarChart, Cell } from 'recharts';
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
@@ -99,8 +98,10 @@ export default function MalariaMapPage() {
     const [state1, setState1] = useState<string>('');
     const [district1, setDistrict1] = useState<string>('');
     
-    // Comparison region selections
-    const [compare, setCompare] = useState(false);
+    // Comparison selections
+    const [compareRegion, setCompareRegion] = useState(false);
+    const [compareYear, setCompareYear] = useState(false);
+
     const [state2, setState2] = useState<string>('');
     const [district2, setDistrict2] = useState<string>('');
     
@@ -123,6 +124,14 @@ export default function MalariaMapPage() {
         return selected ? selected.districts : [];
     }, [state2]);
 
+    const handleYear1Change = (value: string) => {
+        setYear1(value);
+        if (value === 'Overall') {
+          setCompareYear(false);
+          setCompareRegion(false);
+        }
+      };
+    
     const { chartData, chartConfig, lineChartKeys } = useMemo(() => {
         if (!simulationData) return { chartData: [], chartConfig: {}, lineChartKeys: [] };
     
@@ -195,19 +204,27 @@ export default function MalariaMapPage() {
             toast({
                 variant: 'destructive',
                 title: 'Incomplete Selection',
-                description: 'Please select a state, district, and at least one year for the primary region.'
+                description: 'Please select a state, district, and a year for the primary region.'
             });
             return;
         }
 
-        const isComparingYears = compare && year2 && (!state2 || !district2);
-        const isComparingRegions = compare && state2 && district2;
+        const isComparingRegions = compareRegion && state2 && district2;
+        let finalYear1 = parseInt(year1);
+        let finalYear2: number | undefined = undefined;
+
+        if (year1 === 'Overall') {
+            finalYear1 = availableYears[9]; // e.g., 10 years ago
+            finalYear2 = availableYears[0]; // current year
+        } else if (compareYear) {
+            finalYear2 = parseInt(year2);
+        }
         
-        if (compare && !isComparingYears && !isComparingRegions) {
+        if (compareRegion && (!state2 || !district2)) {
             toast({
                 variant: 'destructive',
                 title: 'Incomplete Comparison',
-                description: 'For comparison, please select either a second year OR a second state and district.'
+                description: 'For region comparison, please select a second state and district.'
             });
             return;
         }
@@ -218,8 +235,8 @@ export default function MalariaMapPage() {
                 const result = await simulateMalariaRates({
                     state: state1,
                     district: district1,
-                    year1: parseInt(year1),
-                    year2: (isComparingYears || isComparingRegions) ? parseInt(year2) : undefined,
+                    year1: finalYear1,
+                    year2: finalYear2,
                     compareState: isComparingRegions ? state2 : undefined,
                     compareDistrict: isComparingRegions ? district2 : undefined,
                 });
@@ -306,7 +323,7 @@ export default function MalariaMapPage() {
                             <YAxis />
                             <ChartTooltip content={<ChartTooltipContent />} />
                             <Bar dataKey="value" name={chartDataType === 'caseRate' ? "Case Rate" : "Simulated Cases"} radius={8}>
-                                {chartData.map((entry) => <Cell key={`cell-${entry.name}`} fill={entry.fill} />)}
+                                {chartData.map((entry) => <Cell key={`cell-${entry.name}`} fill={entry.fill as string} />)}
                             </Bar>
                         </BarChart>
                     </ResponsiveContainer>
@@ -347,7 +364,7 @@ export default function MalariaMapPage() {
                         <PieChart>
                             <ChartTooltip content={<ChartTooltipContent nameKey="name" />} />
                             <Pie data={chartData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={120} label>
-                                {chartData.map((entry) => <Cell key={`cell-${entry.name}`} fill={entry.fill} />)}
+                                {chartData.map((entry) => <Cell key={`cell-${entry.name}`} fill={entry.fill as string} />)}
                             </Pie>
                             <Legend />
                         </PieChart>
@@ -358,7 +375,9 @@ export default function MalariaMapPage() {
                     <ResponsiveContainer width="100%" height={450}>
                         <RadialBarChart cx="50%" cy="50%" innerRadius="10%" outerRadius="80%" barSize={10} data={chartData}>
                              <ChartTooltip content={<ChartTooltipContent nameKey="name" />} />
-                            <RadialBar minAngle={15} background dataKey="value" />
+                            <RadialBar minAngle={15} background dataKey="value">
+                               {chartData.map((entry) => <Cell key={`cell-${entry.name}`} fill={entry.fill as string} />)}
+                            </RadialBar>
                             <Legend iconSize={10} layout="vertical" verticalAlign="middle" align="right" />
                         </RadialBarChart>
                     </ResponsiveContainer>
@@ -387,39 +406,71 @@ export default function MalariaMapPage() {
                     <CardDescription>Select regions and years to generate the simulation.</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div className="space-y-4 p-4 border rounded-lg bg-secondary/50">
-                            <h3 className="font-semibold flex items-center gap-2"><LocateFixed size={18}/> Primary Region</h3>
-                            <div className="grid grid-cols-2 gap-4">
-                                <Select value={state1} onValueChange={value => { setState1(value); setDistrict1(''); }}>
-                                    <SelectTrigger><SelectValue placeholder="Select State" /></SelectTrigger>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+                    {/* Primary Region */}
+                    <div className="space-y-4 p-4 border rounded-lg bg-secondary/50">
+                        <h3 className="font-semibold flex items-center gap-2"><LocateFixed size={18}/> Primary Region</h3>
+                        <div className="grid grid-cols-2 gap-4">
+                            <Select value={state1} onValueChange={value => { setState1(value); setDistrict1(''); }}>
+                                <SelectTrigger><SelectValue placeholder="Select State" /></SelectTrigger>
+                                <SelectContent>
+                                    {indianStates.map(s => <SelectItem key={s.name} value={s.name}>{s.name}</SelectItem>)}
+                                </SelectContent>
+                            </Select>
+                            <Select value={district1} onValueChange={setDistrict1} disabled={!state1}>
+                                <SelectTrigger><SelectValue placeholder="Select District" /></SelectTrigger>
+                                <SelectContent>
+                                    {districts1.map(d => <SelectItem key={d} value={d}>{d}</SelectItem>)}
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div className="grid grid-cols-2 gap-4 items-end">
+                            <div className="space-y-2">
+                                <label className="text-sm font-medium flex items-center gap-2"><CalendarDays size={16}/> Year 1</label>
+                                <Select value={year1} onValueChange={handleYear1Change}>
+                                    <SelectTrigger><SelectValue placeholder="Select Year" /></SelectTrigger>
                                     <SelectContent>
-                                        {indianStates.map(s => <SelectItem key={s.name} value={s.name}>{s.name}</SelectItem>)}
-                                    </SelectContent>
-                                </Select>
-                                <Select value={district1} onValueChange={setDistrict1} disabled={!state1}>
-                                    <SelectTrigger><SelectValue placeholder="Select District" /></SelectTrigger>
-                                    <SelectContent>
-                                        {districts1.map(d => <SelectItem key={d} value={d}>{d}</SelectItem>)}
+                                        <SelectItem value="Overall">Overall (10-Year)</SelectItem>
+                                        {availableYears.map(y => <SelectItem key={y} value={String(y)}>{y}</SelectItem>)}
                                     </SelectContent>
                                 </Select>
                             </div>
+                            {year1 !== 'Overall' && (
+                            <Button variant={compareYear ? 'secondary' : 'outline'} onClick={() => setCompareYear(!compareYear)}>
+                                <PlusCircle className="mr-2" />
+                                {compareYear ? 'Remove Year' : 'Add Year'}
+                            </Button>
+                            )}
                         </div>
-                        <div className="space-y-4 p-4 border rounded-lg bg-secondary/50">
-                             <div className="flex items-center justify-between">
-                                <h3 className="font-semibold flex items-center gap-2"><GitCompare size={18} /> Comparison</h3>
-                                <Button variant={compare ? "secondary" : "outline"} size="sm" onClick={() => setCompare(!compare)}>
-                                    {compare ? "Disable" : "Enable"}
+                         {compareYear && year1 !== 'Overall' && (
+                                <div className="space-y-2">
+                                     <label className="text-sm font-medium flex items-center gap-2"><CalendarDays size={16}/> Year 2</label>
+                                    <Select value={year2} onValueChange={setYear2}>
+                                        <SelectTrigger><SelectValue placeholder="Select Year" /></SelectTrigger>
+                                        <SelectContent>
+                                            {availableYears.map(y => <SelectItem key={y} value={String(y)}>{y}</SelectItem>)}
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                            )}
+                    </div>
+
+                    {/* Comparison Region */}
+                    <div className="space-y-4 p-4 border rounded-lg bg-secondary/50">
+                            <div className="flex items-center justify-between">
+                               <h3 className="font-semibold flex items-center gap-2"><GitCompare size={18} /> Comparison Region</h3>
+                                <Button variant={compareRegion ? "secondary" : "outline"} size="sm" onClick={() => setCompareRegion(!compareRegion)}>
+                                    {compareRegion ? "Disable" : "Enable"}
                                 </Button>
                             </div>
-                            <div className={cn("grid grid-cols-2 gap-4 transition-opacity", compare ? "opacity-100" : "opacity-50 pointer-events-none")}>
-                                <Select value={state2} onValueChange={value => { setState2(value); setDistrict2(''); }} disabled={!compare}>
+                            <div className={cn("grid grid-cols-2 gap-4 transition-opacity", compareRegion ? "opacity-100" : "opacity-50 pointer-events-none")}>
+                                <Select value={state2} onValueChange={value => { setState2(value); setDistrict2(''); }} disabled={!compareRegion}>
                                     <SelectTrigger><SelectValue placeholder="Compare State" /></SelectTrigger>
                                     <SelectContent>
                                         {indianStates.map(s => <SelectItem key={s.name} value={s.name}>{s.name}</SelectItem>)}
                                     </SelectContent>
                                 </Select>
-                                <Select value={district2} onValueChange={setDistrict2} disabled={!state2 || !compare}>
+                                <Select value={district2} onValueChange={setDistrict2} disabled={!state2 || !compareRegion}>
                                     <SelectTrigger><SelectValue placeholder="Compare District" /></SelectTrigger>
                                     <SelectContent>
                                         {districts2.map(d => <SelectItem key={d} value={d}>{d}</SelectItem>)}
@@ -428,25 +479,7 @@ export default function MalariaMapPage() {
                             </div>
                         </div>
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
-                         <div className="space-y-2">
-                             <label className="text-sm font-medium flex items-center gap-2"><CalendarDays size={16}/> Year 1</label>
-                            <Select value={year1} onValueChange={setYear1}>
-                                <SelectTrigger><SelectValue placeholder="Select Year" /></SelectTrigger>
-                                <SelectContent>
-                                    {availableYears.map(y => <SelectItem key={y} value={String(y)}>{y}</SelectItem>)}
-                                </SelectContent>
-                            </Select>
-                        </div>
-                        <div className={cn("space-y-2 transition-opacity", compare ? "opacity-100" : "opacity-50 pointer-events-none")}>
-                             <label className="text-sm font-medium flex items-center gap-2"><CalendarDays size={16}/> Year 2 (for comparison)</label>
-                            <Select value={year2} onValueChange={setYear2} disabled={!compare}>
-                                <SelectTrigger><SelectValue placeholder="Select Year" /></SelectTrigger>
-                                <SelectContent>
-                                    {availableYears.map(y => <SelectItem key={y} value={String(y)}>{y}</SelectItem>)}
-                                </SelectContent>
-                            </Select>
-                        </div>
+                    <div className="flex justify-end">
                          <Button onClick={handleRunSimulation} disabled={isPending} className="w-full md:w-auto text-lg py-6">
                             {isPending ? <Loader2 className="animate-spin" /> : <Microscope />}
                             Run Simulation
@@ -560,4 +593,6 @@ export default function MalariaMapPage() {
     );
 }
     
+    
+
     
