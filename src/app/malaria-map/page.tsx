@@ -8,13 +8,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { indianStates } from "@/lib/india-data";
-import { BarChart as BarChartIcon, Bug, Info, LineChart as LineChartIcon, AreaChart as AreaChartIcon, Loader2, Map, Microscope, ShieldCheck, PieChart as PieChartIcon, Target, TrendingUp, GitCompare, CalendarDays, BarChart, LineChart, AreaChart, PieChart, Droplets, LocateFixed } from "lucide-react";
+import { BarChart as BarChartIcon, Bug, Info, Loader2, Map, Microscope, ShieldCheck, PieChart as PieChartIcon, Target, TrendingUp, GitCompare, CalendarDays, LocateFixed, Droplets } from "lucide-react";
+import { BarChart, LineChart, AreaChart, PieChart, RadialBarChart } from "recharts";
 import { simulateMalariaRates, type SimulateMalariaRatesOutput } from "@/ai/flows/simulate-malaria-rates";
 import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
-import { Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, Cell, RadialBar, Legend, Line, Pie, RadialBarChart } from 'recharts';
+import { Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, Cell, RadialBar, Legend, Line, Pie } from 'recharts';
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
@@ -287,16 +287,19 @@ export default function MalariaMapPage() {
     
     const renderChart = () => {
         if (!chartData || chartData.length === 0) return null;
-    
+      
         const commonProps = {
-            data: chartData,
-            margin: { top: 20, right: 30, left: 20, bottom: 60 },
+          data: chartData,
+          margin: { top: 20, right: 30, left: 20, bottom: 60 },
         };
-    
-        const renderSpecificChart = () => {
-            switch (chartType) {
+      
+        return (
+          <ChartContainer config={chartConfig} className="min-h-[450px] w-full">
+            {(() => {
+              switch (chartType) {
                 case 'bar':
-                    return (
+                  return (
+                    <ResponsiveContainer width="100%" height={450}>
                         <BarChart {...commonProps}>
                             <CartesianGrid vertical={false} />
                             <XAxis dataKey="name" tickLine={false} axisLine={false} tickMargin={8} interval={0} angle={-45} textAnchor="end" />
@@ -306,9 +309,11 @@ export default function MalariaMapPage() {
                                 {chartData.map((entry) => <Cell key={`cell-${entry.name}`} fill={entry.fill} />)}
                             </Bar>
                         </BarChart>
-                    );
+                    </ResponsiveContainer>
+                  );
                 case 'line':
-                    return (
+                  return (
+                    <ResponsiveContainer width="100%" height={450}>
                         <LineChart {...commonProps}>
                             <CartesianGrid vertical={false} />
                             <XAxis dataKey="name" tickLine={false} axisLine={false} tickMargin={8} angle={-45} textAnchor="end" />
@@ -319,22 +324,26 @@ export default function MalariaMapPage() {
                                 <Line key={key} type="monotone" dataKey={key} name={key} stroke={CHART_COLORS[(index + 1) as keyof typeof CHART_COLORS]} strokeWidth={2} />
                             ))}
                         </LineChart>
-                    );
+                    </ResponsiveContainer>
+                  );
                 case 'area':
-                     return (
+                  return (
+                    <ResponsiveContainer width="100%" height={450}>
                         <AreaChart {...commonProps}>
                             <CartesianGrid vertical={false} />
                             <XAxis dataKey="name" tickLine={false} axisLine={false} tickMargin={8} angle={-45} textAnchor="end" />
                             <YAxis />
                             <ChartTooltip content={<ChartTooltipContent />} />
-                             <Legend />
+                            <Legend />
                             {lineChartKeys.map((key, index) => (
                                <Area key={key} type="monotone" dataKey={key} name={key} stackId="1" stroke={CHART_COLORS[(index + 1) as keyof typeof CHART_COLORS]} fill={CHART_COLORS[(index + 1) as keyof typeof CHART_COLORS]} fillOpacity={0.4} />
                             ))}
                         </AreaChart>
-                    );
+                    </ResponsiveContainer>
+                  );
                 case 'pie':
-                    return (
+                  return (
+                    <ResponsiveContainer width="100%" height={450}>
                         <PieChart>
                             <ChartTooltip content={<ChartTooltipContent nameKey="name" />} />
                             <Pie data={chartData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={120} label>
@@ -342,28 +351,25 @@ export default function MalariaMapPage() {
                             </Pie>
                             <Legend />
                         </PieChart>
-                    );
+                    </ResponsiveContainer>
+                  );
                 case 'radial':
-                    return (
+                  return (
+                    <ResponsiveContainer width="100%" height={450}>
                         <RadialBarChart cx="50%" cy="50%" innerRadius="10%" outerRadius="80%" barSize={10} data={chartData}>
                              <ChartTooltip content={<ChartTooltipContent nameKey="name" />} />
                             <RadialBar minAngle={15} background dataKey="value" />
                             <Legend iconSize={10} layout="vertical" verticalAlign="middle" align="right" />
                         </RadialBarChart>
-                    );
+                    </ResponsiveContainer>
+                  );
                 default:
-                    return null;
-            }
-        };
-    
-        return (
-            <ChartContainer config={chartConfig} className="min-h-[450px] w-full">
-                <ResponsiveContainer width="100%" height={450}>
-                    {renderSpecificChart()}
-                </ResponsiveContainer>
-            </ChartContainer>
+                  return null;
+              }
+            })()}
+          </ChartContainer>
         );
-    }
+      }
 
     return (
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
