@@ -13,6 +13,7 @@ import { ClipboardCheck, FileUp, Loader2, Sparkles, Wand2, X } from "lucide-reac
 import { useState, useTransition, DragEvent } from "react";
 import { useUser, useFirestore, addDocumentNonBlocking } from "@/firebase";
 import { collection } from "firebase/firestore";
+import { useTranslation } from "@/hooks/use-translation";
 
 const fileToDataUri = (file: File): Promise<string> => {
   return new Promise((resolve, reject) => {
@@ -31,14 +32,15 @@ export default function ReportReaderPage() {
   const { user } = useUser();
   const firestore = useFirestore();
   const [isDragging, setIsDragging] = useState(false);
+  const { t } = useTranslation();
 
   const handleFileSelect = (selectedFile: File | null) => {
     if (selectedFile) {
       if (selectedFile.size > 4 * 1024 * 1024) { // 4MB limit
         toast({
           variant: "destructive",
-          title: "File too large",
-          description: "Please upload a file smaller than 4MB.",
+          title: t('fileTooLarge'),
+          description: t('fileTooLargeDesc'),
         });
         return;
       }
@@ -80,8 +82,8 @@ export default function ReportReaderPage() {
     if (!file) {
       toast({
         variant: "destructive",
-        title: "No file selected",
-        description: "Please select a medical report to analyze.",
+        title: t('noFileSelected'),
+        description: t('noFileSelectedDesc'),
       });
       return;
     }
@@ -102,13 +104,13 @@ export default function ReportReaderPage() {
             });
 
             toast({
-              title: "Analysis complete",
-              description: "Key findings have been extracted and saved to your activity log.",
+              title: t('analysisComplete'),
+              description: t('analysisCompleteDescSaved'),
             });
         } else {
              toast({
-              title: "Analysis complete",
-              description: "Key findings have been extracted.",
+              title: t('analysisComplete'),
+              description: t('analysisCompleteDesc'),
             });
         }
 
@@ -116,8 +118,8 @@ export default function ReportReaderPage() {
         console.error("Error analyzing report:", error);
         toast({
           variant: "destructive",
-          title: "Analysis Failed",
-          description: "There was an error analyzing your report. Please try again.",
+          title: t('analysisFailed'),
+          description: t('analysisFailedDesc'),
         });
       }
     });
@@ -127,10 +129,10 @@ export default function ReportReaderPage() {
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="flex items-center gap-4">
         <ClipboardCheck className="h-10 w-10 text-primary" />
-        <PageTitle>AI Report Reader</PageTitle>
+        <PageTitle>{t('reportReader')}</PageTitle>
       </div>
       <p className="mt-4 text-lg text-muted-foreground max-w-3xl">
-        Upload a medical report (PDF or image), and our AI will extract the key findings for you.
+        {t('reportReaderSubtitle')}
       </p>
 
       <div className="mt-8 grid gap-8 md:grid-cols-2">
@@ -138,10 +140,10 @@ export default function ReportReaderPage() {
           <CardHeader>
             <CardTitle className="font-headline flex items-center gap-2">
               <FileUp className="h-6 w-6" />
-              Upload Your Report
+              {t('uploadReportTitle')}
             </CardTitle>
             <CardDescription>
-              Drag and drop your file or click to select.
+              {t('uploadReportDesc')}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
@@ -156,7 +158,7 @@ export default function ReportReaderPage() {
             >
               <FileUp className="h-10 w-10 text-muted-foreground mb-4" />
               <Label htmlFor="report-file" className="text-center text-muted-foreground cursor-pointer">
-                {isDragging ? 'Drop your file here' : file ? `Selected: ${file.name}` : 'Drag & drop a file or click to browse'}
+                {isDragging ? t('dropFileHere') : file ? `${t('selectedFile')}: ${file.name}` : t('dragDropOrClick')}
               </Label>
               <Input id="report-file" type="file" accept="application/pdf,image/*" onChange={handleFileChange} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
               {file && (
@@ -169,16 +171,16 @@ export default function ReportReaderPage() {
               {isPending ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Analyzing...
+                  {t('analyzingButton')}
                 </>
               ) : (
                 <>
                   <Wand2 className="mr-2 h-4 w-4" />
-                  Analyze Report
+                  {t('analyzeReportButton')}
                 </>
               )}
             </Button>
-            {!user && <p className="text-center text-sm text-muted-foreground">Log in to save your analysis results.</p>}
+            {!user && <p className="text-center text-sm text-muted-foreground">{t('loginToSaveAnalysis')}</p>}
           </CardContent>
         </Card>
         
@@ -186,17 +188,17 @@ export default function ReportReaderPage() {
           <CardHeader>
             <CardTitle className="font-headline flex items-center gap-2">
               <Sparkles className="h-6 w-6 text-amber-400" />
-              Key Findings
+              {t('keyFindingsTitle')}
             </CardTitle>
             <CardDescription>
-              The AI-extracted summary of your report will appear here.
+              {t('keyFindingsDesc')}
             </CardDescription>
           </CardHeader>
           <CardContent className="flex-grow">
             {isPending && (
               <div className="flex flex-col items-center justify-center h-full gap-4 text-muted-foreground">
                 <Loader2 className="h-10 w-10 animate-spin text-primary" />
-                <p>Analyzing document, please wait...</p>
+                <p>{t('analyzingDocument')}</p>
               </div>
             )}
             {!isPending && keyFindings && (
@@ -206,7 +208,7 @@ export default function ReportReaderPage() {
             )}
             {!isPending && !keyFindings && (
                 <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground border-2 border-dashed rounded-lg p-8">
-                    <p>Your analysis results will be displayed here.</p>
+                    <p>{t('analysisResultsPlaceholder')}</p>
                 </div>
             )}
           </CardContent>

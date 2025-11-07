@@ -16,6 +16,7 @@ import { cn } from "@/lib/utils";
 import { Area, Bar, XAxis, YAxis, CartesianGrid, Legend, Line, Pie, RadialBar, ResponsiveContainer, BarChart, LineChart, AreaChart, PieChart, RadialBarChart, Cell } from 'recharts';
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { useTranslation } from "@/hooks/use-translation";
 
 
 const availableYears = Array.from({ length: 15 }, (_, i) => new Date().getFullYear() - i);
@@ -47,6 +48,7 @@ type ChartDataType = 'simulatedCases' | 'caseRate';
 type ChartType = 'bar' | 'line' | 'area' | 'pie' | 'radial';
 
 const HeatMap = ({ data }: { data: SimulateMalariaRatesOutput | null }) => {
+    const { t } = useTranslation();
     if (!data) return null;
 
     const regions = [data.simulation, data.comparisonRegion].filter(Boolean) as (SimulateMalariaRatesOutput['simulation'] | SimulateMalariaRatesOutput['comparisonRegion'])[];
@@ -80,7 +82,7 @@ const HeatMap = ({ data }: { data: SimulateMalariaRatesOutput | null }) => {
                                 )}></div>
                             </TooltipTrigger>
                             <TooltipContent>
-                                <p>{district}: {intensity}</p>
+                                <p>{district}: {t(intensity.toLowerCase())}</p>
                             </TooltipContent>
                         </Tooltip>
                     )
@@ -93,6 +95,7 @@ const HeatMap = ({ data }: { data: SimulateMalariaRatesOutput | null }) => {
 export default function MalariaMapPage() {
     const [isPending, startTransition] = useTransition();
     const { toast } = useToast();
+    const { t } = useTranslation();
 
     // Primary region selections
     const [state1, setState1] = useState<string>('');
@@ -178,7 +181,7 @@ export default function MalariaMapPage() {
                     name: String(d!.year),
                     [chartDataType]: d![chartDataType]
                 })).sort((a,b) => a.name.localeCompare(b.name));
-                config[chartDataType] = { label: chartDataType === 'simulatedCases' ? 'Simulated Cases' : 'Case Rate', color: CHART_COLORS[1] };
+                config[chartDataType] = { label: chartDataType === 'simulatedCases' ? t('simulatedCases') : t('caseRate'), color: CHART_COLORS[1] };
             }
         } else {
             // Logic for bar, pie, radial charts
@@ -196,15 +199,15 @@ export default function MalariaMapPage() {
         }
     
         return { chartData: data, chartConfig: config, lineChartKeys: keys };
-    }, [simulationData, chartDataType, chartType]);
+    }, [simulationData, chartDataType, chartType, t]);
 
 
     const handleRunSimulation = () => {
         if (!state1 || !district1 || !year1) {
             toast({
                 variant: 'destructive',
-                title: 'Incomplete Selection',
-                description: 'Please select a state, district, and a year for the primary region.'
+                title: t('incompleteSelection'),
+                description: t('incompleteSelectionDesc')
             });
             return;
         }
@@ -223,8 +226,8 @@ export default function MalariaMapPage() {
         if (compareRegion && (!state2 || !district2)) {
             toast({
                 variant: 'destructive',
-                title: 'Incomplete Comparison',
-                description: 'For region comparison, please select a second state and district.'
+                title: t('incompleteComparison'),
+                description: t('incompleteComparisonDesc')
             });
             return;
         }
@@ -245,8 +248,8 @@ export default function MalariaMapPage() {
                 console.error("Error running simulation:", error);
                 toast({
                     variant: "destructive",
-                    title: "Simulation Failed",
-                    description: "An unexpected error occurred while generating the simulation. Please try again."
+                    title: t('simulationFailed'),
+                    description: t('simulationFailedDesc')
                 });
             }
         });
@@ -273,11 +276,11 @@ export default function MalariaMapPage() {
                         <div className="p-3 rounded-lg bg-secondary/50">
                             <h4 className="font-semibold text-lg">{year1Data.year}</h4>
                             <div className="grid grid-cols-2 gap-4 mt-2 text-sm">
-                                <p>Simulated Cases: <span className="font-bold">{year1Data.simulatedCases.toLocaleString()}</span></p>
-                                <p>Rate per 1,000: <span className="font-bold">{year1Data.caseRate.toFixed(2)}</span></p>
-                                <p>Intensity:</p>
+                                <p>{t('simulatedCases')}: <span className="font-bold">{year1Data.simulatedCases.toLocaleString()}</span></p>
+                                <p>{t('caseRate')}: <span className="font-bold">{year1Data.caseRate.toFixed(2)}</span></p>
+                                <p>{t('intensity')}:</p>
                                 <div className={cn("rounded-md px-2 py-1 text-center font-medium", intensityStyles[year1Data.intensity])}>
-                                    {year1Data.intensity}
+                                    {t(year1Data.intensity.toLowerCase())}
                                 </div>
                             </div>
                         </div>
@@ -287,11 +290,11 @@ export default function MalariaMapPage() {
                         <div className="p-3 rounded-lg bg-secondary/50">
                             <h4 className="font-semibold text-lg">{year2Data.year}</h4>
                             <div className="grid grid-cols-2 gap-4 mt-2 text-sm">
-                                <p>Simulated Cases: <span className="font-bold">{year2Data.simulatedCases.toLocaleString()}</span></p>
-                                <p>Rate per 1,000: <span className="font-bold">{year2Data.caseRate.toFixed(2)}</span></p>
-                                <p>Intensity:</p>
+                                <p>{t('simulatedCases')}: <span className="font-bold">{year2Data.simulatedCases.toLocaleString()}</span></p>
+                                <p>{t('caseRate')}: <span className="font-bold">{year2Data.caseRate.toFixed(2)}</span></p>
+                                <p>{t('intensity')}:</p>
                                 <div className={cn("rounded-md px-2 py-1 text-center font-medium", intensityStyles[year2Data.intensity])}>
-                                    {year2Data.intensity}
+                                    {t(year2Data.intensity.toLowerCase())}
                                 </div>
                             </div>
                         </div>
@@ -322,7 +325,7 @@ export default function MalariaMapPage() {
                             <XAxis dataKey="name" tickLine={false} axisLine={false} tickMargin={8} interval={0} angle={-45} textAnchor="end" />
                             <YAxis />
                             <ChartTooltip content={<ChartTooltipContent />} />
-                            <Bar dataKey="value" name={chartDataType === 'caseRate' ? "Case Rate" : "Simulated Cases"} radius={8}>
+                            <Bar dataKey="value" name={chartDataType === 'caseRate' ? t('caseRate') : t('simulatedCases')} radius={8}>
                                 {chartData.map((entry) => <Cell key={`cell-${entry.name}`} fill={entry.fill as string} />)}
                             </Bar>
                         </BarChart>
@@ -394,31 +397,31 @@ export default function MalariaMapPage() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <div className="flex items-center gap-4">
                 <Map className="h-10 w-10 text-primary" />
-                <PageTitle>AI-Simulated Malaria Map</PageTitle>
+                <PageTitle>{t('malariaMap')}</PageTitle>
             </div>
             <p className="mt-4 text-lg text-muted-foreground max-w-3xl">
-                Explore and compare simulated malaria case rates across India for educational and awareness purposes.
+                {t('malariaMapSubtitle')}
             </p>
 
             <Card className="mt-8">
                 <CardHeader>
-                    <CardTitle className="font-headline flex items-center gap-2"><Droplets />Simulation Controls</CardTitle>
-                    <CardDescription>Select regions and years to generate the simulation.</CardDescription>
+                    <CardTitle className="font-headline flex items-center gap-2"><Droplets />{t('simulationControls')}</CardTitle>
+                    <CardDescription>{t('simulationControlsDesc')}</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
                     {/* Primary Region */}
                     <div className="space-y-4 p-4 border rounded-lg bg-secondary/50">
-                        <h3 className="font-semibold flex items-center gap-2"><LocateFixed size={18}/> Primary Region</h3>
+                        <h3 className="font-semibold flex items-center gap-2"><LocateFixed size={18}/>{t('primaryRegion')}</h3>
                         <div className="grid grid-cols-2 gap-4">
                             <Select value={state1} onValueChange={value => { setState1(value); setDistrict1(''); }}>
-                                <SelectTrigger><SelectValue placeholder="Select State" /></SelectTrigger>
+                                <SelectTrigger><SelectValue placeholder={t('selectState')} /></SelectTrigger>
                                 <SelectContent>
                                     {indianStates.map(s => <SelectItem key={s.name} value={s.name}>{s.name}</SelectItem>)}
                                 </SelectContent>
                             </Select>
                             <Select value={district1} onValueChange={setDistrict1} disabled={!state1}>
-                                <SelectTrigger><SelectValue placeholder="Select District" /></SelectTrigger>
+                                <SelectTrigger><SelectValue placeholder={t('selectDistrict')} /></SelectTrigger>
                                 <SelectContent>
                                     {districts1.map(d => <SelectItem key={d} value={d}>{d}</SelectItem>)}
                                 </SelectContent>
@@ -426,11 +429,11 @@ export default function MalariaMapPage() {
                         </div>
                         <div className="grid grid-cols-2 gap-4 items-end">
                             <div className="space-y-2">
-                                <label className="text-sm font-medium flex items-center gap-2"><CalendarDays size={16}/> Year 1</label>
+                                <label className="text-sm font-medium flex items-center gap-2"><CalendarDays size={16}/> {t('year1')}</label>
                                 <Select value={year1} onValueChange={handleYear1Change}>
-                                    <SelectTrigger><SelectValue placeholder="Select Year" /></SelectTrigger>
+                                    <SelectTrigger><SelectValue placeholder={t('selectYear')} /></SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="Overall">Overall (10-Year)</SelectItem>
+                                        <SelectItem value="Overall">{t('overallTenYear')}</SelectItem>
                                         {availableYears.map(y => <SelectItem key={y} value={String(y)}>{y}</SelectItem>)}
                                     </SelectContent>
                                 </Select>
@@ -438,15 +441,15 @@ export default function MalariaMapPage() {
                             {year1 !== 'Overall' && (
                             <Button variant={compareYear ? 'secondary' : 'outline'} onClick={() => setCompareYear(!compareYear)}>
                                 <PlusCircle className="mr-2" />
-                                {compareYear ? 'Remove Year' : 'Add Year'}
+                                {compareYear ? t('removeYear') : t('addYear')}
                             </Button>
                             )}
                         </div>
                          {compareYear && year1 !== 'Overall' && (
                                 <div className="space-y-2">
-                                     <label className="text-sm font-medium flex items-center gap-2"><CalendarDays size={16}/> Year 2</label>
+                                     <label className="text-sm font-medium flex items-center gap-2"><CalendarDays size={16}/> {t('year2')}</label>
                                     <Select value={year2} onValueChange={setYear2}>
-                                        <SelectTrigger><SelectValue placeholder="Select Year" /></SelectTrigger>
+                                        <SelectTrigger><SelectValue placeholder={t('selectYear')} /></SelectTrigger>
                                         <SelectContent>
                                             {availableYears.map(y => <SelectItem key={y} value={String(y)}>{y}</SelectItem>)}
                                         </SelectContent>
@@ -458,20 +461,20 @@ export default function MalariaMapPage() {
                     {/* Comparison Region */}
                     <div className="space-y-4 p-4 border rounded-lg bg-secondary/50">
                             <div className="flex items-center justify-between">
-                               <h3 className="font-semibold flex items-center gap-2"><GitCompare size={18} /> Comparison Region</h3>
+                               <h3 className="font-semibold flex items-center gap-2"><GitCompare size={18} /> {t('comparisonRegion')}</h3>
                                 <Button variant={compareRegion ? "secondary" : "outline"} size="sm" onClick={() => setCompareRegion(!compareRegion)}>
-                                    {compareRegion ? "Disable" : "Enable"}
+                                    {compareRegion ? t('disable') : t('enable')}
                                 </Button>
                             </div>
                             <div className={cn("grid grid-cols-2 gap-4 transition-opacity", compareRegion ? "opacity-100" : "opacity-50 pointer-events-none")}>
                                 <Select value={state2} onValueChange={value => { setState2(value); setDistrict2(''); }} disabled={!compareRegion}>
-                                    <SelectTrigger><SelectValue placeholder="Compare State" /></SelectTrigger>
+                                    <SelectTrigger><SelectValue placeholder={t('compareState')} /></SelectTrigger>
                                     <SelectContent>
                                         {indianStates.map(s => <SelectItem key={s.name} value={s.name}>{s.name}</SelectItem>)}
                                     </SelectContent>
                                 </Select>
                                 <Select value={district2} onValueChange={setDistrict2} disabled={!state2 || !compareRegion}>
-                                    <SelectTrigger><SelectValue placeholder="Compare District" /></SelectTrigger>
+                                    <SelectTrigger><SelectValue placeholder={t('compareDistrict')} /></SelectTrigger>
                                     <SelectContent>
                                         {districts2.map(d => <SelectItem key={d} value={d}>{d}</SelectItem>)}
                                     </SelectContent>
@@ -482,7 +485,7 @@ export default function MalariaMapPage() {
                     <div className="flex justify-end">
                          <Button onClick={handleRunSimulation} disabled={isPending} className="w-full md:w-auto text-lg py-6">
                             {isPending ? <Loader2 className="animate-spin" /> : <Microscope />}
-                            Run Simulation
+                            {t('runSimulation')}
                         </Button>
                     </div>
                 </CardContent>
@@ -491,7 +494,7 @@ export default function MalariaMapPage() {
             {isPending && (
                  <div className="flex flex-col items-center justify-center h-64 gap-4 text-muted-foreground">
                     <Loader2 className="h-10 w-10 animate-spin text-primary" />
-                    <p>Generating simulation, this may take a moment...</p>
+                    <p>{t('generatingSimulation')}</p>
                 </div>
             )}
 
@@ -499,13 +502,13 @@ export default function MalariaMapPage() {
                 <div className="mt-8 space-y-8">
                      <Alert>
                         <Info className="h-4 w-4" />
-                        <AlertTitle>Disclaimer</AlertTitle>
+                        <AlertTitle>{t('disclaimer')}</AlertTitle>
                         <AlertDescription>{simulationData.disclaimer}</AlertDescription>
                     </Alert>
 
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                         {renderDataCard("Primary Region", simulationData.simulation, <LocateFixed/>)}
-                         {simulationData.comparisonRegion && renderDataCard("Comparison Region", simulationData.comparisonRegion, <GitCompare />)}
+                         {renderDataCard(t('primaryRegion'), simulationData.simulation, <LocateFixed/>)}
+                         {simulationData.comparisonRegion && renderDataCard(t('comparisonRegion'), simulationData.comparisonRegion, <GitCompare />)}
                     </div>
                    
                     <Card>
@@ -514,30 +517,30 @@ export default function MalariaMapPage() {
                                 <div >
                                     <CardTitle className="font-headline flex items-center gap-2">
                                         <TrendingUp className="h-6 w-6" />
-                                        Visual Comparison
+                                        {t('visualComparison')}
                                     </CardTitle>
                                     <CardDescription>
-                                        A visual representation of the simulated data.
+                                        {t('visualComparisonDesc')}
                                     </CardDescription>
                                 </div>
                                 <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
                                 <Select value={chartDataType} onValueChange={(value) => setChartDataType(value as ChartDataType)}>
                                     <SelectTrigger className="w-full sm:w-[200px]">
-                                        <SelectValue placeholder="Select data type" /></SelectTrigger>
+                                        <SelectValue placeholder={t('selectDataType')} /></SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="simulatedCases">Simulated Cases</SelectItem>
-                                        <SelectItem value="caseRate">Case Rate (per 1,000)</SelectItem>
+                                        <SelectItem value="simulatedCases">{t('simulatedCases')}</SelectItem>
+                                        <SelectItem value="caseRate">{t('caseRate')}</SelectItem>
                                     </SelectContent>
                                 </Select>
                                  <Select value={chartType} onValueChange={(value) => setChartType(value as ChartType)}>
                                     <SelectTrigger className="w-full sm:w-[180px]">
-                                        <SelectValue placeholder="Select chart type" /></SelectTrigger>
+                                        <SelectValue placeholder={t('selectChartType')} /></SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="bar">Bar Chart</SelectItem>
-                                        <SelectItem value="line">Line Chart</SelectItem>
-                                        <SelectItem value="area">Area Chart</SelectItem>
-                                        <SelectItem value="pie">Pie Chart</SelectItem>
-                                        <SelectItem value="radial">Radial Bar Chart</SelectItem>
+                                        <SelectItem value="bar">{t('barChart')}</SelectItem>
+                                        <SelectItem value="line">{t('lineChart')}</SelectItem>
+                                        <SelectItem value="area">{t('areaChart')}</SelectItem>
+                                        <SelectItem value="pie">{t('pieChart')}</SelectItem>
+                                        <SelectItem value="radial">{t('radialBarChart')}</SelectItem>
                                     </SelectContent>
                                 </Select>
                                 </div>
@@ -553,7 +556,7 @@ export default function MalariaMapPage() {
                              <CardHeader>
                                 <CardTitle className="font-headline flex items-center gap-2">
                                     <Target className="h-6 w-6" />
-                                    Comparative Analysis
+                                    {t('comparativeAnalysis')}
                                 </CardTitle>
                             </CardHeader>
                             <CardContent>
@@ -564,7 +567,7 @@ export default function MalariaMapPage() {
                              <CardHeader>
                                 <CardTitle className="font-headline flex items-center gap-2">
                                     <ShieldCheck className="h-6 w-6 text-green-400" />
-                                    Prevention Tip
+                                    {t('preventionTip')}
                                 </CardTitle>
                             </CardHeader>
                             <CardContent>
@@ -577,10 +580,10 @@ export default function MalariaMapPage() {
                         <CardHeader>
                             <CardTitle className="font-headline flex items-center gap-2">
                                 <Bug className="h-6 w-6" />
-                                Simulated Heat Map
+                                {t('simulatedHeatMap')}
                             </CardTitle>
                              <CardDescription>
-                                Visual representation of simulated malaria intensity. Darker colors indicate higher simulated case rates.
+                                {t('simulatedHeatMapDesc')}
                             </CardDescription>
                         </CardHeader>
                         <CardContent>
@@ -592,7 +595,3 @@ export default function MalariaMapPage() {
         </div>
     );
 }
-    
-    
-
-    

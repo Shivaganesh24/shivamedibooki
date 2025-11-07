@@ -48,6 +48,7 @@ import { cn } from "@/lib/utils";
 import { useUser, useFirestore, addDocumentNonBlocking } from "@/firebase";
 import { collection, serverTimestamp } from "firebase/firestore";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
+import { useTranslation } from "@/hooks/use-translation";
 
 // ----------------- Validation Schema -----------------
 const appointmentFormSchema = z.object({
@@ -73,6 +74,7 @@ function AppointmentForm() {
   const { toast } = useToast();
   const { user } = useUser();
   const firestore = useFirestore();
+  const { t } = useTranslation();
   const appointmentImage = useMemo(() => PlaceHolderImages.find(
     (p) => p.id === "book-appointment"
   ), []);
@@ -104,15 +106,15 @@ function AppointmentForm() {
     if (!user || !firestore) {
       toast({
         variant: "destructive",
-        title: "Not logged in",
-        description: "You must be logged in to book an appointment.",
+        title: t('notLoggedInError'),
+        description: t('loginToBookAppointment'),
       });
       return;
     }
 
     toast({
-      title: "Submitting Appointment...",
-      description: "Please wait while we confirm your booking.",
+      title: t('submittingAppointment'),
+      description: t('waitWhileBooking'),
     });
 
     const appointmentsCol = collection(firestore, `users/${user.uid}/appointments`);
@@ -130,18 +132,18 @@ function AppointmentForm() {
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="flex items-center gap-4">
         <Stethoscope className="h-10 w-10 text-primary" />
-        <PageTitle>Book an Appointment</PageTitle>
+        <PageTitle>{t('bookAppointment')}</PageTitle>
       </div>
       <p className="mt-4 text-lg text-muted-foreground">
-        Schedule your visit with one of our specialists in just a few clicks.
+        {t('bookAppointmentSubtitle')}
       </p>
 
       <div className="mt-8 grid lg:grid-cols-2 gap-12 items-start">
         <Card className="max-w-2xl mx-auto">
           <CardHeader>
-            <CardTitle className="font-headline">Appointment Details</CardTitle>
+            <CardTitle className="font-headline">{t('appointmentDetails')}</CardTitle>
             <CardDescription>
-              Please fill out the form below to book your appointment.
+              {t('appointmentFormDescription')}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -154,7 +156,7 @@ function AppointmentForm() {
                     name="fullName"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Full Name</FormLabel>
+                        <FormLabel>{t('fullNameLabel')}</FormLabel>
                         <FormControl>
                           <Input placeholder="John Doe" {...field} />
                         </FormControl>
@@ -169,7 +171,7 @@ function AppointmentForm() {
                     name="email"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Email Address</FormLabel>
+                        <FormLabel>{t('emailLabel')}</FormLabel>
                         <FormControl>
                           <Input placeholder="john.doe@example.com" {...field} />
                         </FormControl>
@@ -185,14 +187,14 @@ function AppointmentForm() {
                   name="doctorId"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Preferred Doctor</FormLabel>
+                      <FormLabel>{t('preferredDoctorLabel')}</FormLabel>
                       <Select
                         onValueChange={field.onChange}
                         value={field.value}
                       >
                         <FormControl>
                           <SelectTrigger>
-                            <SelectValue placeholder="Select a doctor" />
+                            <SelectValue placeholder={t('selectDoctorPlaceholder')} />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
@@ -214,7 +216,7 @@ function AppointmentForm() {
                   name="appointmentDate"
                   render={({ field }) => (
                     <FormItem className="flex flex-col">
-                      <FormLabel>Appointment Date</FormLabel>
+                      <FormLabel>{t('appointmentDateLabel')}</FormLabel>
                       <Popover>
                         <PopoverTrigger asChild>
                           <FormControl>
@@ -228,7 +230,7 @@ function AppointmentForm() {
                               {field.value ? (
                                 format(field.value, "PPP")
                               ) : (
-                                <span>Pick a date</span>
+                                <span>{t('pickDatePlaceholder')}</span>
                               )}
                               <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                             </Button>
@@ -257,10 +259,10 @@ function AppointmentForm() {
                   name="reason"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Reason for Visit</FormLabel>
+                      <FormLabel>{t('reasonForVisitLabel')}</FormLabel>
                       <FormControl>
                         <Textarea
-                          placeholder="Briefly describe the reason for your visit..."
+                          placeholder={t('reasonForVisitPlaceholder')}
                           className="resize-none"
                           {...field}
                         />
@@ -276,12 +278,12 @@ function AppointmentForm() {
                   className="w-full"
                   disabled={form.formState.isSubmitting || !user}
                 >
-                  {form.formState.isSubmitting ? "Booking..." : "Book Appointment"}
+                  {form.formState.isSubmitting ? t('bookingButton') : t('bookAppointmentButton')}
                 </Button>
 
                 {!user && (
                   <p className="text-center text-sm text-muted-foreground">
-                    You must be logged in to book an appointment.
+                    {t('loginToBookAppointment')}
                   </p>
                 )}
               </form>
@@ -308,8 +310,9 @@ function AppointmentForm() {
 
 // ----------------- Page Export -----------------
 export default function BookAppointmentPage() {
+  const { t } = useTranslation();
   return (
-    <Suspense fallback={<div className="p-12 text-center">Loading appointment form...</div>}>
+    <Suspense fallback={<div className="p-12 text-center">{t('loadingAppointmentForm')}</div>}>
       <AppointmentForm />
     </Suspense>
   );

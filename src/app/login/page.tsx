@@ -1,3 +1,4 @@
+
 "use client";
 
 import { Button } from "@/components/ui/button";
@@ -17,6 +18,7 @@ import { useEffect } from "react";
 import { Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { AuthError } from "firebase/auth";
+import { useTranslation } from "@/hooks/use-translation";
 
 const loginFormSchema = z.object({
   email: z.string().email("Please enter a valid email address."),
@@ -30,6 +32,7 @@ export default function LoginPage() {
   const { user, isUserLoading } = useUser();
   const router = useRouter();
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginFormSchema),
@@ -45,13 +48,13 @@ export default function LoginPage() {
     .catch((error: AuthError) => {
       let description = "An unexpected error occurred. Please try again.";
       if (error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
-        description = "Invalid email or password. Please check your credentials and try again.";
+        description = t('invalidCredentials');
       } else {
         description = error.message;
       }
       toast({
         variant: "destructive",
-        title: "Login Failed",
+        title: t('loginFailed'),
         description: description,
       });
     });
@@ -77,11 +80,11 @@ export default function LoginPage() {
         <Card>
           <CardHeader className="text-center">
             <VAIQIcon className="mx-auto h-12 w-auto text-primary" />
-            <CardTitle className="font-headline mt-4">Log in to VA!Q</CardTitle>
+            <CardTitle className="font-headline mt-4">{t('loginTitle')}</CardTitle>
             <CardDescription>
-              Don&apos;t have an account?{" "}
+              {t('loginSubtitle')}
               <Link href="/signup" className="font-medium text-primary hover:underline">
-                Sign up
+                {t('signUp')}
               </Link>
             </CardDescription>
           </CardHeader>
@@ -93,7 +96,7 @@ export default function LoginPage() {
                   name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <Label htmlFor="email">Email address</Label>
+                      <Label htmlFor="email">{t('emailLabel')}</Label>
                       <FormControl>
                         <Input id="email" type="email" placeholder="name@example.com" {...field} />
                       </FormControl>
@@ -107,9 +110,9 @@ export default function LoginPage() {
                   render={({ field }) => (
                     <FormItem>
                        <div className="flex items-center justify-between">
-                          <Label htmlFor="password">Password</Label>
+                          <Label htmlFor="password">{t('passwordLabel')}</Label>
                           <Link href="/forgot-password" className="text-sm font-medium text-primary hover:underline">
-                            Forgot password?
+                            {t('forgotPassword')}
                           </Link>
                         </div>
                       <FormControl>
@@ -123,7 +126,7 @@ export default function LoginPage() {
               <CardFooter className="flex flex-col">
                 <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
                    {form.formState.isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-                  Log In
+                  {t('logIn')}
                 </Button>
               </CardFooter>
             </form>

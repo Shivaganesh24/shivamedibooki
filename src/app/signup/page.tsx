@@ -1,3 +1,4 @@
+
 "use client";
 
 import { Button } from "@/components/ui/button";
@@ -17,6 +18,7 @@ import { useEffect } from "react";
 import { Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { AuthError } from "firebase/auth";
+import { useTranslation } from "@/hooks/use-translation";
 
 const signupFormSchema = z.object({
   email: z.string().email("Please enter a valid email address."),
@@ -34,6 +36,7 @@ export default function SignupPage() {
   const { user } = useUser();
   const router = useRouter();
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   const form = useForm<SignupFormValues>({
     resolver: zodResolver(signupFormSchema),
@@ -48,15 +51,15 @@ export default function SignupPage() {
     if (!auth) return;
     initiateEmailSignUp(auth, data.email, data.password)
     .catch((error: AuthError) => {
-      let description = "An unexpected error occurred. Please try again.";
+      let description = t('unexpectedError');
       if (error.code === 'auth/email-already-in-use') {
-        description = "This email address is already in use. Please log in or use a different email.";
+        description = t('emailInUse');
       } else {
         description = error.message;
       }
       toast({
           variant: "destructive",
-          title: "Sign-up Failed",
+          title: t('signupFailed'),
           description: description,
       });
     });
@@ -74,11 +77,11 @@ export default function SignupPage() {
         <Card>
           <CardHeader className="text-center">
             <VAIQIcon className="mx-auto h-12 w-auto text-primary" />
-            <CardTitle className="font-headline mt-4">Create your VA!Q account</CardTitle>
+            <CardTitle className="font-headline mt-4">{t('signupTitle')}</CardTitle>
             <CardDescription>
-              Already have an account?{" "}
+              {t('signupSubtitle')}{" "}
               <Link href="/login" className="font-medium text-primary hover:underline">
-                Log in
+                {t('logIn')}
               </Link>
             </CardDescription>
           </CardHeader>
@@ -90,7 +93,7 @@ export default function SignupPage() {
                   name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <Label>Email address</Label>
+                      <Label>{t('emailLabel')}</Label>
                       <FormControl>
                         <Input type="email" placeholder="name@example.com" {...field} />
                       </FormControl>
@@ -103,7 +106,7 @@ export default function SignupPage() {
                   name="password"
                   render={({ field }) => (
                     <FormItem>
-                      <Label>Password</Label>
+                      <Label>{t('passwordLabel')}</Label>
                       <FormControl>
                         <Input type="password" {...field} />
                       </FormControl>
@@ -116,7 +119,7 @@ export default function SignupPage() {
                   name="confirmPassword"
                   render={({ field }) => (
                     <FormItem>
-                      <Label>Confirm Password</Label>
+                      <Label>{t('confirmPasswordLabel')}</Label>
                       <FormControl>
                         <Input type="password" {...field} />
                       </FormControl>
@@ -128,16 +131,16 @@ export default function SignupPage() {
               <CardFooter className="flex flex-col">
                 <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
                   {form.formState.isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                  Create Account
+                  {t('createAccountButton')}
                 </Button>
                 <p className="mt-4 text-center text-xs text-muted-foreground">
-                  By signing up, you agree to our{" "}
+                  {t('signupAgreement')}{" "}
                   <Link href="#" className="underline hover:text-primary">
-                    Terms of Service
+                    {t('termsOfService')}
                   </Link>{" "}
-                  and{" "}
+                  {t('and')}{" "}
                   <Link href="#" className="underline hover:text-primary">
-                    Privacy Policy
+                    {t('privacyPolicy')}
                   </Link>
                   .
                 </p>

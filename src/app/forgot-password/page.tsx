@@ -1,3 +1,4 @@
+
 "use client";
 
 import { Button } from "@/components/ui/button";
@@ -14,6 +15,7 @@ import { useAuth } from "@/firebase";
 import { sendPasswordResetEmail } from "firebase/auth";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
+import { useTranslation } from "@/hooks/use-translation";
 
 const forgotPasswordSchema = z.object({
   email: z.string().email("Please enter a valid email address."),
@@ -24,6 +26,7 @@ type ForgotPasswordFormValues = z.infer<typeof forgotPasswordSchema>;
 export default function ForgotPasswordPage() {
   const auth = useAuth();
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   const form = useForm<ForgotPasswordFormValues>({
     resolver: zodResolver(forgotPasswordSchema),
@@ -37,14 +40,14 @@ export default function ForgotPasswordPage() {
     try {
       await sendPasswordResetEmail(auth, data.email);
       toast({
-        title: "Check your email",
-        description: "We've sent you a link to reset your password.",
+        title: t('checkYourEmail'),
+        description: t('passwordResetSent'),
       });
     } catch (error: any) {
       toast({
         variant: "destructive",
         title: "Error",
-        description: error.message || "Failed to send password reset email.",
+        description: error.message || t('passwordResetFailed'),
       });
     }
   };
@@ -55,9 +58,9 @@ export default function ForgotPasswordPage() {
         <Card>
           <CardHeader className="text-center">
             <VAIQIcon className="mx-auto h-12 w-auto text-primary" />
-            <CardTitle className="font-headline mt-4">Reset your password</CardTitle>
+            <CardTitle className="font-headline mt-4">{t('resetPasswordTitle')}</CardTitle>
             <CardDescription>
-              Enter your email and we&apos;ll send you a link to get back into your account.
+              {t('resetPasswordSubtitle')}
             </CardDescription>
           </CardHeader>
           <Form {...form}>
@@ -68,7 +71,7 @@ export default function ForgotPasswordPage() {
                   name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <Label htmlFor="email">Email address</Label>
+                      <Label htmlFor="email">{t('emailLabel')}</Label>
                       <FormControl>
                         <Input id="email" type="email" placeholder="name@example.com" {...field} />
                       </FormControl>
@@ -80,10 +83,10 @@ export default function ForgotPasswordPage() {
               <CardFooter className="flex flex-col gap-4">
                 <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
                   {form.formState.isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                  Send reset link
+                  {t('sendResetLinkButton')}
                 </Button>
                 <Button variant="ghost" className="w-full" asChild>
-                  <Link href="/login">Back to log in</Link>
+                  <Link href="/login">{t('backToLogin')}</Link>
                 </Button>
               </CardFooter>
             </form>

@@ -34,6 +34,7 @@ import React, { useMemo, useState } from "react";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useTranslation } from "@/hooks/use-translation";
 
 const statusStyles: { [key: string]: string } = {
   Completed: "bg-green-500/20 text-green-400 border-green-500/30",
@@ -59,6 +60,7 @@ export default function YourDataPage() {
   const firestore = useFirestore();
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
   const [filterType, setFilterType] = useState<ActivityType>('all');
+  const { t } = useTranslation();
 
   const createQuery = (collectionName: string, dateField: string): Query<DocumentData> | null => {
     if (!user || !firestore || (filterType !== 'all' && filterType !== collectionName.split('/')[0])) {
@@ -89,9 +91,9 @@ export default function YourDataPage() {
         const appointmentDate = new Date(a.appointmentDate);
         activities.push({
           id: a.id,
-          action: 'Book Appointment',
-          details: `For ${a.reason}`,
-          status: appointmentDate > now ? 'Upcoming' : 'Completed',
+          action: t('bookAppointment'),
+          details: `${t('reason')}: ${a.reason}`,
+          status: appointmentDate > now ? t('upcoming') : t('completed'),
           date: appointmentDate,
           type: 'appointment'
         });
@@ -100,9 +102,9 @@ export default function YourDataPage() {
     if (filterType === 'all' || filterType === 'quiz') {
        quizzes?.forEach(q => activities.push({
         id: q.id,
-        action: 'Health Quiz',
-        details: `Score: ${q.score}`,
-        status: 'Completed',
+        action: t('healthQuiz'),
+        details: `${t('score')}: ${q.score}`,
+        status: t('completed'),
         date: new Date(q.completionDate),
         type: 'quiz'
       }));
@@ -110,9 +112,9 @@ export default function YourDataPage() {
     if (filterType === 'all' || filterType === 'triage') {
         recommendations?.forEach(r => activities.push({
             id: r.id,
-            action: 'Smart Triage',
-            details: `Severity: ${r.severity}. ${r.summary}`,
-            status: 'Completed',
+            action: t('smartTriage'),
+            details: `${t('severityTitle')}: ${r.severity}. ${r.summary}`,
+            status: t('completed'),
             date: r.createdAt?.toDate ? new Date(r.createdAt.toDate()) : new Date(),
             type: 'triage'
         }));
@@ -120,9 +122,9 @@ export default function YourDataPage() {
     if (filterType === 'all' || filterType === 'analysis') {
         analyses?.forEach(an => activities.push({
             id: an.id,
-            action: 'Report Analysis',
-            details: `Report: ${an.reportName}`,
-            status: 'Completed',
+            action: t('reportReader'),
+            details: `${t('report')}: ${an.reportName}`,
+            status: t('completed'),
             date: new Date(an.uploadDate),
             type: 'analysis'
         }));
@@ -135,7 +137,7 @@ export default function YourDataPage() {
     }
 
     return activities;
-  }, [appointments, quizzes, recommendations, analyses, filterType, sortDirection]);
+  }, [appointments, quizzes, recommendations, analyses, filterType, sortDirection, t]);
 
   const isLoading = isUserLoading || appointmentsLoading || quizzesLoading || recommendationsLoading || analysesLoading;
 
@@ -143,7 +145,7 @@ export default function YourDataPage() {
     if (!combinedActivity || combinedActivity.length === 0) {
       return;
     }
-    const headers = ["Activity ID", "Action", "Details", "Status", "Date"];
+    const headers = [t('activityId'), t('action'), t('details'), t('status'), t('date')];
     const csvContent = [
       headers.join(','),
       ...combinedActivity.map(item => [
@@ -174,7 +176,7 @@ export default function YourDataPage() {
     const doc = new jsPDF();
     doc.text("VA!Q Activity Log", 14, 16);
     autoTable(doc, {
-      head: [['Activity ID', 'Action', 'Details', 'Status', 'Date']],
+      head: [[t('activityId'), t('action'), t('details'), t('status'), t('date')]],
       body: combinedActivity.map(item => [
         item.id,
         item.action,
@@ -191,39 +193,39 @@ export default function YourDataPage() {
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="flex items-center gap-4">
         <User className="h-10 w-10 text-primary" />
-        <PageTitle>Your Data & Activity</PageTitle>
+        <PageTitle>{t('yourData')}</PageTitle>
       </div>
       <p className="mt-4 text-lg text-muted-foreground">
-        View and manage your health activity securely.
+        {t('yourDataSubtitle')}
       </p>
 
       <Card className="mt-8">
         <CardHeader>
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <CardTitle className="font-headline">Activity Log</CardTitle>
+            <CardTitle className="font-headline">{t('activityLog')}</CardTitle>
             <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
               <div className="flex gap-2">
                 <Select value={filterType} onValueChange={(value) => setFilterType(value as ActivityType)}>
                   <SelectTrigger className="w-full sm:w-[180px]">
                     <Filter className="mr-2 h-4 w-4" />
-                    <SelectValue placeholder="Filter by type" />
+                    <SelectValue placeholder={t('filterByType')} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">All Activities</SelectItem>
-                    <SelectItem value="appointment">Appointments</SelectItem>
-                    <SelectItem value="quiz">Health Quizzes</SelectItem>
-                    <SelectItem value="triage">Smart Triage</SelectItem>
-                    <SelectItem value="analysis">Report Analyses</SelectItem>
+                    <SelectItem value="all">{t('allActivities')}</SelectItem>
+                    <SelectItem value="appointment">{t('appointments')}</SelectItem>
+                    <SelectItem value="quiz">{t('healthQuizzes')}</SelectItem>
+                    <SelectItem value="triage">{t('smartTriage')}</SelectItem>
+                    <SelectItem value="analysis">{t('reportAnalyses')}</SelectItem>
                   </SelectContent>
                 </Select>
                 <Select value={sortDirection} onValueChange={(value) => setSortDirection(value as SortDirection)}>
                   <SelectTrigger className="w-full sm:w-[180px]">
                     <ArrowUpDown className="mr-2 h-4 w-4" />
-                    <SelectValue placeholder="Sort by" />
+                    <SelectValue placeholder={t('sortBy')} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="desc">Date: Newest first</SelectItem>
-                    <SelectItem value="asc">Date: Oldest first</SelectItem>
+                    <SelectItem value="desc">{t('dateNewest')}</SelectItem>
+                    <SelectItem value="asc">{t('dateOldest')}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -231,11 +233,11 @@ export default function YourDataPage() {
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline" className="w-full sm:w-auto">
                     <Download className="mr-2 h-4 w-4" />
-                    Export Data
+                    {t('exportData')}
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuLabel>Export as</DropdownMenuLabel>
+                  <DropdownMenuLabel>{t('exportAs')}</DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleExportCSV}>CSV</DropdownMenuItem>
                   <DropdownMenuItem onClick={handleExportPDF}>PDF</DropdownMenuItem>
@@ -248,12 +250,12 @@ export default function YourDataPage() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Activity ID</TableHead>
-                <TableHead>Action</TableHead>
-                <TableHead>Details</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Date</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead>{t('activityId')}</TableHead>
+                <TableHead>{t('action')}</TableHead>
+                <TableHead>{t('details')}</TableHead>
+                <TableHead>{t('status')}</TableHead>
+                <TableHead>{t('date')}</TableHead>
+                <TableHead className="text-right">{t('actions')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -266,7 +268,7 @@ export default function YourDataPage() {
               ) : !user ? (
                  <TableRow>
                   <TableCell colSpan={6} className="h-24 text-center">
-                    Please log in to see your activity.
+                    {t('loginToSeeActivity')}
                   </TableCell>
                 </TableRow>
               ) : combinedActivity.length > 0 ? (
@@ -289,8 +291,8 @@ export default function YourDataPage() {
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                           <DropdownMenuItem>View Details</DropdownMenuItem>
-                           <DropdownMenuItem>Download Report</DropdownMenuItem>
+                           <DropdownMenuItem>{t('viewDetails')}</DropdownMenuItem>
+                           <DropdownMenuItem>{t('downloadReport')}</DropdownMenuItem>
                         </DropdownMenuContent>
                        </DropdownMenu>
                     </TableCell>
@@ -299,7 +301,7 @@ export default function YourDataPage() {
               ) : (
                 <TableRow>
                   <TableCell colSpan={6} className="h-24 text-center">
-                    No activity found for the selected filter.
+                    {t('noActivityFound')}
                   </TableCell>
                 </TableRow>
               )}
@@ -310,5 +312,3 @@ export default function YourDataPage() {
     </div>
   );
 }
-
-    
