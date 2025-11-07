@@ -25,12 +25,14 @@ import { indianStates } from "@/lib/india-data";
 import { simulateMalariaRates } from "@/ai/flows/simulate-malaria-rates";
 import { Loader2 } from "lucide-react";
 import { useTranslation } from "@/hooks/use-translation";
+import { useLanguage } from "@/context/language-context";
 
 export function LocationSelector() {
   const { user } = useUser();
   const firestore = useFirestore();
   const { toast } = useToast();
   const { t } = useTranslation();
+  const { language } = useLanguage();
 
   const userDocRef = useMemoFirebase(
     () => (user && firestore ? doc(firestore, "users", user.uid) : null),
@@ -49,7 +51,6 @@ export function LocationSelector() {
   }, [selectedState]);
 
   useEffect(() => {
-    // This effect runs once when the user data is loaded.
     const hasRunLocationCheck = sessionStorage.getItem(`location_check_${user?.uid}`);
 
     if (user && !isUserDocLoading && userData && !userData.state && !hasRunLocationCheck) {
@@ -58,21 +59,19 @@ export function LocationSelector() {
     }
   }, [user, userData, isUserDocLoading]);
 
-  useEffect(() => {
-    // This effect runs the simulation if location is set.
-    const hasRunSimulation = sessionStorage.getItem(`simulation_ran_${user?.uid}`);
-    if (user && userData?.state && userData?.district && !hasRunSimulation) {
-      runSimulation(userData.state, userData.district);
-      sessionStorage.setItem(`simulation_ran_${user.uid}`, 'true');
-    }
-  }, [user, userData]);
-
   const runSimulation = async (state: string, district: string) => {
     try {
+      const languageMap = {
+          en: "English",
+          hi: "Hindi",
+          kn: "Kannada",
+      };
+
       const result = await simulateMalariaRates({
         state,
         district,
         year1: new Date().getFullYear(),
+        language: languageMap[language],
       });
 
       const intensity = result.simulation.year1.intensity;
@@ -93,12 +92,20 @@ export function LocationSelector() {
     }
   };
 
+  useEffect(() => {
+    const hasRunSimulation = sessionStorage.getItem(`simulation_ran_${user?.uid}`);
+    if (user && userData?.state && userData?.district && !hasRunSimulation) {
+      runSimulation(userData.state, userData.district);
+      sessionStorage.setItem(`simulation_ran_${user.uid}`, 'true');
+    }
+  }, [user, userData, runSimulation]);
+
   const handleSaveLocation = async () => {
     if (!selectedState || !selectedDistrict) {
       toast({
         variant: "destructive",
-        title: "Selection required",
-        description: "Please select both a state and a district.",
+        title: t('incompleteSelection'),
+        description: t('setLocationIncomplete'),
       });
       return;
     }
@@ -108,11 +115,10 @@ export function LocationSelector() {
     try {
       await setDoc(userDocRef, { state: selectedState, district: selectedDistrict }, { merge: true });
       toast({
-        title: "Location Saved",
-        description: `Your location has been set to ${selectedDistrict}, ${selectedState}.`,
+        title: t('locationSavedTitle'),
+        description: t('locationSavedDesc', { district: selectedDistrict, state: selectedState }),
       });
       setIsDialogOpen(false);
-      // Run simulation immediately after saving location
       runSimulation(selectedState, selectedDistrict);
     } catch (error) {
       toast({
@@ -129,9 +135,14 @@ export function LocationSelector() {
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>{t('setLocationTitle')}</DialogTitle>
-          <DialogDescription>
-            {t('setLocationDescription')}
+          <DialogTitle>{t('setLocationWelcomeTitle')}</DialogTitle>
+          <DialogDescription className="space-y-2 text-left">
+            <p>{t('setLocationWelcomePara1')}</p>
+            <p>{t('setLocationWelcomePara2')}</p>
+            <p className="p-2 bg-secondary rounded-md text-sm">
+                <strong className="text-destructive">{t('alert')}:</strong> {t('setLocationWelcomePara3')}
+            </p>
+            <p>{t('setLocationWelcomePara4')}</p>
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
