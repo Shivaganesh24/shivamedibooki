@@ -7,7 +7,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useAuth, useUser } from "@/firebase";
 import { cn } from "@/lib/utils";
 import { signOut } from "firebase/auth";
-import { Bot, ClipboardCheck, HeartPulse, Languages, LayoutDashboard, Loader2, LogOut, Map, Menu, Moon, Stethoscope, Sun, TestTube, User, X } from "lucide-react";
+import { Bot, ClipboardCheck, Home, Languages, LayoutDashboard, Loader2, LogOut, Map, Menu, Moon, Stethoscope, Sun, TestTube, User, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -21,14 +21,13 @@ import {
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
 } from "@/components/ui/dropdown-menu";
-import { Menubar, MenubarContent, MenubarItem, MenubarMenu, MenubarSeparator, MenubarTrigger } from "@/components/ui/menubar";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { useLanguage } from "@/context/language-context";
 import { useTranslation } from "@/hooks/use-translation";
 import { useTheme } from "next-themes";
 
 const navLinks = [
-  { href: "/", labelKey: "home", icon: <VAIQIcon className="h-5 w-5" /> },
+  { href: "/", labelKey: "home", icon: <Home /> },
   { href: "/dashboard", labelKey: "dashboard", icon: <LayoutDashboard /> },
   { href: "/smart-triage", labelKey: "smartTriage", icon: <Bot /> },
   { href: "/malaria-map", labelKey: "malariaMap", icon: <Map /> },
@@ -52,17 +51,17 @@ export default function Header() {
     await signOut(auth);
   };
 
-  const NavLink = ({ href, labelKey, icon, isMobile = false }: { href: string; labelKey: string; icon: React.ReactNode; isMobile?: boolean }) => (
+  const NavLink = ({ href, labelKey, isMobile = false }: { href: string; labelKey: string; isMobile?: boolean }) => (
     <Link
       href={href}
       onClick={() => isMobile && setIsMobileMenuOpen(false)}
       className={cn(
-        "flex items-center gap-2 transition-colors hover:text-primary",
+        "transition-colors hover:text-primary text-sm",
         pathname === href ? "text-primary font-semibold" : "text-muted-foreground",
-        isMobile && "block py-2 text-lg"
+        isMobile && "flex items-center gap-4 py-2 text-lg"
       )}
     >
-      {icon}
+      {isMobile && navLinks.find(link => link.href === href)?.icon}
       {t(labelKey)}
     </Link>
   );
@@ -75,17 +74,11 @@ export default function Header() {
           <span className="font-headline text-xl font-bold"></span>
         </Link>
         
-        <Menubar className="hidden lg:flex border-none bg-transparent">
+        <nav className="hidden lg:flex items-center gap-6">
           {navLinks.map((link) => (
-            <MenubarMenu key={link.href}>
-              <Link href={link.href} passHref>
-                <MenubarTrigger className={cn("text-sm", pathname === link.href ? "text-primary font-semibold" : "text-muted-foreground")}>
-                   {t(link.labelKey)}
-                </MenubarTrigger>
-              </Link>
-            </MenubarMenu>
+            <NavLink key={link.href} href={link.href} labelKey={link.labelKey} />
           ))}
-        </Menubar>
+        </nav>
 
         <div className="flex items-center gap-2">
            <DropdownMenu>
@@ -165,54 +158,55 @@ export default function Header() {
               </>
             )}
           </div>
+        
+          <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+            <SheetTrigger asChild className="md:hidden">
+              <Button variant="ghost" size="icon" suppressHydrationWarning>
+                <Menu />
+                <span className="sr-only">Open menu</span>
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="w-full sm:w-3/4">
+              <div className="flex flex-col h-full">
+                <div className="flex items-center justify-between border-b pb-4">
+                    <Link href="/" className="flex items-center gap-2" onClick={() => setIsMobileMenuOpen(false)}>
+                        <VAIQIcon className="h-8 w-auto text-primary" />
+                        <span className="font-headline text-xl font-bold"></span>
+                    </Link>
+                    <Button variant="ghost" size="icon" onClick={() => setIsMobileMenuOpen(false)}>
+                        <X />
+                        <span className="sr-only">Close menu</span>
+                    </Button>
+                </div>
+                <nav className="flex-grow flex flex-col gap-4 mt-8">
+                  {navLinks.map((link) => (
+                    <NavLink key={link.href} href={link.href} labelKey={link.labelKey} isMobile />
+                  ))}
+                </nav>
+                <div className="mt-auto border-t pt-4 flex flex-col gap-2">
+                  {isUserLoading ? (
+                    <div className="flex justify-center">
+                      <Loader2 className="h-6 w-6 animate-spin text-primary" />
+                    </div>
+                  ) : user ? (
+                    <Button variant="outline" onClick={() => { handleLogout(); setIsMobileMenuOpen(false); }}>
+                      {t('logOut')}
+                    </Button>
+                  ) : (
+                    <>
+                      <Button variant="outline" asChild>
+                        <Link href="/login" onClick={() => setIsMobileMenuOpen(false)}>{t('logIn')}</Link>
+                      </Button>
+                      <Button className="bg-accent text-accent-foreground hover:bg-accent/90" asChild>
+                        <Link href="/signup" onClick={() => setIsMobileMenuOpen(false)}>{t('signUp')}</Link>
+                      </Button>
+                    </>
+                  )}
+                </div>
+              </div>
+            </SheetContent>
+          </Sheet>
         </div>
-        <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
-          <SheetTrigger asChild className="md:hidden">
-            <Button variant="ghost" size="icon" suppressHydrationWarning>
-              <Menu />
-              <span className="sr-only">Open menu</span>
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="left" className="w-full sm:w-3/4">
-            <div className="flex flex-col h-full">
-              <div className="flex items-center justify-between border-b pb-4">
-                  <Link href="/" className="flex items-center gap-2" onClick={() => setIsMobileMenuOpen(false)}>
-                      <VAIQIcon className="h-8 w-auto text-primary" />
-                      <span className="font-headline text-xl font-bold"></span>
-                  </Link>
-                  <Button variant="ghost" size="icon" onClick={() => setIsMobileMenuOpen(false)}>
-                      <X />
-                      <span className="sr-only">Close menu</span>
-                  </Button>
-              </div>
-              <nav className="flex-grow flex flex-col gap-4 mt-8">
-                {navLinks.map((link) => (
-                  <NavLink key={link.href} {...link} isMobile />
-                ))}
-              </nav>
-              <div className="mt-auto border-t pt-4 flex flex-col gap-2">
-                {isUserLoading ? (
-                  <div className="flex justify-center">
-                    <Loader2 className="h-6 w-6 animate-spin text-primary" />
-                  </div>
-                ) : user ? (
-                  <Button variant="outline" onClick={() => { handleLogout(); setIsMobileMenuOpen(false); }}>
-                    {t('logOut')}
-                  </Button>
-                ) : (
-                  <>
-                    <Button variant="outline" asChild>
-                      <Link href="/login" onClick={() => setIsMobileMenuOpen(false)}>{t('logIn')}</Link>
-                    </Button>
-                    <Button className="bg-accent text-accent-foreground hover:bg-accent/90" asChild>
-                      <Link href="/signup" onClick={() => setIsMobileMenuOpen(false)}>{t('signUp')}</Link>
-                    </Button>
-                  </>
-                )}
-              </div>
-            </div>
-          </SheetContent>
-        </Sheet>
       </div>
     </header>
   );
