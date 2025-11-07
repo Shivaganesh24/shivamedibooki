@@ -23,6 +23,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { useLanguage } from "@/context/language-context";
 import { useTranslation } from "@/hooks/use-translation";
+import { useTheme } from "next-themes";
 
 const navLinks = [
   { href: "/", labelKey: "home" },
@@ -42,13 +43,7 @@ export default function Header() {
   const auth = useAuth();
   const { language, setLanguage } = useLanguage();
   const { t } = useTranslation();
-  const [theme, setTheme] = useState('dark');
-
-  const toggleTheme = () => {
-    setTheme(current => (current === 'dark' ? 'light' : 'dark'));
-    // In a real app, you'd also change the class on the <html> element
-    // document.documentElement.classList.toggle('dark');
-  }
+  const { setTheme } = useTheme();
 
   const handleLogout = async () => {
     if (!auth) return;
@@ -82,11 +77,26 @@ export default function Header() {
           ))}
         </nav>
         <div className="flex items-center gap-2">
-           <Button variant="ghost" size="icon" onClick={toggleTheme} suppressHydrationWarning>
-            <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-            <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-            <span className="sr-only">Toggle theme</span>
-           </Button>
+           <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" suppressHydrationWarning>
+                <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                <span className="sr-only">Toggle theme</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => setTheme("light")}>
+                Light
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setTheme("dark")}>
+                Dark
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setTheme("system")}>
+                System
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
            <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon" suppressHydrationWarning>
