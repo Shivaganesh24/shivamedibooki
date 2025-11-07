@@ -109,11 +109,11 @@ export default function MalariaMapPage() {
             return;
         }
 
-        if (compare && (!state2 || !district2) && !year2) {
+        if (compare && !state2 && !district2 && !year2) {
              toast({
                 variant: 'destructive',
                 title: 'Incomplete Comparison Selection',
-                description: 'Please select a second year or a comparison region.'
+                description: 'Please select a second year or a comparison region to enable comparison.'
             });
             return;
         }
@@ -125,9 +125,9 @@ export default function MalariaMapPage() {
                     state: state1,
                     district: district1,
                     year1: parseInt(year1),
-                    year2: compare ? parseInt(year2) : undefined,
-                    compareState: compare ? state2 : undefined,
-                    compareDistrict: compare ? district2 : undefined,
+                    year2: compare && year2 ? parseInt(year2) : undefined,
+                    compareState: compare && state2 ? state2 : undefined,
+                    compareDistrict: compare && district2 ? district2 : undefined,
                 });
                 setSimulationData(result);
             } catch (error) {
@@ -202,7 +202,7 @@ export default function MalariaMapPage() {
         }[chartType];
 
         return (
-            <ChartContainer config={{}} className="w-full h-[400px]">
+            <ResponsiveContainer width="100%" height={400}>
                 <ChartComponent data={chartData}>
                     <CartesianGrid vertical={false} />
                     <XAxis
@@ -216,7 +216,7 @@ export default function MalariaMapPage() {
                     <ChartTooltip content={<ChartTooltipContent />} />
                     {MainComponent}
                 </ChartComponent>
-            </ChartContainer>
+            </ResponsiveContainer>
         )
     }
 
@@ -259,20 +259,20 @@ export default function MalariaMapPage() {
                         {/* Comparison Region */}
                         <div className="space-y-4 p-4 border rounded-lg">
                              <div className="flex items-center justify-between">
-                                <h3 className="font-semibold">Comparison Region</h3>
+                                <h3 className="font-semibold">Comparison</h3>
                                 <Button variant={compare ? "secondary" : "outline"} size="sm" onClick={() => setCompare(!compare)}>
                                     {compare ? "Disable" : "Enable"}
                                 </Button>
                             </div>
                             <div className={cn("grid grid-cols-2 gap-4 transition-opacity", compare ? "opacity-100" : "opacity-50 pointer-events-none")}>
                                 <Select value={state2} onValueChange={value => { setState2(value); setDistrict2(''); }} disabled={!compare}>
-                                    <SelectTrigger><SelectValue placeholder="Select State" /></SelectTrigger>
+                                    <SelectTrigger><SelectValue placeholder="Compare State" /></SelectTrigger>
                                     <SelectContent>
                                         {indianStates.map(s => <SelectItem key={s.name} value={s.name}>{s.name}</SelectItem>)}
                                     </SelectContent>
                                 </Select>
                                 <Select value={district2} onValueChange={setDistrict2} disabled={!state2 || !compare}>
-                                    <SelectTrigger><SelectValue placeholder="Select District" /></SelectTrigger>
+                                    <SelectTrigger><SelectValue placeholder="Compare District" /></SelectTrigger>
                                     <SelectContent>
                                         {districts2.map(d => <SelectItem key={d} value={d}>{d}</SelectItem>)}
                                     </SelectContent>
