@@ -239,7 +239,7 @@ export default function MalariaMapPage() {
                     state: state1,
                     district: district1,
                     year1: finalYear1,
-                    year2: finalYear2,
+                    year2: (compareYear || year1 === 'Overall') && !isComparingRegions ? finalYear2 : undefined,
                     compareState: isComparingRegions ? state2 : undefined,
                     compareDistrict: isComparingRegions ? district2 : undefined,
                 });
@@ -307,91 +307,88 @@ export default function MalariaMapPage() {
     
     const renderChart = () => {
         if (!chartData || chartData.length === 0) return null;
-      
-        const commonProps = {
-          data: chartData,
-          margin: { top: 20, right: 30, left: 20, bottom: 60 },
-        };
-      
-        return (
-          <ChartContainer config={chartConfig} className="min-h-[450px] w-full">
-            {(() => {
-              switch (chartType) {
+    
+        const renderSpecificChart = () => {
+            switch (chartType) {
                 case 'bar':
-                  return (
-                    <ResponsiveContainer width="100%" height={450}>
-                        <BarChart {...commonProps}>
-                            <CartesianGrid vertical={false} />
-                            <XAxis dataKey="name" tickLine={false} axisLine={false} tickMargin={8} interval={0} angle={-45} textAnchor="end" />
-                            <YAxis />
-                            <ChartTooltip content={<ChartTooltipContent />} />
-                            <Bar dataKey="value" name={chartDataType === 'caseRate' ? t('caseRate') : t('simulatedCases')} radius={8}>
-                                {chartData.map((entry) => <Cell key={`cell-${entry.name}`} fill={entry.fill as string} />)}
-                            </Bar>
-                        </BarChart>
-                    </ResponsiveContainer>
-                  );
+                    return (
+                        <ResponsiveContainer width="100%" height={450}>
+                            <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
+                                <CartesianGrid vertical={false} />
+                                <XAxis dataKey="name" tickLine={false} axisLine={false} tickMargin={8} interval={0} angle={-45} textAnchor="end" />
+                                <YAxis />
+                                <ChartTooltip content={<ChartTooltipContent />} />
+                                <Bar dataKey="value" name={chartDataType === 'caseRate' ? t('caseRate') : t('simulatedCases')} radius={8}>
+                                    {chartData.map((entry) => <Cell key={`cell-${entry.name}`} fill={entry.fill as string} />)}
+                                </Bar>
+                            </BarChart>
+                        </ResponsiveContainer>
+                    );
                 case 'line':
-                  return (
-                    <ResponsiveContainer width="100%" height={450}>
-                        <LineChart {...commonProps}>
-                            <CartesianGrid vertical={false} />
-                            <XAxis dataKey="name" tickLine={false} axisLine={false} tickMargin={8} angle={-45} textAnchor="end" />
-                            <YAxis />
-                            <ChartTooltip content={<ChartTooltipContent />} />
-                            <Legend />
-                            {lineChartKeys.map((key, index) => (
-                                <Line key={key} type="monotone" dataKey={key} name={key} stroke={CHART_COLORS[(index + 1) as keyof typeof CHART_COLORS]} strokeWidth={2} />
-                            ))}
-                        </LineChart>
-                    </ResponsiveContainer>
-                  );
+                    return (
+                        <ResponsiveContainer width="100%" height={450}>
+                            <LineChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
+                                <CartesianGrid vertical={false} />
+                                <XAxis dataKey="name" tickLine={false} axisLine={false} tickMargin={8} angle={-45} textAnchor="end" />
+                                <YAxis />
+                                <ChartTooltip content={<ChartTooltipContent />} />
+                                <Legend />
+                                {lineChartKeys.map((key, index) => (
+                                    <Line key={key} type="monotone" dataKey={key} name={key} stroke={CHART_COLORS[(index + 1) as keyof typeof CHART_COLORS]} strokeWidth={2} />
+                                ))}
+                            </LineChart>
+                        </ResponsiveContainer>
+                    );
                 case 'area':
-                  return (
-                    <ResponsiveContainer width="100%" height={450}>
-                        <AreaChart {...commonProps}>
-                            <CartesianGrid vertical={false} />
-                            <XAxis dataKey="name" tickLine={false} axisLine={false} tickMargin={8} angle={-45} textAnchor="end" />
-                            <YAxis />
-                            <ChartTooltip content={<ChartTooltipContent />} />
-                            <Legend />
-                            {lineChartKeys.map((key, index) => (
-                               <Area key={key} type="monotone" dataKey={key} name={key} stackId="1" stroke={CHART_COLORS[(index + 1) as keyof typeof CHART_COLORS]} fill={CHART_COLORS[(index + 1) as keyof typeof CHART_COLORS]} fillOpacity={0.4} />
-                            ))}
-                        </AreaChart>
-                    </ResponsiveContainer>
-                  );
+                    return (
+                        <ResponsiveContainer width="100%" height={450}>
+                            <AreaChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
+                                <CartesianGrid vertical={false} />
+                                <XAxis dataKey="name" tickLine={false} axisLine={false} tickMargin={8} angle={-45} textAnchor="end" />
+                                <YAxis />
+                                <ChartTooltip content={<ChartTooltipContent />} />
+                                <Legend />
+                                {lineChartKeys.map((key, index) => (
+                                   <Area key={key} type="monotone" dataKey={key} name={key} stackId="1" stroke={CHART_COLORS[(index + 1) as keyof typeof CHART_COLORS]} fill={CHART_COLORS[(index + 1) as keyof typeof CHART_COLORS]} fillOpacity={0.4} />
+                                ))}
+                            </AreaChart>
+                        </ResponsiveContainer>
+                    );
                 case 'pie':
-                  return (
-                    <ResponsiveContainer width="100%" height={450}>
-                        <PieChart>
-                            <ChartTooltip content={<ChartTooltipContent nameKey="name" />} />
-                            <Pie data={chartData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={120} label>
-                                {chartData.map((entry) => <Cell key={`cell-${entry.name}`} fill={entry.fill as string} />)}
-                            </Pie>
-                            <Legend />
-                        </PieChart>
-                    </ResponsiveContainer>
-                  );
+                    return (
+                        <ResponsiveContainer width="100%" height={450}>
+                            <PieChart>
+                                <ChartTooltip content={<ChartTooltipContent nameKey="name" />} />
+                                <Pie data={chartData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={120} label>
+                                    {chartData.map((entry) => <Cell key={`cell-${entry.name}`} fill={entry.fill as string} />)}
+                                </Pie>
+                                <Legend />
+                            </PieChart>
+                        </ResponsiveContainer>
+                    );
                 case 'radial':
-                  return (
-                    <ResponsiveContainer width="100%" height={450}>
-                        <RadialBarChart cx="50%" cy="50%" innerRadius="10%" outerRadius="80%" barSize={10} data={chartData}>
-                             <ChartTooltip content={<ChartTooltipContent nameKey="name" />} />
-                            <RadialBar minAngle={15} background dataKey="value">
-                               {chartData.map((entry) => <Cell key={`cell-${entry.name}`} fill={entry.fill as string} />)}
-                            </RadialBar>
-                            <Legend iconSize={10} layout="vertical" verticalAlign="middle" align="right" />
-                        </RadialBarChart>
-                    </ResponsiveContainer>
-                  );
+                    return (
+                        <ResponsiveContainer width="100%" height={450}>
+                            <RadialBarChart cx="50%" cy="50%" innerRadius="10%" outerRadius="80%" barSize={10} data={chartData}>
+                                 <ChartTooltip content={<ChartTooltipContent nameKey="name" />} />
+                                <RadialBar minAngle={15} background dataKey="value">
+                                   {chartData.map((entry) => <Cell key={`cell-${entry.name}`} fill={entry.fill as string} />)}
+                                </RadialBar>
+                                <Legend iconSize={10} layout="vertical" verticalAlign="middle" align="right" />
+                            </RadialBarChart>
+                        </ResponsiveContainer>
+                    );
                 default:
-                  return null;
-              }
-            })()}
-          </ChartContainer>
+                    return null;
+            }
+        };
+    
+        return (
+            <ChartContainer config={chartConfig} className="min-h-[450px] w-full">
+                {renderSpecificChart()}
+            </ChartContainer>
         );
-      }
+    }
 
     return (
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
