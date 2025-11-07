@@ -284,5 +284,10 @@
   "alert": "ಎಚ್ಚರಿಕೆ",
   "state": "ರಾಜ್ಯ",
   "district": "ಜಿಲ್ಲೆ",
-  "saveLocationButton": "ಸ್ಥಳವನ್ನು ಉಳಿಸಿ"
+  "saveLocationButton": "ಸ್ಥಳವನ್ನು ಉಳಿಸಿ",
+  "locationHealthCheckTitle": "ಸ್ಥಳ ಆರೋಗ್ಯ ಪರಿಶೀಲನೆ",
+  "locationHealthCheckDesc": "ಅನುಕರಿಸಿದ ಆರೋಗ್ಯ ಎಚ್ಚರಿಕೆಗಳನ್ನು ಪರಿಶೀಲಿಸಲು ಯಾವುದೇ ಪ್ರದೇಶವನ್ನು ಆಯ್ಕೆಮಾಡಿ.",
+  "checkAreaButton": "ಪ್ರದೇಶವನ್ನು ಪರಿಶೀಲಿಸಿ",
+  "simulationCompleteTitle": "ಅನುಕರಣೆ ಪೂರ್ಣಗೊಂಡಿದೆ",
+  "simulationCompleteDesc": "{district} ಗಾಗಿ ಅನುಕರಿಸಿದ ಮಲೇರಿಯಾ ತೀವ್ರತೆಯು {intensity} ಆಗಿದೆ."
 }

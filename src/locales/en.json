@@ -284,5 +284,10 @@
   "alert": "Alert",
   "state": "State",
   "district": "District",
-  "saveLocationButton": "Save Location"
+  "saveLocationButton": "Save Location",
+  "locationHealthCheckTitle": "Location Health Check",
+  "locationHealthCheckDesc": "Select any region to check for simulated health alerts.",
+  "checkAreaButton": "Check Area",
+  "simulationCompleteTitle": "Simulation Complete",
+  "simulationCompleteDesc": "Simulated malaria intensity for {district} is {intensity}."
 }

@@ -284,5 +284,10 @@
   "alert": "चेतावनी",
   "state": "राज्य",
   "district": "जिला",
-  "saveLocationButton": "स्थान सहेजें"
+  "saveLocationButton": "स्थान सहेजें",
+  "locationHealthCheckTitle": "स्थान स्वास्थ्य जांच",
+  "locationHealthCheckDesc": "नकली स्वास्थ्य अलर्ट की जांच के लिए कोई भी क्षेत्र चुनें।",
+  "checkAreaButton": "क्षेत्र की जांच करें",
+  "simulationCompleteTitle": "सिमुलेशन पूर्ण",
+  "simulationCompleteDesc": "{district} के लिए नकली मलेरिया की तीव्रता {intensity} है।"
 }
