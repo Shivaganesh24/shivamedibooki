@@ -83,7 +83,7 @@ const prompt = ai.definePrompt({
 1. Generate a disclaimer: YES
 2. Simulate data for primary region (year 1): YES
 3. Simulate data for primary region (year 2, if provided): YES
-4. Simulate data for comparison region (if provided): YES
+4. **IMPORTANT**: Only simulate data for a comparison region if 'compareDistrict' is provided. If it is not, the 'comparisonRegion' field must be omitted from the output.
 5. Provide a 4-6 sentence analysis: YES
 6. Provide a practical health tip: YES
 7. Respond entirely in the specified language: YES
@@ -104,8 +104,9 @@ Confidence Score: 5/5
 3.  **TESTING SCENARIO:** If the provided state for the primary region or the comparison region is 'Odisha' or 'Goa', you MUST generate data that results in an 'intensity' of 'High' or 'Very High'. This is a mandatory requirement for testing purposes.
 4.  **Simulate Data:** For the given state and district, generate plausible malaria data for the specified year(s). The simulation should produce a number of cases, a case rate per 1,000, and a qualitative intensity level.
 5.  **Perform Comparison:**
-    - If a year2 is provided, generate data for that year and write a brief analysis comparing the trends between year1 and year2 for the primary district.
-    - If compareState and compareDistrict are provided, generate data for that region for the selected year(s) and write an analysis comparing the two regions.
+    - If a 'year2' is provided, generate data for that year for the primary district.
+    - **If and ONLY IF** 'compareDistrict' and 'compareState' are provided, generate simulated data for that comparison region for the specified year(s). Otherwise, DO NOT include the 'comparisonRegion' object in your output.
+    - Write a brief analysis comparing the trends between the selected years and/or regions.
 6.  **Analysis and Tip:** The comparative analysis must be between 4 and 6 sentences. Conclude with a practical health or prevention tip related to malaria. All this text must be in the requested language.
 
 **Input for Simulation:**
@@ -132,3 +133,4 @@ const simulateMalariaRatesFlow = ai.defineFlow(
     return output!;
   }
 );
+
