@@ -12,7 +12,7 @@
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
-export const SimulateMalariaRatesInputSchema = z.object({
+const SimulateMalariaRatesInputSchema = z.object({
   state: z.string().describe('The Indian state to simulate data for.'),
   district: z.string().describe('The district within the state to simulate data for.'),
   year1: z.number().describe('The first year for the simulation.'),
@@ -22,7 +22,7 @@ export const SimulateMalariaRatesInputSchema = z.object({
 });
 export type SimulateMalariaRatesInput = z.infer<typeof SimulateMalariaRatesInputSchema>;
 
-export const SimulateMalariaRatesOutputSchema = z.object({
+const SimulateMalariaRatesOutputSchema = z.object({
   disclaimer: z.string().describe("A mandatory disclaimer stating that the data is AI-generated and not real-world statistics."),
   simulation: z.object({
     district: z.string(),
