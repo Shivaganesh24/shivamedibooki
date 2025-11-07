@@ -7,7 +7,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useAuth, useUser } from "@/firebase";
 import { cn } from "@/lib/utils";
 import { signOut } from "firebase/auth";
-import { Bot, ClipboardCheck, Home, Languages, LayoutDashboard, Loader2, LogOut, Map, Menu, Moon, Stethoscope, Sun, TestTube, User, X } from "lucide-react";
+import { Bot, ChevronDown, ClipboardCheck, Home, Languages, LayoutDashboard, Loader2, LogOut, Map, Menu, Moon, Sun, Stethoscope, TestTube, User, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -27,14 +27,14 @@ import { useTranslation } from "@/hooks/use-translation";
 import { useTheme } from "next-themes";
 
 const navLinks = [
-  { href: "/", labelKey: "home", icon: <Home /> },
-  { href: "/dashboard", labelKey: "dashboard", icon: <LayoutDashboard /> },
-  { href: "/smart-triage", labelKey: "smartTriage", icon: <Bot /> },
-  { href: "/malaria-map", labelKey: "malariaMap", icon: <Map /> },
-  { href: "/health-quiz", labelKey: "healthQuiz", icon: <TestTube /> },
-  { href: "/book-appointment", labelKey: "bookAppointment", icon: <Stethoscope /> },
-  { href: "/your-data", labelKey: "yourData", icon: <User /> },
-  { href: "/report-reader", labelKey: "reportReader", icon: <ClipboardCheck /> },
+  { href: "/", labelKey: "home", icon: <Home className="mr-2" /> },
+  { href: "/dashboard", labelKey: "dashboard", icon: <LayoutDashboard className="mr-2" /> },
+  { href: "/smart-triage", labelKey: "smartTriage", icon: <Bot className="mr-2" /> },
+  { href: "/malaria-map", labelKey: "malariaMap", icon: <Map className="mr-2" /> },
+  { href: "/health-quiz", labelKey: "healthQuiz", icon: <TestTube className="mr-2" /> },
+  { href: "/book-appointment", labelKey: "bookAppointment", icon: <Stethoscope className="mr-2" /> },
+  { href: "/your-data", labelKey: "yourData", icon: <User className="mr-2" /> },
+  { href: "/report-reader", labelKey: "reportReader", icon: <ClipboardCheck className="mr-2" /> },
 ];
 
 export default function Header() {
@@ -51,7 +51,7 @@ export default function Header() {
     await signOut(auth);
   };
 
-  const NavLink = ({ href, labelKey, isMobile = false }: { href: string; labelKey: string; isMobile?: boolean }) => (
+  const NavLink = ({ href, children, isMobile = false }: { href: string; children: React.ReactNode; isMobile?: boolean }) => (
     <Link
       href={href}
       onClick={() => isMobile && setIsMobileMenuOpen(false)}
@@ -61,26 +61,39 @@ export default function Header() {
         isMobile && "flex items-center gap-4 py-2 text-lg"
       )}
     >
-      {isMobile && navLinks.find(link => link.href === href)?.icon}
-      {t(labelKey)}
+      {children}
     </Link>
   );
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between">
-        <Link href="/" className="flex items-center gap-2">
+        <Link href="/" className="flex items-center gap-2 mr-6">
           <VAIQIcon className="h-8 w-auto text-primary" />
           <span className="font-headline text-xl font-bold"></span>
         </Link>
         
         <nav className="hidden lg:flex items-center gap-6">
-          {navLinks.map((link) => (
-            <NavLink key={link.href} href={link.href} labelKey={link.labelKey} />
-          ))}
+           <NavLink href="/">{t('home')}</NavLink>
+           <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+                <Button variant="ghost">
+                    Features <ChevronDown className="ml-2 h-4 w-4" />
+                </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start">
+              {navLinks.filter(l => l.href !== '/').map((link) => (
+                <DropdownMenuItem key={link.href} asChild>
+                    <Link href={link.href} className="flex items-center">
+                        {link.icon} {t(link.labelKey)}
+                    </Link>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+           </DropdownMenu>
         </nav>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 ml-auto">
            <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon" suppressHydrationWarning>
@@ -160,7 +173,7 @@ export default function Header() {
           </div>
         
           <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
-            <SheetTrigger asChild className="md:hidden">
+            <SheetTrigger asChild className="lg:hidden">
               <Button variant="ghost" size="icon" suppressHydrationWarning>
                 <Menu />
                 <span className="sr-only">Open menu</span>
@@ -180,7 +193,9 @@ export default function Header() {
                 </div>
                 <nav className="flex-grow flex flex-col gap-4 mt-8">
                   {navLinks.map((link) => (
-                    <NavLink key={link.href} href={link.href} labelKey={link.labelKey} isMobile />
+                    <NavLink key={link.href} href={link.href} isMobile>
+                        {link.icon} {t(link.labelKey)}
+                    </NavLink>
                   ))}
                 </nav>
                 <div className="mt-auto border-t pt-4 flex flex-col gap-2">
