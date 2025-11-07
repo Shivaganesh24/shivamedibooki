@@ -21,6 +21,15 @@ import {
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
 } from "@/components/ui/dropdown-menu";
+import {
+    Menubar,
+    MenubarContent,
+    MenubarItem,
+    MenubarMenu,
+    MenubarSeparator,
+    MenubarShortcut,
+    MenubarTrigger,
+  } from "@/components/ui/menubar";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { useLanguage } from "@/context/language-context";
 import { useTranslation } from "@/hooks/use-translation";
@@ -74,23 +83,25 @@ export default function Header() {
         </Link>
         
         <nav className="hidden lg:flex items-center gap-6">
-           <NavLink href="/">{t('home')}</NavLink>
-           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-                <Button variant="ghost">
-                    Features <ChevronDown className="ml-2 h-4 w-4" />
-                </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="start">
-              {navLinks.filter(l => l.href !== '/').map((link) => (
-                <DropdownMenuItem key={link.href} asChild>
-                    <Link href={link.href} className="flex items-center">
-                        {link.icon} {t(link.labelKey)}
-                    </Link>
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-           </DropdownMenu>
+           <Menubar>
+                <MenubarMenu>
+                    <MenubarTrigger asChild>
+                        <Link href="/">{t('home')}</Link>
+                    </MenubarTrigger>
+                </MenubarMenu>
+                <MenubarMenu>
+                    <MenubarTrigger>Features</MenubarTrigger>
+                    <MenubarContent>
+                        {navLinks.filter(l => l.href !== '/').map((link) => (
+                            <MenubarItem key={link.href} asChild>
+                                <Link href={link.href} className="flex items-center">
+                                    {link.icon} {t(link.labelKey)}
+                                </Link>
+                            </MenubarItem>
+                        ))}
+                    </MenubarContent>
+                </MenubarMenu>
+            </Menubar>
         </nav>
 
         <div className="flex items-center gap-2 ml-auto">
