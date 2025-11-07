@@ -7,13 +7,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { indianStates } from "@/lib/india-data";
-import { BarChart as BarChartIcon, Bug, Info, LineChart as LineChartIcon, AreaChart as AreaChartIcon, Loader2, Map, Microscope, ShieldCheck } from "lucide-react";
+import { BarChart as BarChartIcon, Bug, Info, LineChart as LineChartIcon, AreaChart as AreaChartIcon, Loader2, Map, Microscope, ShieldCheck, PieChart as PieChartIcon, Target } from "lucide-react";
 import { simulateMalariaRates, type SimulateMalariaRatesOutput } from "@/ai/flows/simulate-malaria-rates";
 import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
-import { BarChart, Bar, AreaChart, Area, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { BarChart, Bar, AreaChart, Area, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, RadialBarChart, RadialBar, Legend } from "recharts";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 
 
@@ -26,8 +26,11 @@ const intensityStyles: { [key: string]: string } = {
     "Very High": "bg-red-500/20 text-red-400 border-red-500/30",
 };
 
+const CHART_COLORS = ["hsl(var(--chart-1))", "hsl(var(--chart-2))", "hsl(var(--chart-3))", "hsl(var(--chart-4))", "hsl(var(--chart-5))"];
+
+
 type ChartDataType = 'simulatedCases' | 'caseRate';
-type ChartType = 'bar' | 'line' | 'area';
+type ChartType = 'bar' | 'line' | 'area' | 'pie' | 'radial';
 
 export default function MalariaMapPage() {
     const [isPending, startTransition] = useTransition();
@@ -70,28 +73,28 @@ export default function MalariaMapPage() {
         if (simulation.year1) {
             data.push({
                 name: `${simulation.district} ${simulation.year1.year}`,
-                [chartDataType]: simulation.year1[chartDataType],
+                value: simulation.year1[chartDataType],
                 fill: 'var(--color-chart-1)'
             });
         }
         if (simulation.year2) {
              data.push({
                 name: `${simulation.district} ${simulation.year2.year}`,
-                [chartDataType]: simulation.year2[chartDataType],
+                value: simulation.year2[chartDataType],
                 fill: 'var(--color-chart-2)'
             });
         }
         if (comparisonRegion?.year1) {
             data.push({
                 name: `${comparisonRegion.district} ${comparisonRegion.year1.year}`,
-                [chartDataType]: comparisonRegion.year1[chartDataType],
+                value: comparisonRegion.year1[chartDataType],
                 fill: 'var(--color-chart-3)'
             });
         }
         if (comparisonRegion?.year2) {
              data.push({
                 name: `${comparisonRegion.district} ${comparisonRegion.year2.year}`,
-                [chartDataType]: comparisonRegion.year2[chartDataType],
+                value: comparisonRegion.year2[chartDataType],
                 fill: 'var(--color-chart-4)'
             });
         }
@@ -109,13 +112,17 @@ export default function MalariaMapPage() {
             return;
         }
 
-        if (compare && !state2 && !district2 && !year2) {
-             toast({
-                variant: 'destructive',
-                title: 'Incomplete Comparison Selection',
-                description: 'Please select a second year or a comparison region to enable comparison.'
-            });
-            return;
+        if (compare) {
+            const isComparingYears = year2 && !state2 && !district2;
+            const isComparingRegions = state2 && district2;
+            if (!isComparingYears && !isComparingRegions) {
+                toast({
+                    variant: 'destructive',
+                    title: 'Incomplete Comparison',
+                    description: 'For comparison, please select either a second year OR a second state and district.'
+                });
+                return;
+            }
         }
 
         startTransition(async () => {
@@ -125,9 +132,9 @@ export default function MalariaMapPage() {
                     state: state1,
                     district: district1,
                     year1: parseInt(year1),
-                    year2: compare && year2 ? parseInt(year2) : undefined,
-                    compareState: compare && state2 ? state2 : undefined,
-                    compareDistrict: compare && district2 ? district2 : undefined,
+                    year2: (compare && year2 && !state2) ? parseInt(year2) : undefined,
+                    compareState: (compare && state2) ? state2 : undefined,
+                    compareDistrict: (compare && district2) ? district2 : undefined,
                 });
                 setSimulationData(result);
             } catch (error) {
@@ -189,35 +196,68 @@ export default function MalariaMapPage() {
     }
     
     const renderChart = () => {
-        const ChartComponent = {
-            bar: BarChart,
-            line: LineChart,
-            area: AreaChart,
-        }[chartType];
+        const commonProps = {
+            width: "100%",
+            height: 400
+        };
 
-        const MainComponent = {
-            bar: <Bar dataKey={chartDataType} radius={8} />,
-            line: <Line type="monotone" dataKey={chartDataType} stroke="hsl(var(--primary))" strokeWidth={2} />,
-            area: <Area type="monotone" dataKey={chartDataType} stroke="hsl(var(--primary))" fill="hsl(var(--primary))" fillOpacity={0.3} />,
-        }[chartType];
-
-        return (
-            <ResponsiveContainer width="100%" height={400}>
-                <ChartComponent data={chartData}>
+        const chartComponents = {
+            bar: (
+                <BarChart data={chartData}>
                     <CartesianGrid vertical={false} />
-                    <XAxis
-                        dataKey="name"
-                        tickLine={false}
-                        axisLine={false}
-                        tickMargin={8}
-                        tickFormatter={(value) => value.slice(0, 15)}
-                    />
+                    <XAxis dataKey="name" tickLine={false} axisLine={false} tickMargin={8} interval={0} angle={-30} textAnchor="end" height={80} />
                     <YAxis />
-                    <ChartTooltip content={<ChartTooltipContent />} />
-                    {MainComponent}
-                </ChartComponent>
+                    <ChartTooltip content={<ChartTooltipContent nameKey="name" />} />
+                    <Bar dataKey="value" name={chartDataType === 'caseRate' ? "Case Rate" : "Simulated Cases"} radius={8}>
+                       {chartData.map((entry, index) => (
+                         <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
+                       ))}
+                    </Bar>
+                </BarChart>
+            ),
+            line: (
+                <LineChart data={chartData}>
+                    <CartesianGrid vertical={false} />
+                    <XAxis dataKey="name" tickLine={false} axisLine={false} tickMargin={8} interval={0} angle={-30} textAnchor="end" height={80}/>
+                    <YAxis />
+                    <ChartTooltip content={<ChartTooltipContent nameKey="name" />} />
+                    <Line type="monotone" dataKey="value" name={chartDataType === 'caseRate' ? "Case Rate" : "Simulated Cases"} stroke="hsl(var(--primary))" strokeWidth={2} />
+                </LineChart>
+            ),
+            area: (
+                <AreaChart data={chartData}>
+                    <CartesianGrid vertical={false} />
+                    <XAxis dataKey="name" tickLine={false} axisLine={false} tickMargin={8} interval={0} angle={-30} textAnchor="end" height={80}/>
+                    <YAxis />
+                    <ChartTooltip content={<ChartTooltipContent nameKey="name" />} />
+                    <Area type="monotone" dataKey="value" name={chartDataType === 'caseRate' ? "Case Rate" : "Simulated Cases"} stroke="hsl(var(--primary))" fill="hsl(var(--primary))" fillOpacity={0.3} />
+                </AreaChart>
+            ),
+            pie: (
+                <PieChart>
+                    <ChartTooltip content={<ChartTooltipContent nameKey="name" />} />
+                    <Pie data={chartData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={120} label>
+                        {chartData.map((entry, index) => (
+                           <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
+                        ))}
+                    </Pie>
+                    <Legend />
+                </PieChart>
+            ),
+            radial: (
+                <RadialBarChart cx="50%" cy="50%" innerRadius="10%" outerRadius="80%" barSize={10} data={chartData}>
+                    <ChartTooltip content={<ChartTooltipContent nameKey="name" />} />
+                    <RadialBar minAngle={15} background dataKey="value" />
+                    <Legend iconSize={10} layout="vertical" verticalAlign="middle" align="right" />
+                </RadialBarChart>
+            )
+        };
+        
+        return (
+            <ResponsiveContainer {...commonProps}>
+                {chartComponents[chartType]}
             </ResponsiveContainer>
-        )
+        );
     }
 
     return (
@@ -359,6 +399,8 @@ export default function MalariaMapPage() {
                                         <SelectItem value="bar">Bar Chart</SelectItem>
                                         <SelectItem value="line">Line Chart</SelectItem>
                                         <SelectItem value="area">Area Chart</SelectItem>
+                                        <SelectItem value="pie">Pie Chart</SelectItem>
+                                        <SelectItem value="radial">Radial Bar Chart</SelectItem>
                                     </SelectContent>
                                 </Select>
                                 </div>
@@ -415,5 +457,3 @@ export default function MalariaMapPage() {
             )}
         </div>
     );
-
-    
