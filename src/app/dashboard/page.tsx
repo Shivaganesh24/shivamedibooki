@@ -136,7 +136,7 @@ export default function DashboardPage() {
             <Card>
                 <CardHeader>
                 <CardTitle className="font-headline flex items-center gap-2">
-                    <MapPin />
+                    <MapPin className="h-6 w-6" />
                     {t('locationHealthCheckTitle')}
                 </CardTitle>
                 <CardDescription>
