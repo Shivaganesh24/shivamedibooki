@@ -269,5 +269,13 @@
   "upcoming": "Upcoming",
   "completed": "Completed",
   "score": "Score",
-  "report": "Report"
+  "report": "Report",
+  "malariaAlertTitle": "Simulated Malaria Alert",
+  "malariaAlertDescription": "Alert: According to AI-generated simulations for learning, there is an increase in malaria cases in your area ({district}, {state}). This information is educational and not a real-time health report.",
+  "malariaAlertHealthTip": "Health Tip",
+  "setLocationTitle": "Set Your Location",
+  "setLocationDescription": "To receive personalized health alerts, please select your state and district.",
+  "state": "State",
+  "district": "District",
+  "saveLocationButton": "Save Location"
 }

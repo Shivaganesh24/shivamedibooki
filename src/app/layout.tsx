@@ -7,6 +7,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { FirebaseClientProvider } from "@/firebase";
 import { LanguageProvider } from "@/context/language-context";
 import { ThemeProvider } from "@/context/theme-provider";
+import { LocationSelector } from "@/components/location-selector";
 
 export const metadata: Metadata = {
   title: "VA!Q",
@@ -45,6 +46,7 @@ export default function RootLayout({
               <main className="flex-grow">{children}</main>
               <Footer />
               <Toaster />
+              <LocationSelector />
             </LanguageProvider>
           </FirebaseClientProvider>
         </ThemeProvider>

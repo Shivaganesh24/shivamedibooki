@@ -22,13 +22,19 @@
         "lastName": {
           "type": "string",
           "description": "Last name of the user."
+        },
+        "state": {
+            "type": "string",
+            "description": "The user's selected state in India."
+        },
+        "district": {
+            "type": "string",
+            "description": "The user's selected district in India."
         }
       },
       "required": [
         "id",
-        "email",
-        "firstName",
-        "lastName"
+        "email"
       ]
     },
     "Appointment": {
