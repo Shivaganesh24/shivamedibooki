@@ -14,7 +14,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { BarChart, Bar, AreaChart, Area, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, RadialBarChart, RadialBar, Legend } from "recharts";
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 
 
 const availableYears = Array.from({ length: 15 }, (_, i) => new Date().getFullYear() - i);
@@ -64,41 +64,42 @@ export default function MalariaMapPage() {
         return selected ? selected.districts : [];
     }, [state2]);
 
-    const chartData = useMemo(() => {
-        if (!simulationData) return [];
+    const { chartData, chartConfig } = useMemo(() => {
+        if (!simulationData) return { chartData: [], chartConfig: {} };
 
         const { simulation, comparisonRegion } = simulationData;
         const data = [];
+        const config: ChartConfig = {};
+
+        const addDataPoint = (label: string, value: number, color: string) => {
+            data.push({
+                name: label,
+                value: value,
+                fill: `var(--color-${label})`
+            });
+            config[label] = {
+                label: label,
+                color: color,
+            };
+        }
 
         if (simulation.year1) {
-            data.push({
-                name: `${simulation.district} ${simulation.year1.year}`,
-                value: simulation.year1[chartDataType],
-                fill: 'var(--color-chart-1)'
-            });
+            addDataPoint(`${simulation.district} ${simulation.year1.year}`, simulation.year1[chartDataType], CHART_COLORS[0]);
         }
         if (simulation.year2) {
-             data.push({
-                name: `${simulation.district} ${simulation.year2.year}`,
-                value: simulation.year2[chartDataType],
-                fill: 'var(--color-chart-2)'
-            });
+             addDataPoint(`${simulation.district} ${simulation.year2.year}`, simulation.year2[chartDataType], CHART_COLORS[1]);
         }
         if (comparisonRegion?.year1) {
-            data.push({
-                name: `${comparisonRegion.district} ${comparisonRegion.year1.year}`,
-                value: comparisonRegion.year1[chartDataType],
-                fill: 'var(--color-chart-3)'
-            });
+            addDataPoint(`${comparisonRegion.district} ${comparisonRegion.year1.year}`, comparisonRegion.year1[chartDataType], CHART_COLORS[2]);
         }
         if (comparisonRegion?.year2) {
-             data.push({
-                name: `${comparisonRegion.district} ${comparisonRegion.year2.year}`,
-                value: comparisonRegion.year2[chartDataType],
-                fill: 'var(--color-chart-4)'
-            });
+             addDataPoint(`${comparisonRegion.district} ${comparisonRegion.year2.year}`, comparisonRegion.year2[chartDataType], CHART_COLORS[3]);
         }
-        return data.sort((a, b) => a.name.localeCompare(b.name));
+
+        return {
+            chartData: data.sort((a, b) => a.name.localeCompare(b.name)),
+            chartConfig: config
+        };
     }, [simulationData, chartDataType]);
 
 
@@ -196,10 +197,7 @@ export default function MalariaMapPage() {
     }
     
     const renderChart = () => {
-        const commonProps = {
-            width: "100%",
-            height: 400
-        };
+        if (!chartData || chartData.length === 0) return null;
 
         const chartComponents = {
             bar: (
@@ -210,7 +208,7 @@ export default function MalariaMapPage() {
                     <ChartTooltip content={<ChartTooltipContent nameKey="name" />} />
                     <Bar dataKey="value" name={chartDataType === 'caseRate' ? "Case Rate" : "Simulated Cases"} radius={8}>
                        {chartData.map((entry, index) => (
-                         <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
+                         <Cell key={`cell-${index}`} fill={entry.fill} />
                        ))}
                     </Bar>
                 </BarChart>
@@ -238,7 +236,7 @@ export default function MalariaMapPage() {
                     <ChartTooltip content={<ChartTooltipContent nameKey="name" />} />
                     <Pie data={chartData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={120} label>
                         {chartData.map((entry, index) => (
-                           <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
+                           <Cell key={`cell-${index}`} fill={entry.fill} />
                         ))}
                     </Pie>
                     <Legend />
@@ -254,9 +252,11 @@ export default function MalariaMapPage() {
         };
         
         return (
-            <ResponsiveContainer {...commonProps}>
-                {chartComponents[chartType]}
-            </ResponsiveContainer>
+            <ChartContainer config={chartConfig} className="min-h-[400px] w-full">
+                <ResponsiveContainer width="100%" height={400}>
+                    {chartComponents[chartType]}
+                </ResponsiveContainer>
+            </ChartContainer>
         );
     }
 
@@ -384,8 +384,7 @@ export default function MalariaMapPage() {
                                 <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
                                 <Select value={chartDataType} onValueChange={(value) => setChartDataType(value as ChartDataType)}>
                                     <SelectTrigger className="w-full sm:w-[200px]">
-                                        <SelectValue placeholder="Select data type" />
-                                    </SelectTrigger>
+                                        <SelectValue placeholder="Select data type" /></SelectTrigger>
                                     <SelectContent>
                                         <SelectItem value="simulatedCases">Simulated Cases</SelectItem>
                                         <SelectItem value="caseRate">Case Rate (per 1,000)</SelectItem>
@@ -393,8 +392,7 @@ export default function MalariaMapPage() {
                                 </Select>
                                  <Select value={chartType} onValueChange={(value) => setChartType(value as ChartType)}>
                                     <SelectTrigger className="w-full sm:w-[180px]">
-                                        <SelectValue placeholder="Select chart type" />
-                                    </SelectTrigger>
+                                        <SelectValue placeholder="Select chart type" /></SelectTrigger>
                                     <SelectContent>
                                         <SelectItem value="bar">Bar Chart</SelectItem>
                                         <SelectItem value="line">Line Chart</SelectItem>
@@ -457,3 +455,5 @@ export default function MalariaMapPage() {
             )}
         </div>
     );
+}
+    
