@@ -1,6 +1,7 @@
 {
   "home": "ಮುಖಪುಟ",
   "smartTriage": "ಸ್ಮಾರ್ಟ್ ಟ್ರೈಯಜ್",
+  "malariaMap": "ಮಲೇರಿಯಾ ನಕ್ಷೆ",
   "healthTips": "ಆರೋಗ್ಯ ಸಲಹೆಗಳು",
   "healthQuiz": "ಆರೋಗ್ಯ ರಸಪ್ರಶ್ನೆ",
   "bookAppointment": "ಅಪಾಯಿಂಟ್ಮೆಂಟ್ ಕಾಯ್ದಿರಿಸಿ",
@@ -18,6 +19,8 @@
   "featuresSubtitle": "ನಿಮ್ಮ ಆರೋಗ್ಯ ನಿರ್ಧಾರಗಳನ್ನು ಸಶಕ್ತಗೊಳಿಸಲು ವಿನ್ಯಾಸಗೊಳಿಸಲಾದ ಪರಿಕರಗಳ ಸೂಟ್.",
   "featureSmartTriageTitle": "ಸ್ಮಾರ್ಟ್ ಟ್ರೈಯಜ್",
   "featureSmartTriageDescription": "ತತ್‌ಕ್ಷಣದ ಶಿಫಾರಸುಗಳಿಗಾಗಿ AI-ಚಾಲಿತ ರೋಗಲಕ್ಷಣ ಪರೀಕ್ಷಕ.",
+  "featureMalariaMapTitle": "ಎಐ ಮಲೇರಿಯಾ ನಕ್ಷೆ",
+  "featureMalariaMapDescription": "ಭಾರತದಾದ್ಯಂತ ಎಐ-ಅನುಕರಿಸಿದ ಮಲೇರಿಯಾ ಪ್ರಕರಣ ದರಗಳನ್ನು ಅನ್ವೇಷಿಸಿ.",
   "featureHealthTipsTitle": "ಆರೋಗ್ಯ ಸಲಹೆಗಳು",
   "featureHealthTipsDescription": "ಆರೋಗ್ಯಕರವಾಗಿ ಮತ್ತು ಸುರಕ್ಷಿತವಾಗಿರಲು ದೈನಂದಿನ ಸಲಹೆಗಳನ್ನು ಪಡೆಯಿರಿ.",
   "featureHealthQuizTitle": "ಆರೋಗ್ಯ ರಸಪ್ರಶ್ನೆ",

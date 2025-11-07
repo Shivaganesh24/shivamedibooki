@@ -1,6 +1,7 @@
 {
   "home": "Home",
   "smartTriage": "Smart Triage",
+  "malariaMap": "Malaria Map",
   "healthTips": "Health Tips",
   "healthQuiz": "Health Quiz",
   "bookAppointment": "Book Appointment",
@@ -18,6 +19,8 @@
   "featuresSubtitle": "A suite of tools designed to empower your health decisions.",
   "featureSmartTriageTitle": "Smart Triage",
   "featureSmartTriageDescription": "AI-powered symptom checker for instant recommendations.",
+  "featureMalariaMapTitle": "AI Malaria Map",
+  "featureMalariaMapDescription": "Explore AI-simulated malaria case rates across India.",
   "featureHealthTipsTitle": "Health Tips",
   "featureHealthTipsDescription": "Get daily advice on staying healthy and safe.",
   "featureHealthQuizTitle": "Health Quiz",

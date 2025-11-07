@@ -3,7 +3,7 @@
     {
       "id": "hero",
       "description": "Abstract medical background",
-      "imageUrl": "https://picsum.photos/seed/hero/1920/1080",
+      "imageUrl": "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxtZWRpY2FsJTIwdGVjaG5vbG9neXxlbnwwfHx8fDE3NjI0MjM0MDV8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "medical technology"
     },
     {
@@ -13,15 +13,21 @@
       "imageHint": "medical AI"
     },
     {
+      "id": "malaria-map",
+      "description": "A map of India with malaria hotspots.",
+      "imageUrl": "https://images.unsplash.com/photo-1546833998-07256bcc76ad?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxJbmRpYSUyMG1hcHxlbnwwfHx8fDE3NjI0OTUwOTh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "India map"
+    },
+    {
       "id": "health-tips",
       "description": "A person meditating",
-      "imageUrl": "https://picsum.photos/seed/tips/600/400",
+      "imageUrl": "https://images.unsplash.com/photo-1493770348161-369560ae357d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxoZWFsdGh5JTIwbGlmZXN0eWxlfGVufDB8fHx8MTc2MjQ4NjA2OXww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "healthy lifestyle"
     },
     {
       "id": "health-quiz",
       "description": "A person taking a quiz on a tablet.",
-      "imageUrl": "https://picsum.photos/seed/quiz/600/400",
+      "imageUrl": "https://images.unsplash.com/photo-1659353887222-630895f23cc5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxtZWRpY2FsJTIwcXVpenxlbnwwfHx8fDE3NjI0OTUwOTh8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "medical quiz"
     },
     {
@@ -39,37 +45,37 @@
     {
       "id": "report-reader",
       "description": "A magnifying glass over a document",
-      "imageUrl": "https://picsum.photos/seed/report/600/400",
+      "imageUrl": "https://images.unsplash.com/photo-1758691463087-43ac1462410f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxtZWRpY2FsJTIwcmVwb3J0fGVufDB8fHx8MTc2MjQ1NTQ4Mnww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "medical report"
     },
     {
       "id": "doctor-1",
       "description": "Portrait of Dr. Emily Carter",
-      "imageUrl": "https://picsum.photos/seed/doc1/100/100",
+      "imageUrl": "https://images.unsplash.com/photo-1651008376811-b90baee60c1f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxkb2N0b3IlMjBwb3J0cmFpdHxlbnwwfHx8fDE3NjI0MjQ1MjJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "doctor portrait"
     },
     {
       "id": "doctor-2",
       "description": "Portrait of Dr. Ben Adams",
-      "imageUrl": "https://picsum.photos/seed/doc2/100/100",
+      "imageUrl": "https://images.unsplash.com/photo-1612276529731-4b21494e6d71?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8ZG9jdG9yJTIwcG9ydHJhaXR8ZW58MHx8fHwxNzYyNDI0NTIyfDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "doctor portrait"
     },
     {
       "id": "doctor-3",
       "description": "Portrait of Dr. Chloe Davis",
-      "imageUrl": "https://picsum.photos/seed/doc3/100/100",
+      "imageUrl": "https://images.unsplash.com/photo-1642541724244-83d49288a86b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxkb2N0b3IlMjBwb3J0cmFpdHxlbnwwfHx8fDE3NjI0MjQ1MjJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "doctor portrait"
     },
     {
       "id": "doctor-4",
       "description": "Portrait of Dr. Olivia White",
-      "imageUrl": "https://picsum.photos/seed/doc4/100/100",
+      "imageUrl": "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxkb2N0b3IlMjBwb3J0cmFpdHxlbnwwfHx8fDE3NjI0MjQ1MjJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "doctor portrait"
     },
     {
       "id": "doctor-5",
       "description": "Portrait of Dr. Samuel Lee",
-      "imageUrl": "https://picsum.photos/seed/doc5/100/100",
+      "imageUrl": "https://images.unsplash.com/photo-1594824476967-48c8b964273f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxkb2N0b3IlMjBwb3J0cmFpdHxlbnwwfHx8fDE3NjI0MjQ1MjJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "doctor portrait"
     }
   ]

@@ -1,6 +1,7 @@
 {
   "home": "होम",
   "smartTriage": "स्मार्ट ट्राइएज",
+  "malariaMap": "मलेरिया मानचित्र",
   "healthTips": "स्वास्थ्य युक्तियाँ",
   "healthQuiz": "स्वास्थ्य प्रश्नोत्तरी",
   "bookAppointment": "अपॉइंटमेंट बुक करें",
@@ -18,6 +19,8 @@
   "featuresSubtitle": "आपके स्वास्थ्य निर्णयों को सशक्त बनाने के लिए डिज़ाइन किए गए उपकरणों का một सुइट।",
   "featureSmartTriageTitle": "स्मार्ट ट्राइएज",
   "featureSmartTriageDescription": "त्वरित सिफारिशों के लिए एआई-संचालित लक्षण परीक्षक।",
+  "featureMalariaMapTitle": "एआई मलेरिया मानचित्र",
+  "featureMalariaMapDescription": "पूरे भारत में एआई-नकली मलेरिया मामले की दरों का अन्वेषण करें।",
   "featureHealthTipsTitle": "स्वास्थ्य युक्तियाँ",
   "featureHealthTipsDescription": "स्वस्थ और सुरक्षित रहने के बारे में दैनिक सलाह प्राप्त करें।",
   "featureHealthQuizTitle": "स्वास्थ्य प्रश्नोत्तरी",
