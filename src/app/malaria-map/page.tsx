@@ -45,21 +45,21 @@ import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { cn } from "@/lib/utils";
 import {
+  AreaChart,
   Area,
   Bar,
+  BarChart,
   XAxis,
   YAxis,
   CartesianGrid,
   Legend,
   Line,
-  Pie,
-  RadialBar,
-  ResponsiveContainer,
-  BarChart,
   LineChart,
-  AreaChart,
+  Pie,
   PieChart,
+  RadialBar,
   RadialBarChart,
+  ResponsiveContainer,
   Cell,
 } from "recharts";
 import {
@@ -106,59 +106,80 @@ const CHART_COLORS = {
 type ChartDataType = "simulatedCases" | "caseRate";
 type ChartType = "bar" | "line" | "area" | "pie" | "radial";
 
-const HeatMap = ({ data }: { data: SimulateMalariaRatesOutput | null }) => {
+const StateHeatMapGrid = ({
+  stateName,
+  highlightedDistrict,
+  highlightedIntensity,
+}: {
+  stateName: string;
+  highlightedDistrict: string;
+  highlightedIntensity: string;
+}) => {
   const { t } = useTranslation();
-  if (!data) return null;
-
-  const regions = [data.simulation, data.comparisonRegion].filter(
-    Boolean
-  ) as (
-    | SimulateMalariaRatesOutput["simulation"]
-    | SimulateMalariaRatesOutput["comparisonRegion"]
-  )[];
-  if (regions.length === 0) return null;
-
-  const primaryData = regions[0];
-
   const allDistricts =
-    indianStates.find((s) => s.name === primaryData.state)?.districts || [];
-  const mainDistrict = primaryData.district;
+    indianStates.find((s) => s.name === stateName)?.districts || [];
 
   const getIntensity = (district: string) => {
-    if (district === mainDistrict) return primaryData.year1.intensity;
-    // In a real scenario, you'd have data for all districts.
-    // Here, we'll randomize for visual effect.
+    if (district === highlightedDistrict) return highlightedIntensity;
     const intensities = ["Low", "Moderate", "High", "Very High"];
     return intensities[Math.floor(Math.random() * intensities.length)];
   };
 
   return (
     <TooltipProvider>
-      <div className="grid grid-cols-8 sm:grid-cols-12 md:grid-cols-16 gap-1 p-2 bg-secondary rounded-lg">
-        {allDistricts.map((district) => {
-          const intensity = getIntensity(district);
-          return (
-            <Tooltip key={district}>
-              <TooltipTrigger asChild>
-                <div
-                  className={cn(
-                    "h-8 w-full rounded transition-colors",
-                    intensityHeatMapStyles[intensity] || "bg-muted",
-                    district === mainDistrict &&
-                      "ring-2 ring-primary-foreground ring-offset-2 ring-offset-background"
-                  )}
-                ></div>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>
-                  {district}: {t(intensity.toLowerCase())}
-                </p>
-              </TooltipContent>
-            </Tooltip>
-          );
-        })}
+      <div>
+        <h4 className="font-semibold mb-2">{stateName}</h4>
+        <div className="grid grid-cols-8 sm:grid-cols-12 md:grid-cols-16 gap-1 p-2 bg-secondary rounded-lg">
+          {allDistricts.map((district) => {
+            const intensity = getIntensity(district);
+            return (
+              <Tooltip key={district}>
+                <TooltipTrigger asChild>
+                  <div
+                    className={cn(
+                      "h-8 w-full rounded transition-colors",
+                      intensityHeatMapStyles[intensity] || "bg-muted",
+                      district === highlightedDistrict &&
+                        "ring-2 ring-primary-foreground ring-offset-2 ring-offset-background"
+                    )}
+                  ></div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>
+                    {district}: {t(intensity.toLowerCase())}
+                  </p>
+                </TooltipContent>
+              </Tooltip>
+            );
+          })}
+        </div>
       </div>
     </TooltipProvider>
+  );
+};
+
+
+const HeatMap = ({ data }: { data: SimulateMalariaRatesOutput | null }) => {
+  if (!data) return null;
+  const { simulation, comparisonRegion } = data;
+
+  return (
+    <div className="space-y-6">
+      {simulation && (
+        <StateHeatMapGrid
+          stateName={simulation.state}
+          highlightedDistrict={simulation.district}
+          highlightedIntensity={simulation.year1.intensity}
+        />
+      )}
+      {comparisonRegion && (
+        <StateHeatMapGrid
+          stateName={comparisonRegion.state}
+          highlightedDistrict={comparisonRegion.district}
+          highlightedIntensity={comparisonRegion.year1.intensity}
+        />
+      )}
+    </div>
   );
 };
 
@@ -811,3 +832,5 @@ export default function MalariaMapPage() {
     </div>
   );
 }
+
+    
