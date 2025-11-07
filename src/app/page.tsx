@@ -1,13 +1,15 @@
+
 "use client";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
-import { ArrowRight, Bot, ClipboardCheck, HeartPulse, Map, Stethoscope, TestTube, User } from "lucide-react";
+import { ArrowRight, Bot, ClipboardCheck, HeartPulse, Stethoscope, TestTube, User } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { VAIQIcon } from "@/components/icons";
 import { useTranslation } from "@/hooks/use-translation";
+import { Map } from "lucide-react";
 
 export default function Home() {
   const { t } = useTranslation();
@@ -25,14 +27,14 @@ export default function Home() {
       description: t('featureMalariaMapDescription'),
       link: "/malaria-map",
       icon: <Map className="h-8 w-8 text-primary" />,
-      image_id: "malaria-map"
+      image_id: "malaria-map-main"
     },
     {
       title: t('featureHealthTipsTitle'),
       description: t('featureHealthTipsDescription'),
       link: "/dashboard",
       icon: <HeartPulse className="h-8 w-8 text-primary" />,
-      image_id: "health-tips"
+      image_id: "health-tips-main"
     },
     {
       title: t('featureHealthQuizTitle'),
@@ -53,7 +55,7 @@ export default function Home() {
       description: t('featureYourDataDescription'),
       link: "/your-data",
       icon: <User className="h-8 w-8 text-primary" />,
-      image_id: "your-data"
+      image_id: "your-data-main"
     },
     {
       title: t('featureReportReaderTitle'),

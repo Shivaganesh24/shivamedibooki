@@ -13,16 +13,16 @@
       "imageHint": "medical AI"
     },
     {
-      "id": "malaria-map",
-      "description": "A map of India with malaria hotspots.",
-      "imageUrl": "https://images.unsplash.com/photo-1546833998-07256bcc76ad?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxJbmRpYSUyMG1hcHxlbnwwfHx8fDE3NjI0OTUwOTh8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "India map"
+      "id": "malaria-map-main",
+      "description": "A microscope with a mosquito in the background, representing malaria research.",
+      "imageUrl": "https://images.unsplash.com/photo-1581092446347-7d133e683b38?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxtaWNyb3Njb3BlJTIwbGFiJTIwbWVkaWNhbHxlbnwwfHx8fDE3NjI1NzIwMDJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "malaria research"
     },
     {
-      "id": "health-tips",
-      "description": "A person meditating",
-      "imageUrl": "https://images.unsplash.com/photo-1493770348161-369560ae357d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxoZWFsdGh5JTIwbGlmZXN0eWxlfGVufDB8fHx8MTc2MjQ4NjA2OXww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "healthy lifestyle"
+      "id": "health-tips-main",
+      "description": "Fresh fruits and vegetables on a table, representing healthy eating.",
+      "imageUrl": "https://images.unsplash.com/photo-1542838132-92c53300491e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxoZWFsdGh5JTIwZm9vZHxlbnwwfHx8fDE3NjI1NzIwNTd8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "healthy food"
     },
     {
       "id": "health-quiz",
@@ -37,10 +37,10 @@
       "imageHint": "medical appointment"
     },
     {
-      "id": "your-data",
-      "description": "A health data security icon",
-      "imageUrl": "https://www.feroot.com/wp-content/uploads/2025/03/health-data-security.svg",
-      "imageHint": "data security"
+      "id": "your-data-main",
+      "description": "A futuristic digital lock icon, symbolizing data security and privacy.",
+      "imageUrl": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzeWJlcnNlY3VyaXR5fGVufDB8fHx8MTc2MjU3MjA5OHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "cyber security"
     },
     {
       "id": "report-reader",

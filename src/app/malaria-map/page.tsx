@@ -2,6 +2,7 @@
 "use client";
 
 import { useState, useMemo, useTransition } from "react";
+import Image from "next/image";
 import { PageTitle } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import {
@@ -73,6 +74,7 @@ import {
 } from "@/components/ui/tooltip";
 import { useLanguage } from "@/context/language-context";
 import { useTranslation } from "@/hooks/use-translation";
+import { PlaceHolderImages } from "@/lib/placeholder-images";
 
 const availableYears = Array.from({ length: 15 }, (_, i) =>
   (new Date().getFullYear() - i).toString()
@@ -113,8 +115,10 @@ const StateHeatMapGrid = ({
   highlightedIntensity: string;
 }) => {
   const { t } = useTranslation();
-  const allDistricts =
-    indianStates.find((s) => s.name === stateName)?.districts || [];
+  const stateData = indianStates.find((s) => s.name === stateName);
+  
+  if (!stateData) return null;
+  const allDistricts = stateData.districts;
 
   const getIntensity = (district: string) => {
     if (district === highlightedDistrict) return highlightedIntensity;
@@ -217,6 +221,8 @@ export default function MalariaMapPage() {
     return selected ? selected.districts : [];
   }, [state2]);
 
+  const malariaMapImage = useMemo(() => PlaceHolderImages.find(p => p.id === "malaria-map-main"), []);
+
   const handleYear1Change = (value: string) => {
     setYear1(value);
     if (value === "Overall") {
@@ -308,6 +314,7 @@ export default function MalariaMapPage() {
     }
   
     const isComparingRegions = compareRegion && state2 && district2;
+    const isComparingYears = compareYear && year1 !== 'Overall' && year2;
   
     if (compareRegion && (!state2 || !district2)) {
       toast({
@@ -331,7 +338,7 @@ export default function MalariaMapPage() {
           state: state1,
           district: district1,
           year1: parseInt(year1),
-          year2: compareYear && year1 !== 'Overall' ? parseInt(year2) : undefined,
+          year2: isComparingYears ? parseInt(year2) : undefined,
           compareState: isComparingRegions ? state2 : undefined,
           compareDistrict: isComparingRegions ? district2 : undefined,
           language: languageMap[language],
@@ -525,184 +532,197 @@ export default function MalariaMapPage() {
         {t("malariaMapSubtitle")}
       </p>
 
-      <Card className="mt-8">
-        <CardHeader>
-          <CardTitle className="font-headline flex items-center gap-2">
-            <Droplets />
-            {t("simulationControls")}
-          </CardTitle>
-          <CardDescription>{t("simulationControlsDesc")}</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-            {/* Primary Region */}
-            <div className="space-y-4 p-4 border rounded-lg bg-secondary/50">
-              <h3 className="font-semibold flex items-center gap-2">
-                <LocateFixed size={18} />
-                {t("primaryRegion")}
-              </h3>
-              <div className="grid grid-cols-2 gap-4">
-                <Select
-                  value={state1}
-                  onValueChange={(value) => {
-                    setState1(value);
-                    setDistrict1("");
-                  }}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder={t("selectState")} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {indianStates.map((s) => (
-                      <SelectItem key={s.name} value={s.name}>
-                        {s.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <Select
-                  value={district1}
-                  onValueChange={setDistrict1}
-                  disabled={!state1}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder={t("selectDistrict")} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {districts1.map((d) => (
-                      <SelectItem key={d} value={d}>
-                        {d}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="grid grid-cols-2 gap-4 items-end">
-                <div className="space-y-2">
-                  <label className="text-sm font-medium flex items-center gap-2">
-                    <CalendarDays size={16} /> {t("year1")}
-                  </label>
-                  <Select value={year1} onValueChange={handleYear1Change}>
-                    <SelectTrigger>
-                      <SelectValue placeholder={t("selectYear")} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Overall">{t("overallTenYear")}</SelectItem>
-                      {availableYears.map((y) => (
-                        <SelectItem key={y} value={y}>
-                          {y}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                {year1 !== "Overall" && (
-                  <Button
-                    variant={compareYear ? "secondary" : "outline"}
-                    onClick={() => setCompareYear(!compareYear)}
-                  >
-                    <PlusCircle className="mr-2" />
-                    {compareYear ? t("removeYear") : t("addYear")}
-                  </Button>
-                )}
-              </div>
-              {compareYear && year1 !== "Overall" && (
-                <div className="space-y-2">
-                  <label className="text-sm font-medium flex items-center gap-2">
-                    <CalendarDays size={16} /> {t("year2")}
-                  </label>
-                  <Select value={year2} onValueChange={setYear2}>
-                    <SelectTrigger>
-                      <SelectValue placeholder={t("selectYear")} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {availableYears.map((y) => (
-                        <SelectItem key={y} value={String(y)}>
-                          {y}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              )}
-            </div>
-
-            {/* Comparison Region */}
-            <div className="space-y-4 p-4 border rounded-lg bg-secondary/50">
-              <div className="flex items-center justify-between">
+      <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+        <Card>
+            <CardHeader>
+            <CardTitle className="font-headline flex items-center gap-2">
+                <Droplets />
+                {t("simulationControls")}
+            </CardTitle>
+            <CardDescription>{t("simulationControlsDesc")}</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+                {/* Primary Region */}
+                <div className="space-y-4 p-4 border rounded-lg bg-secondary/50">
                 <h3 className="font-semibold flex items-center gap-2">
-                  <GitCompare size={18} /> {t("comparisonRegion")}
+                    <LocateFixed size={18} />
+                    {t("primaryRegion")}
                 </h3>
-                <Button
-                  variant={compareRegion ? "secondary" : "outline"}
-                  size="sm"
-                  onClick={() => setCompareRegion(!compareRegion)}
-                >
-                  {compareRegion ? t("disable") : t("enable")}
-                </Button>
-              </div>
-              <div
-                className={cn(
-                  "grid grid-cols-2 gap-4 transition-opacity",
-                  compareRegion
-                    ? "opacity-100"
-                    : "opacity-50 pointer-events-none"
+                <div className="grid grid-cols-2 gap-4">
+                    <Select
+                    value={state1}
+                    onValueChange={(value) => {
+                        setState1(value);
+                        setDistrict1("");
+                    }}
+                    >
+                    <SelectTrigger>
+                        <SelectValue placeholder={t("selectState")} />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {indianStates.map((s) => (
+                        <SelectItem key={s.name} value={s.name}>
+                            {s.name}
+                        </SelectItem>
+                        ))}
+                    </SelectContent>
+                    </Select>
+                    <Select
+                    value={district1}
+                    onValueChange={setDistrict1}
+                    disabled={!state1}
+                    >
+                    <SelectTrigger>
+                        <SelectValue placeholder={t("selectDistrict")} />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {districts1.map((d) => (
+                        <SelectItem key={d} value={d}>
+                            {d}
+                        </SelectItem>
+                        ))}
+                    </SelectContent>
+                    </Select>
+                </div>
+                <div className="grid grid-cols-2 gap-4 items-end">
+                    <div className="space-y-2">
+                    <label className="text-sm font-medium flex items-center gap-2">
+                        <CalendarDays size={16} /> {t("year1")}
+                    </label>
+                    <Select value={year1} onValueChange={handleYear1Change}>
+                        <SelectTrigger>
+                        <SelectValue placeholder={t("selectYear")} />
+                        </SelectTrigger>
+                        <SelectContent>
+                        <SelectItem value="Overall">{t("overallTenYear")}</SelectItem>
+                        {availableYears.map((y) => (
+                            <SelectItem key={y} value={y}>
+                            {y}
+                            </SelectItem>
+                        ))}
+                        </SelectContent>
+                    </Select>
+                    </div>
+                    {year1 !== "Overall" && (
+                    <Button
+                        variant={compareYear ? "secondary" : "outline"}
+                        onClick={() => setCompareYear(!compareYear)}
+                    >
+                        <PlusCircle className="mr-2" />
+                        {compareYear ? t("removeYear") : t("addYear")}
+                    </Button>
+                    )}
+                </div>
+                {compareYear && year1 !== "Overall" && (
+                    <div className="space-y-2">
+                    <label className="text-sm font-medium flex items-center gap-2">
+                        <CalendarDays size={16} /> {t("year2")}
+                    </label>
+                    <Select value={year2} onValueChange={setYear2}>
+                        <SelectTrigger>
+                        <SelectValue placeholder={t("selectYear")} />
+                        </SelectTrigger>
+                        <SelectContent>
+                        {availableYears.map((y) => (
+                            <SelectItem key={y} value={String(y)}>
+                            {y}
+                            </SelectItem>
+                        ))}
+                        </SelectContent>
+                    </Select>
+                    </div>
                 )}
-              >
-                <Select
-                  value={state2}
-                  onValueChange={(value) => {
-                    setState2(value);
-                    setDistrict2("");
-                  }}
-                  disabled={!compareRegion}
+                </div>
+
+                {/* Comparison Region */}
+                <div className="space-y-4 p-4 border rounded-lg bg-secondary/50">
+                <div className="flex items-center justify-between">
+                    <h3 className="font-semibold flex items-center gap-2">
+                    <GitCompare size={18} /> {t("comparisonRegion")}
+                    </h3>
+                    <Button
+                    variant={compareRegion ? "secondary" : "outline"}
+                    size="sm"
+                    onClick={() => setCompareRegion(!compareRegion)}
+                    >
+                    {compareRegion ? t("disable") : t("enable")}
+                    </Button>
+                </div>
+                <div
+                    className={cn(
+                    "grid grid-cols-2 gap-4 transition-opacity",
+                    compareRegion
+                        ? "opacity-100"
+                        : "opacity-50 pointer-events-none"
+                    )}
                 >
-                  <SelectTrigger>
-                    <SelectValue placeholder={t("compareState")} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {indianStates.map((s) => (
-                      <SelectItem key={s.name} value={s.name}>
-                        {s.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <Select
-                  value={district2}
-                  onValueChange={setDistrict2}
-                  disabled={!state2 || !compareRegion}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder={t("compareDistrict")} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {districts2.map((d) => (
-                      <SelectItem key={d} value={d}>
-                        {d}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+                    <Select
+                    value={state2}
+                    onValueChange={(value) => {
+                        setState2(value);
+                        setDistrict2("");
+                    }}
+                    disabled={!compareRegion}
+                    >
+                    <SelectTrigger>
+                        <SelectValue placeholder={t("compareState")} />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {indianStates.map((s) => (
+                        <SelectItem key={s.name} value={s.name}>
+                            {s.name}
+                        </SelectItem>
+                        ))}
+                    </SelectContent>
+                    </Select>
+                    <Select
+                    value={district2}
+                    onValueChange={setDistrict2}
+                    disabled={!state2 || !compareRegion}
+                    >
+                    <SelectTrigger>
+                        <SelectValue placeholder={t("compareDistrict")} />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {districts2.map((d) => (
+                        <SelectItem key={d} value={d}>
+                            {d}
+                        </SelectItem>
+                        ))}
+                    </SelectContent>
+                    </Select>
+                </div>
+                </div>
             </div>
-          </div>
-          <div className="flex justify-end">
-            <Button
-              onClick={handleRunSimulation}
-              disabled={isPending}
-              className="w-full md:w-auto text-lg py-6"
-            >
-              {isPending ? (
-                <Loader2 className="animate-spin" />
-              ) : (
-                <Microscope />
-              )}
-              {t("runSimulation")}
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+            <div className="flex justify-end">
+                <Button
+                onClick={handleRunSimulation}
+                disabled={isPending}
+                className="w-full md:w-auto text-lg py-6"
+                >
+                {isPending ? (
+                    <Loader2 className="animate-spin" />
+                ) : (
+                    <Microscope />
+                )}
+                {t("runSimulation")}
+                </Button>
+            </div>
+            </CardContent>
+        </Card>
+        <div className="hidden lg:block relative w-full h-full min-h-[500px] rounded-lg overflow-hidden">
+            {malariaMapImage && (
+                <Image
+                    src={malariaMapImage.imageUrl}
+                    alt={malariaMapImage.description}
+                    fill
+                    className="object-cover"
+                    data-ai-hint={malariaMapImage.imageHint}
+                />
+            )}
+        </div>
+      </div>
 
       {isPending && (
         <div className="flex flex-col items-center justify-center h-64 gap-4 text-muted-foreground">

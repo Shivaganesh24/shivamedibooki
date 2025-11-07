@@ -35,6 +35,8 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useTranslation } from "@/hooks/use-translation";
+import { PlaceHolderImages } from "@/lib/placeholder-images";
+import Image from "next/image";
 
 const statusStyles: { [key: string]: string } = {
   Completed: "bg-green-500/20 text-green-400 border-green-500/30",
@@ -61,6 +63,11 @@ export default function YourDataPage() {
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
   const [filterType, setFilterType] = useState<ActivityType>('all');
   const { t } = useTranslation();
+
+  const yourDataImage = useMemo(
+    () => PlaceHolderImages.find((p) => p.id === "your-data-main"),
+    []
+  );
 
   const createQuery = (collectionName: string, dateField: string): Query<DocumentData> | null => {
     if (!user || !firestore || (filterType !== 'all' && filterType !== collectionName.split('/')[0])) {
@@ -199,116 +206,129 @@ export default function YourDataPage() {
         {t('yourDataSubtitle')}
       </p>
 
-      <Card className="mt-8">
-        <CardHeader>
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <CardTitle className="font-headline">{t('activityLog')}</CardTitle>
-            <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-              <div className="flex gap-2">
-                <Select value={filterType} onValueChange={(value) => setFilterType(value as ActivityType)}>
-                  <SelectTrigger className="w-full sm:w-[180px]">
-                    <Filter className="mr-2 h-4 w-4" />
-                    <SelectValue placeholder={t('filterByType')} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">{t('allActivities')}</SelectItem>
-                    <SelectItem value="appointment">{t('appointments')}</SelectItem>
-                    <SelectItem value="quiz">{t('healthQuizzes')}</SelectItem>
-                    <SelectItem value="triage">{t('smartTriage')}</SelectItem>
-                    <SelectItem value="analysis">{t('reportAnalyses')}</SelectItem>
-                  </SelectContent>
-                </Select>
-                <Select value={sortDirection} onValueChange={(value) => setSortDirection(value as SortDirection)}>
-                  <SelectTrigger className="w-full sm:w-[180px]">
-                    <ArrowUpDown className="mr-2 h-4 w-4" />
-                    <SelectValue placeholder={t('sortBy')} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="desc">{t('dateNewest')}</SelectItem>
-                    <SelectItem value="asc">{t('dateOldest')}</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" className="w-full sm:w-auto">
-                    <Download className="mr-2 h-4 w-4" />
-                    {t('exportData')}
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuLabel>{t('exportAs')}</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={handleExportCSV}>CSV</DropdownMenuItem>
-                  <DropdownMenuItem onClick={handleExportPDF}>PDF</DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+      <div className="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+        <Card className="lg:col-span-2">
+            <CardHeader>
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <CardTitle className="font-headline">{t('activityLog')}</CardTitle>
+                <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                <div className="flex gap-2">
+                    <Select value={filterType} onValueChange={(value) => setFilterType(value as ActivityType)}>
+                    <SelectTrigger className="w-full sm:w-[180px]">
+                        <Filter className="mr-2 h-4 w-4" />
+                        <SelectValue placeholder={t('filterByType')} />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="all">{t('allActivities')}</SelectItem>
+                        <SelectItem value="appointment">{t('appointments')}</SelectItem>
+                        <SelectItem value="quiz">{t('healthQuizzes')}</SelectItem>
+                        <SelectItem value="triage">{t('smartTriage')}</SelectItem>
+                        <SelectItem value="analysis">{t('reportAnalyses')}</SelectItem>
+                    </SelectContent>
+                    </Select>
+                    <Select value={sortDirection} onValueChange={(value) => setSortDirection(value as SortDirection)}>
+                    <SelectTrigger className="w-full sm:w-[180px]">
+                        <ArrowUpDown className="mr-2 h-4 w-4" />
+                        <SelectValue placeholder={t('sortBy')} />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="desc">{t('dateNewest')}</SelectItem>
+                        <SelectItem value="asc">{t('dateOldest')}</SelectItem>
+                    </SelectContent>
+                    </Select>
+                </div>
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                    <Button variant="outline" className="w-full sm:w-auto">
+                        <Download className="mr-2 h-4 w-4" />
+                        {t('exportData')}
+                    </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                    <DropdownMenuLabel>{t('exportAs')}</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={handleExportCSV}>CSV</DropdownMenuItem>
+                    <DropdownMenuItem onClick={handleExportPDF}>PDF</DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+                </div>
             </div>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>{t('activityId')}</TableHead>
-                <TableHead>{t('action')}</TableHead>
-                <TableHead>{t('details')}</TableHead>
-                <TableHead>{t('status')}</TableHead>
-                <TableHead>{t('date')}</TableHead>
-                <TableHead className="text-right">{t('actions')}</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {isLoading ? (
+            </CardHeader>
+            <CardContent>
+            <Table>
+                <TableHeader>
                 <TableRow>
-                  <TableCell colSpan={6} className="h-24 text-center">
-                    <Loader2 className="mx-auto h-8 w-8 animate-spin text-primary" />
-                  </TableCell>
+                    <TableHead>{t('activityId')}</TableHead>
+                    <TableHead>{t('action')}</TableHead>
+                    <TableHead>{t('details')}</TableHead>
+                    <TableHead>{t('status')}</TableHead>
+                    <TableHead>{t('date')}</TableHead>
+                    <TableHead className="text-right">{t('actions')}</TableHead>
                 </TableRow>
-              ) : !user ? (
-                 <TableRow>
-                  <TableCell colSpan={6} className="h-24 text-center">
-                    {t('loginToSeeActivity')}
-                  </TableCell>
-                </TableRow>
-              ) : combinedActivity.length > 0 ? (
-                combinedActivity.map((activity) => (
-                  <TableRow key={activity.id}>
-                    <TableCell className="font-medium truncate max-w-[100px]">{activity.id}</TableCell>
-                    <TableCell>{activity.action}</TableCell>
-                    <TableCell className="truncate max-w-xs">{activity.details}</TableCell>
-                    <TableCell>
-                      <Badge variant="outline" className={cn(statusStyles[activity.status])}>
-                        {activity.status}
-                      </Badge>
+                </TableHeader>
+                <TableBody>
+                {isLoading ? (
+                    <TableRow>
+                    <TableCell colSpan={6} className="h-24 text-center">
+                        <Loader2 className="mx-auto h-8 w-8 animate-spin text-primary" />
                     </TableCell>
-                    <TableCell>{activity.date.toLocaleDateString()}</TableCell>
-                    <TableCell className="text-right">
-                       <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon">
-                            <MoreHorizontal className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                           <DropdownMenuItem>{t('viewDetails')}</DropdownMenuItem>
-                           <DropdownMenuItem>{t('downloadReport')}</DropdownMenuItem>
-                        </DropdownMenuContent>
-                       </DropdownMenu>
+                    </TableRow>
+                ) : !user ? (
+                    <TableRow>
+                    <TableCell colSpan={6} className="h-24 text-center">
+                        {t('loginToSeeActivity')}
                     </TableCell>
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={6} className="h-24 text-center">
-                    {t('noActivityFound')}
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+                    </TableRow>
+                ) : combinedActivity.length > 0 ? (
+                    combinedActivity.map((activity) => (
+                    <TableRow key={activity.id}>
+                        <TableCell className="font-medium truncate max-w-[100px]">{activity.id}</TableCell>
+                        <TableCell>{activity.action}</TableCell>
+                        <TableCell className="truncate max-w-xs">{activity.details}</TableCell>
+                        <TableCell>
+                        <Badge variant="outline" className={cn(statusStyles[activity.status])}>
+                            {activity.status}
+                        </Badge>
+                        </TableCell>
+                        <TableCell>{activity.date.toLocaleDateString()}</TableCell>
+                        <TableCell className="text-right">
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon">
+                                <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                            <DropdownMenuItem>{t('viewDetails')}</DropdownMenuItem>
+                            <DropdownMenuItem>{t('downloadReport')}</DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                        </TableCell>
+                    </TableRow>
+                    ))
+                ) : (
+                    <TableRow>
+                    <TableCell colSpan={6} className="h-24 text-center">
+                        {t('noActivityFound')}
+                    </TableCell>
+                    </TableRow>
+                )}
+                </TableBody>
+            </Table>
+            </CardContent>
+        </Card>
+        <div className="hidden lg:block relative w-full h-full min-h-[500px] rounded-lg overflow-hidden">
+          {yourDataImage && (
+            <Image
+              src={yourDataImage.imageUrl}
+              alt={yourDataImage.description}
+              fill
+              className="object-cover"
+              data-ai-hint={yourDataImage.imageHint}
+            />
+          )}
+        </div>
+      </div>
     </div>
   );
 }

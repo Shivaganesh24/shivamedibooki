@@ -30,6 +30,8 @@ import { indianStates } from "@/lib/india-data";
 import { simulateMalariaRates } from "@/ai/flows/simulate-malaria-rates";
 import { useLanguage } from "@/context/language-context";
 import { useToast } from "@/hooks/use-toast";
+import { PlaceHolderImages } from "@/lib/placeholder-images";
+import Image from "next/image";
 
 export default function DashboardPage() {
   const { t } = useTranslation();
@@ -52,6 +54,11 @@ export default function DashboardPage() {
     { question: t("tip4Question"), answer: t("tip4Answer") },
     { question: t("tip5Question"), answer: t("tip5Answer") },
   ];
+
+  const dashboardImage = useMemo(
+    () => PlaceHolderImages.find((p) => p.id === "health-tips-main"),
+    []
+  );
 
   const handleLocationCheck = () => {
     if (!selectedState || !selectedDistrict) {
@@ -124,73 +131,89 @@ export default function DashboardPage() {
         {t("healthTipsDashboardSubtitle")}
       </p>
 
-      <Card className="mt-8">
-        <CardHeader>
-          <CardTitle className="font-headline flex items-center gap-2">
-            <MapPin />
-            {t('locationHealthCheckTitle')}
-          </CardTitle>
-          <CardDescription>
-            {t('locationHealthCheckDesc')}
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="flex flex-col sm:flex-row items-center gap-4">
-          <Select value={selectedState} onValueChange={setSelectedState}>
-            <SelectTrigger>
-              <SelectValue placeholder={t("selectState")} />
-            </SelectTrigger>
-            <SelectContent>
-              {indianStates.map((state) => (
-                <SelectItem key={state.name} value={state.name}>
-                  {state.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Select
-            value={selectedDistrict}
-            onValueChange={setSelectedDistrict}
-            disabled={!selectedState}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder={t("selectDistrict")} />
-            </SelectTrigger>
-            <SelectContent>
-              {districts.map((district) => (
-                <SelectItem key={district} value={district}>
-                  {district}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Button
-            onClick={handleLocationCheck}
-            disabled={isPending || !selectedDistrict}
-            className="w-full sm:w-auto"
-          >
-            {isPending ? (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            ) : (
-              <Microscope className="mr-2 h-4 w-4" />
-            )}
-            {t('checkAreaButton')}
-          </Button>
-        </CardContent>
-      </Card>
+      <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+        <div className="space-y-8">
+            <Card>
+                <CardHeader>
+                <CardTitle className="font-headline flex items-center gap-2">
+                    <MapPin />
+                    {t('locationHealthCheckTitle')}
+                </CardTitle>
+                <CardDescription>
+                    {t('locationHealthCheckDesc')}
+                </CardDescription>
+                </CardHeader>
+                <CardContent className="flex flex-col sm:flex-row items-center gap-4">
+                <Select value={selectedState} onValueChange={setSelectedState}>
+                    <SelectTrigger>
+                    <SelectValue placeholder={t("selectState")} />
+                    </SelectTrigger>
+                    <SelectContent>
+                    {indianStates.map((state) => (
+                        <SelectItem key={state.name} value={state.name}>
+                        {state.name}
+                        </SelectItem>
+                    ))}
+                    </SelectContent>
+                </Select>
+                <Select
+                    value={selectedDistrict}
+                    onValueChange={setSelectedDistrict}
+                    disabled={!selectedState}
+                >
+                    <SelectTrigger>
+                    <SelectValue placeholder={t("selectDistrict")} />
+                    </SelectTrigger>
+                    <SelectContent>
+                    {districts.map((district) => (
+                        <SelectItem key={district} value={district}>
+                        {district}
+                        </SelectItem>
+                    ))}
+                    </SelectContent>
+                </Select>
+                <Button
+                    onClick={handleLocationCheck}
+                    disabled={isPending || !selectedDistrict}
+                    className="w-full sm:w-auto"
+                >
+                    {isPending ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    ) : (
+                    <Microscope className="mr-2 h-4 w-4" />
+                    )}
+                    {t('checkAreaButton')}
+                </Button>
+                </CardContent>
+            </Card>
 
-      <div className="mt-12 max-w-4xl">
-        <Accordion type="single" collapsible className="w-full">
-          {translatedHealthTips.map((tip, index) => (
-            <AccordionItem key={index} value={`item-${index + 1}`}>
-              <AccordionTrigger className="text-lg font-semibold text-left hover:no-underline">
-                {tip.question}
-              </AccordionTrigger>
-              <AccordionContent className="text-base text-muted-foreground">
-                {tip.answer}
-              </AccordionContent>
-            </AccordionItem>
-          ))}
-        </Accordion>
+            <div className="max-w-4xl">
+                <Accordion type="single" collapsible className="w-full">
+                {translatedHealthTips.map((tip, index) => (
+                    <AccordionItem key={index} value={`item-${index + 1}`}>
+                    <AccordionTrigger className="text-lg font-semibold text-left hover:no-underline">
+                        {tip.question}
+                    </AccordionTrigger>
+                    <AccordionContent className="text-base text-muted-foreground">
+                        {tip.answer}
+                    </AccordionContent>
+                    </AccordionItem>
+                ))}
+                </Accordion>
+            </div>
+        </div>
+
+        <div className="hidden lg:block relative w-full h-full min-h-[500px] rounded-lg overflow-hidden">
+            {dashboardImage && (
+                <Image
+                    src={dashboardImage.imageUrl}
+                    alt={dashboardImage.description}
+                    fill
+                    className="object-cover"
+                    data-ai-hint={dashboardImage.imageHint}
+                />
+            )}
+        </div>
       </div>
     </div>
   );
