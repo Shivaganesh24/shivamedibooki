@@ -7,7 +7,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useAuth, useUser } from "@/firebase";
 import { cn } from "@/lib/utils";
 import { signOut } from "firebase/auth";
-import { Languages, Loader2, LogOut, Menu, Moon, Sun, X, Bot, Map, HeartPulse, TestTube, Stethoscope, User, ClipboardCheck, LayoutDashboard } from "lucide-react";
+import { Languages, Loader2, LogOut, Menu, Moon, Sun, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -27,14 +27,14 @@ import { useTranslation } from "@/hooks/use-translation";
 import { useTheme } from "next-themes";
 
 const navLinks = [
-  { href: "/", labelKey: "home", icon: <LayoutDashboard /> },
-  { href: "/smart-triage", labelKey: "smartTriage", icon: <Bot /> },
-  { href: "/malaria-map", labelKey: "malariaMap", icon: <Map /> },
-  { href: "/dashboard", labelKey: "healthTips", icon: <HeartPulse /> },
-  { href: "/health-quiz", labelKey: "healthQuiz", icon: <TestTube /> },
-  { href: "/book-appointment", labelKey: "bookAppointment", icon: <Stethoscope /> },
-  { href: "/your-data", labelKey: "yourData", icon: <User /> },
-  { href: "/report-reader", labelKey: "reportReader", icon: <ClipboardCheck /> },
+  { href: "/", labelKey: "home" },
+  { href: "/smart-triage", labelKey: "smartTriage" },
+  { href: "/malaria-map", labelKey: "malariaMap" },
+  { href: "/dashboard", labelKey: "healthTips" },
+  { href: "/health-quiz", labelKey: "healthQuiz" },
+  { href: "/book-appointment", labelKey: "bookAppointment" },
+  { href: "/your-data", labelKey: "yourData" },
+  { href: "/report-reader", labelKey: "reportReader" },
 ];
 
 export default function Header() {
@@ -51,18 +51,17 @@ export default function Header() {
     await signOut(auth);
   };
 
-  const NavLink = ({ href, labelKey, icon, isMobile = false }: { href: string; labelKey: string; icon: React.ReactNode; isMobile?: boolean }) => (
+  const NavLink = ({ href, labelKey, isMobile = false }: { href: string; labelKey: string; isMobile?: boolean }) => (
     <Link
       href={href}
       onClick={() => isMobile && setIsMobileMenuOpen(false)}
       className={cn(
-        "flex items-center gap-2 transition-colors hover:text-primary",
+        "transition-colors hover:text-primary",
         pathname === href ? "text-primary font-semibold" : "text-muted-foreground",
         isMobile && "block py-2 text-lg"
       )}
     >
-      {icon}
-      <span>{t(labelKey)}</span>
+      {t(labelKey)}
     </Link>
   );
 
