@@ -21,6 +21,7 @@ import {
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
 } from "@/components/ui/dropdown-menu";
+import { Menubar, MenubarContent, MenubarItem, MenubarMenu, MenubarSeparator, MenubarTrigger } from "@/components/ui/menubar";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { useLanguage } from "@/context/language-context";
 import { useTranslation } from "@/hooks/use-translation";
@@ -73,11 +74,19 @@ export default function Header() {
           <VAIQIcon className="h-8 w-auto text-primary" />
           <span className="font-headline text-xl font-bold"></span>
         </Link>
-        <nav className="hidden lg:flex items-center gap-6 text-sm">
+        
+        <Menubar className="hidden lg:flex border-none bg-transparent">
           {navLinks.map((link) => (
-            <NavLink key={link.href} {...link} />
+            <MenubarMenu key={link.href}>
+              <Link href={link.href} passHref>
+                <MenubarTrigger className={cn("text-sm", pathname === link.href ? "text-primary font-semibold" : "text-muted-foreground")}>
+                   {t(link.labelKey)}
+                </MenubarTrigger>
+              </Link>
+            </MenubarMenu>
           ))}
-        </nav>
+        </Menubar>
+
         <div className="flex items-center gap-2">
            <DropdownMenu>
             <DropdownMenuTrigger asChild>
