@@ -7,14 +7,14 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { indianStates } from "@/lib/india-data";
-import { BarChart as BarChartIcon, Bug, Info, Loader2, Map, Microscope, ShieldCheck } from "lucide-react";
+import { BarChart as BarChartIcon, Bug, Info, LineChart as LineChartIcon, AreaChart as AreaChartIcon, Loader2, Map, Microscope, ShieldCheck } from "lucide-react";
 import { simulateMalariaRates, type SimulateMalariaRatesOutput } from "@/ai/flows/simulate-malaria-rates";
 import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
-import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent } from "@/components/ui/chart";
+import { BarChart, Bar, AreaChart, Area, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 
 
 const availableYears = Array.from({ length: 15 }, (_, i) => new Date().getFullYear() - i);
@@ -27,6 +27,7 @@ const intensityStyles: { [key: string]: string } = {
 };
 
 type ChartDataType = 'simulatedCases' | 'caseRate';
+type ChartType = 'bar' | 'line' | 'area';
 
 export default function MalariaMapPage() {
     const [isPending, startTransition] = useTransition();
@@ -47,6 +48,7 @@ export default function MalariaMapPage() {
     
     const [simulationData, setSimulationData] = useState<SimulateMalariaRatesOutput | null>(null);
     const [chartDataType, setChartDataType] = useState<ChartDataType>('simulatedCases');
+    const [chartType, setChartType] = useState<ChartType>('bar');
 
 
     const districts1 = useMemo(() => {
@@ -93,7 +95,7 @@ export default function MalariaMapPage() {
                 fill: 'var(--color-chart-4)'
             });
         }
-        return data;
+        return data.sort((a, b) => a.name.localeCompare(b.name));
     }, [simulationData, chartDataType]);
 
 
@@ -107,7 +109,7 @@ export default function MalariaMapPage() {
             return;
         }
 
-        if (compare && ((!state2 || !district2) && !year2)) {
+        if (compare && (!state2 || !district2) && !year2) {
              toast({
                 variant: 'destructive',
                 title: 'Incomplete Comparison Selection',
@@ -184,6 +186,38 @@ export default function MalariaMapPage() {
                 </CardContent>
             </Card>
         );
+    }
+    
+    const renderChart = () => {
+        const ChartComponent = {
+            bar: BarChart,
+            line: LineChart,
+            area: AreaChart,
+        }[chartType];
+
+        const MainComponent = {
+            bar: <Bar dataKey={chartDataType} radius={8} />,
+            line: <Line type="monotone" dataKey={chartDataType} stroke="hsl(var(--primary))" strokeWidth={2} />,
+            area: <Area type="monotone" dataKey={chartDataType} stroke="hsl(var(--primary))" fill="hsl(var(--primary))" fillOpacity={0.3} />,
+        }[chartType];
+
+        return (
+            <ChartContainer config={{}} className="w-full h-[400px]">
+                <ChartComponent data={chartData}>
+                    <CartesianGrid vertical={false} />
+                    <XAxis
+                        dataKey="name"
+                        tickLine={false}
+                        axisLine={false}
+                        tickMargin={8}
+                        tickFormatter={(value) => value.slice(0, 15)}
+                    />
+                    <YAxis />
+                    <ChartTooltip content={<ChartTooltipContent />} />
+                    {MainComponent}
+                </ChartComponent>
+            </ChartContainer>
+        )
     }
 
     return (
@@ -297,7 +331,7 @@ export default function MalariaMapPage() {
                    
                     <Card>
                         <CardHeader>
-                            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                                 <div >
                                     <CardTitle className="font-headline flex items-center gap-2">
                                         <BarChartIcon className="h-6 w-6" />
@@ -307,6 +341,7 @@ export default function MalariaMapPage() {
                                         A visual representation of the simulated data.
                                     </CardDescription>
                                 </div>
+                                <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
                                 <Select value={chartDataType} onValueChange={(value) => setChartDataType(value as ChartDataType)}>
                                     <SelectTrigger className="w-full sm:w-[200px]">
                                         <SelectValue placeholder="Select data type" />
@@ -316,24 +351,21 @@ export default function MalariaMapPage() {
                                         <SelectItem value="caseRate">Case Rate (per 1,000)</SelectItem>
                                     </SelectContent>
                                 </Select>
+                                 <Select value={chartType} onValueChange={(value) => setChartType(value as ChartType)}>
+                                    <SelectTrigger className="w-full sm:w-[180px]">
+                                        <SelectValue placeholder="Select chart type" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="bar">Bar Chart</SelectItem>
+                                        <SelectItem value="line">Line Chart</SelectItem>
+                                        <SelectItem value="area">Area Chart</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                </div>
                             </div>
                         </CardHeader>
                         <CardContent>
-                            <ChartContainer config={{}} className="w-full h-[400px]">
-                                <BarChart data={chartData}>
-                                    <CartesianGrid vertical={false} />
-                                    <XAxis
-                                        dataKey="name"
-                                        tickLine={false}
-                                        axisLine={false}
-                                        tickMargin={8}
-                                        tickFormatter={(value) => value.slice(0, 15)}
-                                    />
-                                    <YAxis />
-                                    <ChartTooltip content={<ChartTooltipContent />} />
-                                    <Bar dataKey={chartDataType} radius={8} />
-                                </BarChart>
-                            </ChartContainer>
+                           {renderChart()}
                         </CardContent>
                     </Card>
 
@@ -383,6 +415,5 @@ export default function MalariaMapPage() {
             )}
         </div>
     );
-}
 
-  
+    
