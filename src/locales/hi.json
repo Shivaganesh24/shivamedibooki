@@ -291,5 +291,7 @@
   "locationHealthCheckDesc": "नकली स्वास्थ्य अलर्ट की जांच के लिए कोई भी क्षेत्र चुनें।",
   "checkAreaButton": "क्षेत्र की जांच करें",
   "simulationCompleteTitle": "सिमुलेशन पूर्ण",
-  "simulationCompleteDesc": "{district} के लिए नकली मलेरिया की तीव्रता {intensity} है।"
+  "simulationCompleteDesc": "{district} के लिए नकली मलेरिया की तीव्रता {intensity} है।",
+  "dashboard": "डैशबोर्ड",
+  "dashboardSubtitle": "सभी स्वास्थ्य सुविधाओं और अंतर्दृष्टि तक पहुँचने के लिए आपका केंद्रीय केंद्र।"
 }

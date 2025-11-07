@@ -291,5 +291,7 @@
   "locationHealthCheckDesc": "Select any region to check for simulated health alerts.",
   "checkAreaButton": "Check Area",
   "simulationCompleteTitle": "Simulation Complete",
-  "simulationCompleteDesc": "Simulated malaria intensity for {district} is {intensity}."
+  "simulationCompleteDesc": "Simulated malaria intensity for {district} is {intensity}.",
+  "dashboard": "Dashboard",
+  "dashboardSubtitle": "Your central hub for accessing all health features and insights."
 }

@@ -291,5 +291,7 @@
   "locationHealthCheckDesc": "ಅನುಕರಿಸಿದ ಆರೋಗ್ಯ ಎಚ್ಚರಿಕೆಗಳನ್ನು ಪರಿಶೀಲಿಸಲು ಯಾವುದೇ ಪ್ರದೇಶವನ್ನು ಆಯ್ಕೆಮಾಡಿ.",
   "checkAreaButton": "ಪ್ರದೇಶವನ್ನು ಪರಿಶೀಲಿಸಿ",
   "simulationCompleteTitle": "ಅನುಕರಣೆ ಪೂರ್ಣಗೊಂಡಿದೆ",
-  "simulationCompleteDesc": "{district} ಗಾಗಿ ಅನುಕರಿಸಿದ ಮಲೇರಿಯಾ ತೀವ್ರತೆಯು {intensity} ಆಗಿದೆ."
+  "simulationCompleteDesc": "{district} ಗಾಗಿ ಅನುಕರಿಸಿದ ಮಲೇರಿಯಾ ತೀವ್ರತೆಯು {intensity} ಆಗಿದೆ.",
+  "dashboard": "ಡ್ಯಾಶ್‌ಬೋರ್ಡ್",
+  "dashboardSubtitle": "ಎಲ್ಲಾ ಆರೋಗ್ಯ ವೈಶಿಷ್ಟ್ಯಗಳು ಮತ್ತು ಒಳನೋಟಗಳನ್ನು ಪ್ರವೇಶಿಸಲು ನಿಮ್ಮ ಕೇಂದ್ರ ಕೇಂದ್ರ."
 }
