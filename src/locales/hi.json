@@ -8,6 +8,7 @@
   "bookAppointment": "अपॉइंटमेंट बुक करें",
   "yourData": "आपका डेटा",
   "reportReader": "रिपोर्ट रीडर",
+  "yourLocation": "आपका स्थान",
   "changeLanguage": "भाषा बदलें",
   "selectLanguage": "भाषा चुनें",
   "logOut": "लॉग आउट",
@@ -293,5 +294,16 @@
   "simulationCompleteTitle": "सिमुलेशन पूर्ण",
   "simulationCompleteDesc": "{district} के लिए नकली मलेरिया की तीव्रता {intensity} है।",
   "dashboard": "डैशबोर्ड",
-  "dashboardSubtitle": "सभी स्वास्थ्य सुविधाओं और अंतर्दृष्टि तक पहुँचने के लिए आपका केंद्रीय केंद्र।"
+  "dashboardSubtitle": "सभी स्वास्थ्य सुविधाओं और अंतर्दृष्टि तक पहुँचने के लिए आपका केंद्रीय केंद्र।",
+  "yourLocationSubtitle": "अपने क्षेत्र के लिए एआई-संचालित, नकली स्वास्थ्य अलर्ट प्राप्त करने के लिए अपना स्थान चुनें।",
+  "selectYourLocation": "अपना स्थान चुनें",
+  "selectYourLocationDesc": "प्रासंगिक स्वास्थ्य जानकारी प्राप्त करने के लिए अपना राज्य और जिला चुनें।",
+  "selectStateAndDistrict": "कृपया एक राज्य और जिला चुनें।",
+  "errorFetchingAlerts": "अलर्ट प्राप्त करने में त्रुटि",
+  "errorFetchingAlertsDesc": "स्वास्थ्य अलर्ट प्राप्त करते समय एक त्रुटि हुई। कृपया पुनः प्रयास करें।",
+  "checkHealthAlerts": "स्वास्थ्य अलर्ट जांचें",
+  "generatingAlerts": "आपके क्षेत्र के लिए नकली स्वास्थ्य अलर्ट उत्पन्न हो रहे हैं...",
+  "simulatedHealthAlertsFor": "के लिए नकली स्वास्थ्य अलर्ट",
+  "preventativeMeasures": "निवारक उपाय",
+  "seasonalHealthTip": "मौसमी स्वास्थ्य युक्ति"
 }

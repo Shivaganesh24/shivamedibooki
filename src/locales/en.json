@@ -8,6 +8,7 @@
   "bookAppointment": "Book Appointment",
   "yourData": "Your Data",
   "reportReader": "Report Reader",
+  "yourLocation": "Your Location",
   "changeLanguage": "Change Language",
   "selectLanguage": "Select Language",
   "logOut": "Log Out",
@@ -293,5 +294,16 @@
   "simulationCompleteTitle": "Simulation Complete",
   "simulationCompleteDesc": "Simulated malaria intensity for {district} is {intensity}.",
   "dashboard": "Dashboard",
-  "dashboardSubtitle": "Your central hub for accessing all health features and insights."
+  "dashboardSubtitle": "Your central hub for accessing all health features and insights.",
+  "yourLocationSubtitle": "Select your location to receive AI-powered, simulated health alerts for your area.",
+  "selectYourLocation": "Select Your Location",
+  "selectYourLocationDesc": "Choose your state and district to get relevant health information.",
+  "selectStateAndDistrict": "Please select a state and district.",
+  "errorFetchingAlerts": "Error Fetching Alerts",
+  "errorFetchingAlertsDesc": "An error occurred while fetching health alerts. Please try again.",
+  "checkHealthAlerts": "Check Health Alerts",
+  "generatingAlerts": "Generating simulated health alerts for your area...",
+  "simulatedHealthAlertsFor": "Simulated Health Alerts for",
+  "preventativeMeasures": "Preventative Measures",
+  "seasonalHealthTip": "Seasonal Health Tip"
 }

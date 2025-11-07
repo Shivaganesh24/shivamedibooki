@@ -7,7 +7,7 @@ import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTr
 import { useAuth, useUser } from "@/firebase";
 import { cn } from "@/lib/utils";
 import { signOut } from "firebase/auth";
-import { Bot, ChevronDown, ClipboardCheck, Home, Languages, LayoutDashboard, Loader2, LogOut, Map, Menu, Moon, Sun, Stethoscope, TestTube, User, X } from "lucide-react";
+import { Bot, ChevronDown, ClipboardCheck, Home, Languages, LayoutDashboard, Loader2, LogOut, Map, Menu, Moon, Sun, Stethoscope, TestTube, User, X, MapPin } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -40,6 +40,7 @@ const navLinks = [
   { href: "/dashboard", labelKey: "dashboard", icon: <LayoutDashboard className="mr-2" /> },
   { href: "/smart-triage", labelKey: "smartTriage", icon: <Bot className="mr-2" /> },
   { href: "/malaria-map", labelKey: "malariaMap", icon: <Map className="mr-2" /> },
+  { href: "/your-location", labelKey: "yourLocation", icon: <MapPin className="mr-2" /> },
   { href: "/health-quiz", labelKey: "healthQuiz", icon: <TestTube className="mr-2" /> },
   { href: "/book-appointment", labelKey: "bookAppointment", icon: <Stethoscope className="mr-2" /> },
   { href: "/your-data", labelKey: "yourData", icon: <User className="mr-2" /> },
@@ -59,20 +60,6 @@ export default function Header() {
     if (!auth) return;
     await signOut(auth);
   };
-
-  const NavLink = ({ href, children, isMobile = false }: { href: string; children: React.ReactNode; isMobile?: boolean }) => (
-    <Link
-      href={href}
-      onClick={() => isMobile && setIsMobileMenuOpen(false)}
-      className={cn(
-        "transition-colors hover:text-primary text-sm",
-        pathname === href ? "text-primary font-semibold" : "text-muted-foreground",
-        isMobile && "flex items-center gap-4 py-2 text-lg"
-      )}
-    >
-      {children}
-    </Link>
-  );
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -208,9 +195,18 @@ export default function Header() {
                 </div>
                 <nav className="flex-grow flex flex-col gap-4 mt-8">
                   {navLinks.map((link) => (
-                    <NavLink key={link.href} href={link.href} isMobile>
+                    <Link
+                        key={link.href}
+                        href={link.href}
+                        onClick={() => isMobileMenuOpen && setIsMobileMenuOpen(false)}
+                        className={cn(
+                            "transition-colors hover:text-primary text-sm",
+                            pathname === link.href ? "text-primary font-semibold" : "text-muted-foreground",
+                            "flex items-center gap-4 py-2 text-lg"
+                        )}
+                        >
                         {link.icon} {t(link.labelKey)}
-                    </NavLink>
+                    </Link>
                   ))}
                 </nav>
                 <div className="mt-auto border-t pt-4 flex flex-col gap-2 pr-6">
