@@ -7,12 +7,15 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { indianStates } from "@/lib/india-data";
-import { BarChart, Bug, Info, Loader2, Map, Microscope, ShieldCheck } from "lucide-react";
+import { BarChart as BarChartIcon, Bug, Info, Loader2, Map, Microscope, ShieldCheck } from "lucide-react";
 import { simulateMalariaRates, type SimulateMalariaRatesOutput } from "@/ai/flows/simulate-malaria-rates";
 import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent } from "@/components/ui/chart";
+
 
 const availableYears = Array.from({ length: 15 }, (_, i) => new Date().getFullYear() - i);
 
@@ -22,6 +25,8 @@ const intensityStyles: { [key: string]: string } = {
     "High": "bg-orange-500/20 text-orange-400 border-orange-500/30",
     "Very High": "bg-red-500/20 text-red-400 border-red-500/30",
 };
+
+type ChartDataType = 'simulatedCases' | 'caseRate';
 
 export default function MalariaMapPage() {
     const [isPending, startTransition] = useTransition();
@@ -41,6 +46,8 @@ export default function MalariaMapPage() {
     const [year2, setYear2] = useState<string>(String(availableYears[0]));
     
     const [simulationData, setSimulationData] = useState<SimulateMalariaRatesOutput | null>(null);
+    const [chartDataType, setChartDataType] = useState<ChartDataType>('simulatedCases');
+
 
     const districts1 = useMemo(() => {
         const selected = indianStates.find(s => s.name === state1);
@@ -52,6 +59,44 @@ export default function MalariaMapPage() {
         return selected ? selected.districts : [];
     }, [state2]);
 
+    const chartData = useMemo(() => {
+        if (!simulationData) return [];
+
+        const { simulation, comparisonRegion } = simulationData;
+        const data = [];
+
+        if (simulation.year1) {
+            data.push({
+                name: `${simulation.district} ${simulation.year1.year}`,
+                [chartDataType]: simulation.year1[chartDataType],
+                fill: 'var(--color-chart-1)'
+            });
+        }
+        if (simulation.year2) {
+             data.push({
+                name: `${simulation.district} ${simulation.year2.year}`,
+                [chartDataType]: simulation.year2[chartDataType],
+                fill: 'var(--color-chart-2)'
+            });
+        }
+        if (comparisonRegion?.year1) {
+            data.push({
+                name: `${comparisonRegion.district} ${comparisonRegion.year1.year}`,
+                [chartDataType]: comparisonRegion.year1[chartDataType],
+                fill: 'var(--color-chart-3)'
+            });
+        }
+        if (comparisonRegion?.year2) {
+             data.push({
+                name: `${comparisonRegion.district} ${comparisonRegion.year2.year}`,
+                [chartDataType]: comparisonRegion.year2[chartDataType],
+                fill: 'var(--color-chart-4)'
+            });
+        }
+        return data;
+    }, [simulationData, chartDataType]);
+
+
     const handleRunSimulation = () => {
         if (!state1 || !district1 || !year1) {
             toast({
@@ -62,11 +107,11 @@ export default function MalariaMapPage() {
             return;
         }
 
-        if (compare && (!state2 || !district2)) {
+        if (compare && ((!state2 || !district2) && !year2)) {
              toast({
                 variant: 'destructive',
                 title: 'Incomplete Comparison Selection',
-                description: 'Please select a state and district for the comparison region.'
+                description: 'Please select a second year or a comparison region.'
             });
             return;
         }
@@ -250,11 +295,53 @@ export default function MalariaMapPage() {
                          {simulationData.comparisonRegion && renderDataCard("Comparison Region Simulation", simulationData.comparisonRegion)}
                     </div>
                    
+                    <Card>
+                        <CardHeader>
+                            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                                <div >
+                                    <CardTitle className="font-headline flex items-center gap-2">
+                                        <BarChartIcon className="h-6 w-6" />
+                                        Visual Comparison
+                                    </CardTitle>
+                                    <CardDescription>
+                                        A visual representation of the simulated data.
+                                    </CardDescription>
+                                </div>
+                                <Select value={chartDataType} onValueChange={(value) => setChartDataType(value as ChartDataType)}>
+                                    <SelectTrigger className="w-full sm:w-[200px]">
+                                        <SelectValue placeholder="Select data type" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="simulatedCases">Simulated Cases</SelectItem>
+                                        <SelectItem value="caseRate">Case Rate (per 1,000)</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                        </CardHeader>
+                        <CardContent>
+                            <ChartContainer config={{}} className="w-full h-[400px]">
+                                <BarChart data={chartData}>
+                                    <CartesianGrid vertical={false} />
+                                    <XAxis
+                                        dataKey="name"
+                                        tickLine={false}
+                                        axisLine={false}
+                                        tickMargin={8}
+                                        tickFormatter={(value) => value.slice(0, 15)}
+                                    />
+                                    <YAxis />
+                                    <ChartTooltip content={<ChartTooltipContent />} />
+                                    <Bar dataKey={chartDataType} radius={8} />
+                                </BarChart>
+                            </ChartContainer>
+                        </CardContent>
+                    </Card>
+
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <Card>
                              <CardHeader>
                                 <CardTitle className="font-headline flex items-center gap-2">
-                                    <BarChart className="h-6 w-6" />
+                                    <BarChartIcon className="h-6 w-6" />
                                     Comparative Analysis
                                 </CardTitle>
                             </CardHeader>
@@ -297,3 +384,5 @@ export default function MalariaMapPage() {
         </div>
     );
 }
+
+  
