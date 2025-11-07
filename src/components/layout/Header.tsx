@@ -1,3 +1,4 @@
+
 "use client";
 
 import { VAIQIcon } from "@/components/icons";
@@ -6,7 +7,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useAuth, useUser } from "@/firebase";
 import { cn } from "@/lib/utils";
 import { signOut } from "firebase/auth";
-import { Languages, Loader2, LogOut, Menu, Moon, Sun, X } from "lucide-react";
+import { Languages, Loader2, LogOut, Menu, Moon, Sun, X, Bot, Map, HeartPulse, TestTube, Stethoscope, User, ClipboardCheck, LayoutDashboard } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -26,14 +27,14 @@ import { useTranslation } from "@/hooks/use-translation";
 import { useTheme } from "next-themes";
 
 const navLinks = [
-  { href: "/", labelKey: "home" },
-  { href: "/smart-triage", labelKey: "smartTriage" },
-  { href: "/malaria-map", labelKey: "malariaMap" },
-  { href: "/dashboard", labelKey: "healthTips" },
-  { href: "/health-quiz", labelKey: "healthQuiz" },
-  { href: "/book-appointment", labelKey: "bookAppointment" },
-  { href: "/your-data", labelKey: "yourData" },
-  { href: "/report-reader", labelKey: "reportReader" },
+  { href: "/", labelKey: "home", icon: <LayoutDashboard /> },
+  { href: "/smart-triage", labelKey: "smartTriage", icon: <Bot /> },
+  { href: "/malaria-map", labelKey: "malariaMap", icon: <Map /> },
+  { href: "/dashboard", labelKey: "healthTips", icon: <HeartPulse /> },
+  { href: "/health-quiz", labelKey: "healthQuiz", icon: <TestTube /> },
+  { href: "/book-appointment", labelKey: "bookAppointment", icon: <Stethoscope /> },
+  { href: "/your-data", labelKey: "yourData", icon: <User /> },
+  { href: "/report-reader", labelKey: "reportReader", icon: <ClipboardCheck /> },
 ];
 
 export default function Header() {
@@ -50,17 +51,18 @@ export default function Header() {
     await signOut(auth);
   };
 
-  const NavLink = ({ href, labelKey, isMobile = false }: { href: string; labelKey: string; isMobile?: boolean }) => (
+  const NavLink = ({ href, labelKey, icon, isMobile = false }: { href: string; labelKey: string; icon: React.ReactNode; isMobile?: boolean }) => (
     <Link
       href={href}
       onClick={() => isMobile && setIsMobileMenuOpen(false)}
       className={cn(
-        "transition-colors hover:text-primary",
+        "flex items-center gap-2 transition-colors hover:text-primary",
         pathname === href ? "text-primary font-semibold" : "text-muted-foreground",
         isMobile && "block py-2 text-lg"
       )}
     >
-      {t(labelKey)}
+      {icon}
+      <span>{t(labelKey)}</span>
     </Link>
   );
 
@@ -71,7 +73,7 @@ export default function Header() {
           <VAIQIcon className="h-8 w-auto text-primary" />
           <span className="font-headline text-xl font-bold"></span>
         </Link>
-        <nav className="hidden md:flex items-center gap-6 text-sm">
+        <nav className="hidden lg:flex items-center gap-6 text-sm">
           {navLinks.map((link) => (
             <NavLink key={link.href} {...link} />
           ))}
