@@ -3,7 +3,7 @@
 
 import { VAIQIcon } from "@/components/icons";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { useAuth, useUser } from "@/firebase";
 import { cn } from "@/lib/utils";
 import { signOut } from "firebase/auth";
@@ -190,9 +190,13 @@ export default function Header() {
                 <span className="sr-only">Open menu</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="w-full sm:w-3/4">
+            <SheetContent side="left" className="w-full sm:w-3/4 pr-0">
+               <SheetHeader>
+                <SheetTitle className="sr-only">Menu</SheetTitle>
+                <SheetDescription className="sr-only">Main application navigation</SheetDescription>
+              </SheetHeader>
               <div className="flex flex-col h-full">
-                <div className="flex items-center justify-between border-b pb-4">
+                <div className="flex items-center justify-between border-b pb-4 pr-6">
                     <Link href="/" className="flex items-center gap-2" onClick={() => setIsMobileMenuOpen(false)}>
                         <VAIQIcon className="h-8 w-auto text-primary" />
                         <span className="font-headline text-xl font-bold"></span>
@@ -209,7 +213,7 @@ export default function Header() {
                     </NavLink>
                   ))}
                 </nav>
-                <div className="mt-auto border-t pt-4 flex flex-col gap-2">
+                <div className="mt-auto border-t pt-4 flex flex-col gap-2 pr-6">
                   {isUserLoading ? (
                     <div className="flex justify-center">
                       <Loader2 className="h-6 w-6 animate-spin text-primary" />
