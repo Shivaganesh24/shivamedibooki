@@ -1,3 +1,4 @@
+
 'use server';
 
 /**
@@ -95,8 +96,8 @@ Confidence Score: 5/5
 1.  **Disclaimer First:** ALWAYS begin your output with the exact disclaimer: "All data represent AI-generated simulations for educational and public-health awareness purposes, not real-world statistics."
 2.  **Simulate Data:** For the given state and district, generate plausible malaria data for the specified year(s). The simulation should produce a number of cases, a case rate per 1,000, and a qualitative intensity level.
 3.  **Perform Comparison:**
-    - If a `year2` is provided, generate data for that year and write a brief analysis comparing the trends between `year1` and `year2` for the primary district.
-    - If `compareState` and `compareDistrict` are provided, generate data for that region for the selected year(s) and write an analysis comparing the two regions.
+    - If a year2 is provided, generate data for that year and write a brief analysis comparing the trends between year1 and year2 for the primary district.
+    - If compareState and compareDistrict are provided, generate data for that region for the selected year(s) and write an analysis comparing the two regions.
 4.  **Analysis and Tip:** The comparative analysis must be between 4 and 6 sentences. Conclude with a practical health or prevention tip related to malaria.
 
 **Input for Simulation:**
