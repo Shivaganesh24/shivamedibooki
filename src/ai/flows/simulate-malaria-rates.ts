@@ -23,23 +23,22 @@ const SimulateMalariaRatesInputSchema = z.object({
 });
 export type SimulateMalariaRatesInput = z.infer<typeof SimulateMalariaRatesInputSchema>;
 
+const yearSimulationSchema = z.object({
+  year: z.number(),
+  simulatedCases: z.number().describe("Simulated number of malaria cases for the year."),
+  caseRate: z.number().describe("Simulated case rate per 1,000 population for the year."),
+  simulatedDeaths: z.number().describe("Simulated number of deaths from malaria."),
+  deathRate: z.number().describe("Simulated death rate per 1,000 population."),
+  intensity: z.enum(["Low", "Moderate", "High", "Very High"]).describe("A qualitative measure of malaria intensity."),
+});
+
 const SimulateMalariaRatesOutputSchema = z.object({
   disclaimer: z.string().describe("A mandatory disclaimer stating that the data is AI-generated and not real-world statistics."),
   simulation: z.object({
     district: z.string(),
     state: z.string(),
-    year1: z.object({
-      year: z.number(),
-      simulatedCases: z.number().describe("Simulated number of malaria cases for the first year."),
-      caseRate: z.number().describe("Simulated case rate per 1,000 population for the first year."),
-      intensity: z.enum(["Low", "Moderate", "High", "Very High"]).describe("A qualitative measure of malaria intensity."),
-    }),
-    year2: z.object({
-      year: z.number(),
-      simulatedCases: z.number().describe("Simulated number of malaria cases for the second year."),
-      caseRate: z.number().describe("Simulated case rate per 1,000 population for the second year."),
-      intensity: z.enum(["Low", "Moderate", "High", "Very High"]).describe("A qualitative measure of malaria intensity."),
-    }).optional(),
+    year1: yearSimulationSchema,
+    year2: yearSimulationSchema.optional(),
   }),
   comparison: z.object({
     analysis: z.string().describe("A 4-6 sentence comparative analysis of the malaria rates between the selected years or regions."),
@@ -48,18 +47,8 @@ const SimulateMalariaRatesOutputSchema = z.object({
   comparisonRegion: z.object({
     district: z.string(),
     state: z.string(),
-    year1: z.object({
-      year: z.number(),
-      simulatedCases: z.number().describe("Simulated cases for the comparison region's first year."),
-      caseRate: z.number().describe("Simulated case rate for the comparison region's first year."),
-      intensity: z.enum(["Low", "Moderate", "High", "Very High"]),
-    }),
-     year2: z.object({
-      year: z.number(),
-      simulatedCases: z.number().describe("Simulated cases for the comparison region's second year."),
-      caseRate: z.number().describe("Simulated case rate for the comparison region's second year."),
-      intensity: z.enum(["Low", "Moderate", "High", "Very High"]),
-    }).optional(),
+    year1: yearSimulationSchema,
+     year2: yearSimulationSchema.optional(),
   }).optional(),
 });
 export type SimulateMalariaRatesOutput = z.infer<typeof SimulateMalariaRatesOutputSchema>;
@@ -88,6 +77,7 @@ const prompt = ai.definePrompt({
 6. Provide a practical health tip: YES
 7. Respond entirely in the specified language: YES
 8. Handle special testing cases: YES
+9. Include simulated deaths and death rate: YES
 
 Confidence Score: 5/5
 
@@ -95,6 +85,7 @@ Confidence Score: 5/5
 - The user wants to see a simulation, not real data. I must always start with the disclaimer, translated to the target language.
 - **Testing Rule**: If the state is 'Odisha' or 'Goa', I must set the intensity to 'High' or 'Very High'. This is for testing the alert system. I will generate numbers that correspond to this high intensity.
 - The simulation should be plausible. I will use a baseline rate and apply modifiers for factors like geography, climate, and year. For example, coastal or forested districts might have higher rates. Rates might decrease over time due to public health interventions, but I can introduce fluctuations.
+- I need to add death metrics. I will simulate a plausible number of deaths based on the number of cases and calculate a death rate per 1,000 people.
 - The comparison needs to be insightful. If comparing years, I'll talk about trends. If comparing regions, I'll highlight differences in intensity and suggest possible simulated reasons. This analysis must be in the target language.
 - The health tip must be actionable, concise, and in the target language.
 
@@ -102,7 +93,12 @@ Confidence Score: 5/5
 1.  **Language First:** All generated text output (disclaimer, analysis, healthTip) MUST be in the language specified by the 'language' input parameter.
 2.  **Disclaimer First:** ALWAYS begin your output with the disclaimer: "All data represent AI-generated simulations for educational and public-health awareness purposes, not real-world statistics." This must be translated.
 3.  **TESTING SCENARIO:** If the provided state for the primary region or the comparison region is 'Odisha' or 'Goa', you MUST generate data that results in an 'intensity' of 'High' or 'Very High'. This is a mandatory requirement for testing purposes.
-4.  **Simulate Data:** For the given state and district, generate plausible malaria data for the specified year(s). The simulation should produce a number of cases, a case rate per 1,000, and a qualitative intensity level.
+4.  **Simulate Data:** For the given state and district, generate plausible malaria data for the specified year(s). The simulation must include:
+    - 'simulatedCases': Total number of cases.
+    - 'caseRate': Cases per 1,000 people.
+    - 'simulatedDeaths': Total number of deaths. This should be a small, plausible fraction of the cases.
+    - 'deathRate': Deaths per 1,000 people.
+    - 'intensity': Qualitative level (Low, Moderate, High, Very High).
 5.  **Perform Comparison:**
     - If a 'year2' is provided, generate data for that year for the primary district.
     - **If and ONLY IF** 'compareDistrict' and 'compareState' are provided, generate simulated data for that comparison region for the specified year(s). Otherwise, DO NOT include the 'comparisonRegion' object in your output.
@@ -133,4 +129,3 @@ const simulateMalariaRatesFlow = ai.defineFlow(
     return output!;
   }
 );
-

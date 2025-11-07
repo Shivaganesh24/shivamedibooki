@@ -21,21 +21,33 @@ import {
 } from "@/components/ui/select";
 import { indianStates } from "@/lib/india-data";
 import {
-  BarChart as BarChartIcon,
-  Bug,
+  Area,
+  Bar,
+  BarChart,
+  CalendarDays,
+  CartesianGrid,
+  Cell,
+  Droplets,
+  GitCompare,
   Info,
+  Legend,
+  Line,
+  LineChart,
   Loader2,
+  LocateFixed,
   Map,
   Microscope,
+  Pie,
+  PieChart,
+  PlusCircle,
+  RadialBar,
+  RadialBarChart,
+  ResponsiveContainer,
   ShieldCheck,
-  PieChart as PieChartIcon,
   Target,
   TrendingUp,
-  GitCompare,
-  CalendarDays,
-  LocateFixed,
-  Droplets,
-  PlusCircle,
+  XAxis,
+  YAxis,
 } from "lucide-react";
 import {
   simulateMalariaRates,
@@ -44,24 +56,6 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { cn } from "@/lib/utils";
-import {
-  AreaChart,
-  Area,
-  Bar,
-  BarChart,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Legend,
-  Line,
-  LineChart,
-  Pie,
-  PieChart,
-  RadialBar,
-  RadialBarChart,
-  ResponsiveContainer,
-  Cell,
-} from "recharts";
 import {
   ChartConfig,
   ChartContainer,
@@ -103,7 +97,7 @@ const CHART_COLORS = {
   "5": "hsl(var(--chart-5))",
 };
 
-type ChartDataType = "simulatedCases" | "caseRate";
+type ChartDataType = "simulatedCases" | "caseRate" | "simulatedDeaths" | "deathRate";
 type ChartType = "bar" | "line" | "area" | "pie" | "radial";
 
 const StateHeatMapGrid = ({
@@ -234,12 +228,19 @@ export default function MalariaMapPage() {
     let data: any[] = [];
     const config: ChartConfig = {};
     let keys: string[] = [];
+    
+    const getLabel = (dataType: ChartDataType) => {
+      switch(dataType) {
+        case 'simulatedCases': return t('simulatedCases');
+        case 'caseRate': return t('caseRate');
+        case 'simulatedDeaths': return t('simulatedDeaths');
+        case 'deathRate': return t('deathRate');
+      }
+    }
 
-    const isComparingYears = simulation.year2 && !comparisonRegion;
-    const isComparingRegions = comparisonRegion;
 
     if (chartType === 'line' || chartType === 'area') {
-      if (isComparingRegions) {
+      if (comparisonRegion) {
         // Comparing two regions, x-axis is year
         keys = [simulation.district, comparisonRegion.district];
         const years = [simulation.year1.year, simulation.year2?.year, comparisonRegion.year1?.year, comparisonRegion.year2?.year].filter(Boolean) as number[];
@@ -273,7 +274,7 @@ export default function MalariaMapPage() {
           name: String(d!.year),
           [chartDataType]: d![chartDataType]
         })).sort((a, b) => a.name.localeCompare(b.name));
-        config[chartDataType] = { label: chartDataType === 'simulatedCases' ? t('simulatedCases') : t('caseRate'), color: CHART_COLORS[1] };
+        config[chartDataType] = { label: getLabel(chartDataType), color: CHART_COLORS[1] };
       }
     } else {
       // Logic for bar, pie, radial charts
@@ -355,6 +356,47 @@ export default function MalariaMapPage() {
 
     const year1Data = data.year1;
     const year2Data = data.year2;
+    
+    const YearDataDisplay = ({ yearData }: { yearData: typeof year1Data }) => (
+       <div className="p-3 rounded-lg bg-secondary/50">
+        <h4 className="font-semibold text-lg">{yearData.year}</h4>
+        <div className="grid grid-cols-2 gap-4 mt-2 text-sm">
+          <p>
+            {t("simulatedCases")}:{" "}
+            <span className="font-bold">
+              {yearData.simulatedCases.toLocaleString()}
+            </span>
+          </p>
+          <p>
+            {t("simulatedDeaths")}:{" "}
+            <span className="font-bold">
+              {yearData.simulatedDeaths.toLocaleString()}
+            </span>
+          </p>
+          <p>
+            {t("caseRate")}:{" "}
+            <span className="font-bold">
+              {yearData.caseRate.toFixed(2)}
+            </span>
+          </p>
+           <p>
+            {t("deathRate")}:{" "}
+            <span className="font-bold text-red-500">
+              {yearData.deathRate.toFixed(3)}
+            </span>
+          </p>
+          <p>{t("intensity")}:</p>
+          <div
+            className={cn(
+              "rounded-md px-2 py-1 text-center font-medium",
+              intensityStyles[yearData.intensity]
+            )}
+          >
+            {t(yearData.intensity.toLowerCase())}
+          </div>
+        </div>
+      </div>
+    )
 
     return (
       <Card className="shadow-lg hover:shadow-primary/20 transition-shadow">
@@ -369,64 +411,8 @@ export default function MalariaMapPage() {
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
-          {year1Data && (
-            <div className="p-3 rounded-lg bg-secondary/50">
-              <h4 className="font-semibold text-lg">{year1Data.year}</h4>
-              <div className="grid grid-cols-2 gap-4 mt-2 text-sm">
-                <p>
-                  {t("simulatedCases")}:{" "}
-                  <span className="font-bold">
-                    {year1Data.simulatedCases.toLocaleString()}
-                  </span>
-                </p>
-                <p>
-                  {t("caseRate")}:{" "}
-                  <span className="font-bold">
-                    {year1Data.caseRate.toFixed(2)}
-                  </span>
-                </p>
-                <p>{t("intensity")}:</p>
-                <div
-                  className={cn(
-                    "rounded-md px-2 py-1 text-center font-medium",
-                    intensityStyles[year1Data.intensity]
-                  )}
-                >
-                  {t(year1Data.intensity.toLowerCase())}
-                </div>
-              </div>
-            </div>
-          )}
-          {year2Data && (
-            <>
-              <div className="p-3 rounded-lg bg-secondary/50">
-                <h4 className="font-semibold text-lg">{year2Data.year}</h4>
-                <div className="grid grid-cols-2 gap-4 mt-2 text-sm">
-                  <p>
-                    {t("simulatedCases")}:{" "}
-                    <span className="font-bold">
-                      {year2Data.simulatedCases.toLocaleString()}
-                    </span>
-                  </p>
-                  <p>
-                    {t("caseRate")}:{" "}
-                    <span className="font-bold">
-                      {year2Data.caseRate.toFixed(2)}
-                    </span>
-                  </p>
-                  <p>{t("intensity")}:</p>
-                  <div
-                    className={cn(
-                      "rounded-md px-2 py-1 text-center font-medium",
-                      intensityStyles[year2Data.intensity]
-                    )}
-                  >
-                    {t(year2Data.intensity.toLowerCase())}
-                  </div>
-                </div>
-              </div>
-            </>
-          )}
+          {year1Data && <YearDataDisplay yearData={year1Data} />}
+          {year2Data && <YearDataDisplay yearData={year2Data} />}
         </CardContent>
       </Card>
     );
@@ -434,6 +420,16 @@ export default function MalariaMapPage() {
 
   const renderChart = () => {
     if (!chartData || chartData.length === 0) return null;
+    
+    const dataTypeLabel = (dataType: ChartDataType) => {
+        switch(dataType) {
+            case "caseRate": return t('caseRate');
+            case "simulatedCases": return t('simulatedCases');
+            case "deathRate": return t('deathRate');
+            case "simulatedDeaths": return t('simulatedDeaths');
+            default: return "";
+        }
+    }
 
     return (
       <ChartContainer config={chartConfig} className="min-h-[450px] w-full">
@@ -447,7 +443,7 @@ export default function MalariaMapPage() {
                     <XAxis dataKey="name" tickLine={false} axisLine={false} tickMargin={8} interval={0} angle={-45} textAnchor="end" />
                     <YAxis />
                     <ChartTooltip content={<ChartTooltipContent />} />
-                    <Bar dataKey="value" name={chartDataType === 'caseRate' ? t('caseRate') : t('simulatedCases')} radius={8}>
+                    <Bar dataKey="value" name={dataTypeLabel(chartDataType)} radius={8}>
                       {chartData.map((entry) => <Cell key={`cell-${entry.name}`} fill={entry.fill as string} />)}
                     </Bar>
                   </BarChart>
@@ -761,6 +757,10 @@ export default function MalariaMapPage() {
                         {t("simulatedCases")}
                       </SelectItem>
                       <SelectItem value="caseRate">{t("caseRate")}</SelectItem>
+                       <SelectItem value="simulatedDeaths">
+                        {t("simulatedDeaths")}
+                      </SelectItem>
+                      <SelectItem value="deathRate">{t("deathRate")}</SelectItem>
                     </SelectContent>
                   </Select>
                   <Select
@@ -818,7 +818,7 @@ export default function MalariaMapPage() {
           <Card>
             <CardHeader>
               <CardTitle className="font-headline flex items-center gap-2">
-                <Bug className="h-6 w-6" />
+                <Map className="h-6 w-6" />
                 {t("simulatedHeatMap")}
               </CardTitle>
               <CardDescription>{t("simulatedHeatMapDesc")}</CardDescription>
@@ -832,5 +832,3 @@ export default function MalariaMapPage() {
     </div>
   );
 }
-
-    

@@ -191,6 +191,8 @@
   "selectDataType": "ಡೇಟಾ ಪ್ರಕಾರವನ್ನು ಆಯ್ಕೆಮಾಡಿ",
   "simulatedCases": "ಅನುಕರಿಸಿದ ಪ್ರಕರಣಗಳು",
   "caseRate": "ಪ್ರಕರಣ ದರ (ಪ್ರತಿ 1,000)",
+  "simulatedDeaths": "ಅನುಕರಿಸಿದ ಸಾವುಗಳು",
+  "deathRate": "ಸಾವಿನ ದರ (ಪ್ರತಿ 1,000)",
   "selectChartType": "ಚಾರ್ಟ್ ಪ್ರಕಾರವನ್ನು ಆಯ್ಕೆಮಾಡಿ",
   "barChart": "ಬಾರ್ ಚಾರ್ಟ್",
   "lineChart": "ಲೈನ್ ಚಾರ್ಟ್",

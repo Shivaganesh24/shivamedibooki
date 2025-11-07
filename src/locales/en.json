@@ -191,6 +191,8 @@
   "selectDataType": "Select data type",
   "simulatedCases": "Simulated Cases",
   "caseRate": "Case Rate (per 1,000)",
+  "simulatedDeaths": "Simulated Deaths",
+  "deathRate": "Death Rate (per 1,000)",
   "selectChartType": "Select chart type",
   "barChart": "Bar Chart",
   "lineChart": "Line Chart",
