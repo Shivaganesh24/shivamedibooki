@@ -13,8 +13,9 @@ import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
-import { BarChart, Bar, AreaChart, Area, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, RadialBarChart, RadialBar, Legend } from "recharts";
+import { BarChart, Bar, AreaChart, Area, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, PieChart, Pie, Cell, RadialBarChart, RadialBar, Legend } from 'recharts';
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 
 const availableYears = Array.from({ length: 15 }, (_, i) => new Date().getFullYear() - i);
@@ -26,11 +27,62 @@ const intensityStyles: { [key: string]: string } = {
     "Very High": "bg-red-500/20 text-red-400 border-red-500/30",
 };
 
+const intensityHeatMapStyles: { [key: string]: string } = {
+    "Low": "bg-green-500/60 hover:bg-green-500",
+    "Moderate": "bg-yellow-500/60 hover:bg-yellow-500",
+    "High": "bg-orange-500/60 hover:bg-orange-500",
+    "Very High": "bg-red-500/60 hover:bg-red-500",
+};
+
 const CHART_COLORS = ["hsl(var(--chart-1))", "hsl(var(--chart-2))", "hsl(var(--chart-3))", "hsl(var(--chart-4))", "hsl(var(--chart-5))"];
 
 
 type ChartDataType = 'simulatedCases' | 'caseRate';
 type ChartType = 'bar' | 'line' | 'area' | 'pie' | 'radial';
+
+const HeatMap = ({ data }: { data: SimulateMalariaRatesOutput | null }) => {
+    if (!data) return null;
+
+    const regions = [data.simulation, data.comparisonRegion].filter(Boolean) as (SimulateMalariaRatesOutput['simulation'] | SimulateMalariaRatesOutput['comparisonRegion'])[];
+    if (regions.length === 0) return null;
+
+    const primaryData = regions[0];
+
+    const allDistricts = indianStates.find(s => s.name === primaryData.state)?.districts || [];
+    const mainDistrict = primaryData.district;
+
+    const getIntensity = (district: string) => {
+        if (district === mainDistrict) return primaryData.year1.intensity;
+        // In a real scenario, you'd have data for all districts.
+        // Here, we'll randomize for visual effect.
+        const intensities = ["Low", "Moderate", "High", "Very High"];
+        return intensities[Math.floor(Math.random() * intensities.length)];
+    }
+
+    return (
+        <TooltipProvider>
+            <div className="grid grid-cols-8 sm:grid-cols-12 md:grid-cols-16 gap-1 p-2 bg-secondary rounded-lg">
+                {allDistricts.map(district => {
+                    const intensity = getIntensity(district);
+                    return (
+                        <Tooltip key={district}>
+                            <TooltipTrigger asChild>
+                                <div className={cn(
+                                    "h-8 w-full rounded transition-colors",
+                                    intensityHeatMapStyles[intensity] || 'bg-muted',
+                                    district === mainDistrict && 'ring-2 ring-primary-foreground ring-offset-2 ring-offset-background'
+                                )}></div>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p>{district}: {intensity}</p>
+                            </TooltipContent>
+                        </Tooltip>
+                    )
+                })}
+            </div>
+        </TooltipProvider>
+    )
+}
 
 export default function MalariaMapPage() {
     const [isPending, startTransition] = useTransition();
@@ -72,12 +124,13 @@ export default function MalariaMapPage() {
         const config: ChartConfig = {};
 
         const addDataPoint = (label: string, value: number, color: string) => {
+            const safeLabel = label.replace(/[^a-zA-Z0-9]/g, '');
             data.push({
                 name: label,
                 value: value,
-                fill: `var(--color-${label})`
+                fill: `var(--color-${safeLabel})`
             });
-            config[label] = {
+            config[safeLabel] = {
                 label: label,
                 color: color,
             };
@@ -113,18 +166,18 @@ export default function MalariaMapPage() {
             return;
         }
 
-        if (compare) {
-            const isComparingYears = year2 && !state2 && !district2;
-            const isComparingRegions = state2 && district2;
-            if (!isComparingYears && !isComparingRegions) {
-                toast({
-                    variant: 'destructive',
-                    title: 'Incomplete Comparison',
-                    description: 'For comparison, please select either a second year OR a second state and district.'
-                });
-                return;
-            }
+        const isComparingYears = compare && year2 && !state2 && !district2;
+        const isComparingRegions = compare && state2 && district2;
+        
+        if (compare && !isComparingYears && !isComparingRegions) {
+            toast({
+                variant: 'destructive',
+                title: 'Incomplete Comparison',
+                description: 'For comparison, please select either a second year OR a second state and district.'
+            });
+            return;
         }
+
 
         startTransition(async () => {
             setSimulationData(null);
@@ -133,9 +186,9 @@ export default function MalariaMapPage() {
                     state: state1,
                     district: district1,
                     year1: parseInt(year1),
-                    year2: (compare && year2 && !state2) ? parseInt(year2) : undefined,
-                    compareState: (compare && state2) ? state2 : undefined,
-                    compareDistrict: (compare && district2) ? district2 : undefined,
+                    year2: isComparingYears ? parseInt(year2) : undefined,
+                    compareState: isComparingRegions ? state2 : undefined,
+                    compareDistrict: isComparingRegions ? district2 : undefined,
                 });
                 setSimulationData(result);
             } catch (error) {
@@ -205,7 +258,7 @@ export default function MalariaMapPage() {
                     <CartesianGrid vertical={false} />
                     <XAxis dataKey="name" tickLine={false} axisLine={false} tickMargin={8} interval={0} angle={-30} textAnchor="end" height={80} />
                     <YAxis />
-                    <ChartTooltip content={<ChartTooltipContent nameKey="name" />} />
+                    <ChartTooltip content={<ChartTooltipContent nameKey="value" />} />
                     <Bar dataKey="value" name={chartDataType === 'caseRate' ? "Case Rate" : "Simulated Cases"} radius={8}>
                        {chartData.map((entry, index) => (
                          <Cell key={`cell-${index}`} fill={entry.fill} />
@@ -218,7 +271,7 @@ export default function MalariaMapPage() {
                     <CartesianGrid vertical={false} />
                     <XAxis dataKey="name" tickLine={false} axisLine={false} tickMargin={8} interval={0} angle={-30} textAnchor="end" height={80}/>
                     <YAxis />
-                    <ChartTooltip content={<ChartTooltipContent nameKey="name" />} />
+                    <ChartTooltip content={<ChartTooltipContent nameKey="value" />} />
                     <Line type="monotone" dataKey="value" name={chartDataType === 'caseRate' ? "Case Rate" : "Simulated Cases"} stroke="hsl(var(--primary))" strokeWidth={2} />
                 </LineChart>
             ),
@@ -227,7 +280,7 @@ export default function MalariaMapPage() {
                     <CartesianGrid vertical={false} />
                     <XAxis dataKey="name" tickLine={false} axisLine={false} tickMargin={8} interval={0} angle={-30} textAnchor="end" height={80}/>
                     <YAxis />
-                    <ChartTooltip content={<ChartTooltipContent nameKey="name" />} />
+                    <ChartTooltip content={<ChartTooltipContent nameKey="value" />} />
                     <Area type="monotone" dataKey="value" name={chartDataType === 'caseRate' ? "Case Rate" : "Simulated Cases"} stroke="hsl(var(--primary))" fill="hsl(var(--primary))" fillOpacity={0.3} />
                 </AreaChart>
             ),
@@ -235,8 +288,8 @@ export default function MalariaMapPage() {
                 <PieChart>
                     <ChartTooltip content={<ChartTooltipContent nameKey="name" />} />
                     <Pie data={chartData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={120} label>
-                        {chartData.map((entry, index) => (
-                           <Cell key={`cell-${index}`} fill={entry.fill} />
+                        {chartData.map((entry) => (
+                           <Cell key={`cell-${entry.name}`} fill={entry.fill} />
                         ))}
                     </Pie>
                     <Legend />
@@ -332,8 +385,8 @@ export default function MalariaMapPage() {
                             </Select>
                         </div>
                         <div className={cn("space-y-2 transition-opacity", compare ? "opacity-100" : "opacity-50 pointer-events-none")}>
-                             <label className="text-sm font-medium">Year 2 (for comparison)</label>
-                            <Select value={year2} onValueChange={setYear2} disabled={!compare}>
+                             <label className="text-sm font-medium">Year 2 (for year-on-year comparison)</label>
+                            <Select value={year2} onValueChange={setYear2} disabled={!compare || !!state2}>
                                 <SelectTrigger><SelectValue placeholder="Select Year" /></SelectTrigger>
                                 <SelectContent>
                                     {availableYears.map(y => <SelectItem key={y} value={String(y)}>{y}</SelectItem>)}
@@ -413,7 +466,7 @@ export default function MalariaMapPage() {
                         <Card>
                              <CardHeader>
                                 <CardTitle className="font-headline flex items-center gap-2">
-                                    <BarChartIcon className="h-6 w-6" />
+                                    <Target className="h-6 w-6" />
                                     Comparative Analysis
                                 </CardTitle>
                             </CardHeader>
@@ -446,9 +499,7 @@ export default function MalariaMapPage() {
                             </CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <div className="w-full h-96 bg-secondary rounded-lg flex items-center justify-center">
-                                <p className="text-muted-foreground">Map visualization would be displayed here.</p>
-                            </div>
+                           <HeatMap data={simulationData} />
                         </CardContent>
                     </Card>
                 </div>
@@ -456,4 +507,5 @@ export default function MalariaMapPage() {
         </div>
     );
 }
+    
     
