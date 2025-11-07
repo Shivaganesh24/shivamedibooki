@@ -5,6 +5,7 @@ import { useState, useMemo, useTransition } from "react";
 import { PageTitle } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { indianStates } from "@/lib/india-data";
 import { BarChart as BarChartIcon, Bug, Info, LineChart as LineChartIcon, AreaChart as AreaChartIcon, Loader2, Map, Microscope, ShieldCheck, PieChart as PieChartIcon, Target, TrendingUp, GitCompare, CalendarDays, BarChart, LineChart, AreaChart, PieChart, Droplets, LocateFixed } from "lucide-react";
