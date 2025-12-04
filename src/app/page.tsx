@@ -45,7 +45,7 @@ export default function Home() {
     {
       title: t('featureHealthTipsTitle'),
       description: t('featureHealthTipsDescription'),
-      link: "/dashboard",
+      link: "/your-location",
       icon: <HeartPulse className="h-8 w-8 text-primary" />,
       image_id: "health-tips-main"
     },

@@ -45,7 +45,7 @@ export default function DashboardPage() {
     {
       title: t('featureHealthTipsTitle'),
       description: t('featureHealthTipsDescription'),
-      link: "/dashboard", // This page itself
+      link: "/your-location",
       icon: <HeartPulse className="h-8 w-8 text-primary" />,
     },
     {
