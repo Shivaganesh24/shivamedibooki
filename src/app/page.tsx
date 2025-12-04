@@ -107,7 +107,7 @@ export default function Home() {
               data-ai-hint={heroImage.imageHint}
             />
           )}
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent" />
+          <div className="absolute inset-0 bg-background/60" />
         </div>
         <div className="container relative z-10 mx-auto px-4 py-20 text-center sm:px-6 sm:py-32 lg:px-8">
           <VAIQIcon className="mx-auto h-24 w-auto text-primary" />
@@ -191,5 +191,3 @@ export default function Home() {
     </div>
   );
 }
-
-    
