@@ -2,51 +2,51 @@
   "placeholderImages": [
     {
       "id": "hero",
-      "description": "Abstract medical background",
-      "imageUrl": "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxtZWRpY2FsJTIwdGVjaG5vbG9neXxlbnwwfHx8fDE3NjI0MjM0MDV8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "medical technology"
+      "description": "A doctor using a tablet in a modern clinic, representing digital health.",
+      "imageUrl": "https://images.unsplash.com/photo-1538688525198-9b88f6f53126?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "imageHint": "digital health"
     },
     {
       "id": "smart-triage",
       "description": "An AI bot interacting with a user on a screen, symbolizing an intelligent health assistant.",
-      "imageUrl": "https://images.unsplash.com/photo-1581092580497-c2d22c648f21?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "imageUrl": "https://images.unsplash.com/photo-1677442135703-1787eea5ce01?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
       "imageHint": "medical AI"
     },
     {
       "id": "malaria-map-main",
       "description": "A stylized, modern map with glowing data points, representing health data visualization.",
-      "imageUrl": "https://images.unsplash.com/photo-1542044896530-05d85be9b11a?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "imageUrl": "https://images.unsplash.com/photo-1604357209793-fca5dca8e89f?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
       "imageHint": "data map"
     },
     {
       "id": "health-tips-main",
       "description": "A vibrant flat lay of fresh fruits, vegetables, and a measuring tape, representing a healthy lifestyle and nutrition.",
-      "imageUrl": "https://images.unsplash.com/photo-1543353071-873f17a7a088?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      "imageHint": "healthy food"
+      "imageUrl": "https://images.unsplash.com/photo-1506485338023-6ce5f36692df?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "imageHint": "healthy lifestyle"
     },
     {
       "id": "health-quiz",
       "description": "A person using a tablet with a quiz interface, surrounded by health-related icons.",
-      "imageUrl": "https://images.unsplash.com/photo-1576671081839-a8f6834a3f2b?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      "imageHint": "health quiz"
+      "imageUrl": "https://images.unsplash.com/photo-1554415707-6e8cfc93fe23?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "imageHint": "online quiz"
     },
     {
       "id": "book-appointment",
       "description": "A doctor and patient having a consultation in a modern, bright clinic setting.",
-      "imageUrl": "https://images.unsplash.com/photo-1576091160550-2173dba9996a?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "imageUrl": "https://images.unsplash.com/photo-1618498082410-b4aa22193b38?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
       "imageHint": "doctor consultation"
     },
     {
       "id": "your-data-main",
       "description": "A secure digital vault or server room, symbolizing data privacy and protection.",
-      "imageUrl": "https://images.unsplash.com/photo-1580894908361-967195033215?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      "imageHint": "data security"
+      "imageUrl": "https://images.unsplash.com/photo-1521788223940-0a260f043f89?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "imageHint": "data privacy"
     },
     {
       "id": "report-reader",
       "description": "A healthcare professional analyzing a medical scan on a large digital screen, representing advanced diagnostics.",
-      "imageUrl": "https://images.unsplash.com/photo-1580894901729-9a4f48259074?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      "imageHint": "medical analysis"
+      "imageUrl": "https://images.unsplash.com/photo-1530497610245-98d5c05a1260?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "imageHint": "medical scan"
     },
     {
       "id": "doctor-1",
