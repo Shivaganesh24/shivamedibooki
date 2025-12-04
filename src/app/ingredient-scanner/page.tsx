@@ -35,8 +35,8 @@ export default function IngredientScannerPage() {
     const videoRef = useRef<HTMLVideoElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const [hasCameraPermission, setHasCameraPermission] = useState(true);
-    const [isCameraReady, setIsCameraReady] = useState(false);
+    const [hasCameraPermission, setHasCameraPermission] = useState<boolean | null>(null);
+    const [isCameraOn, setIsCameraOn] = useState(false);
     const [capturedImage, setCapturedImage] = useState<string | null>(null);
     const [analysisResult, setAnalysisResult] = useState<AnalyzeIngredientsOutput | null>(null);
     const [isPending, startTransition] = useTransition();
@@ -44,36 +44,45 @@ export default function IngredientScannerPage() {
     const { t } = useTranslation();
     const { language } = useLanguage();
     const { toast } = useToast();
-
-    useEffect(() => {
-        const getCameraPermission = async () => {
-          try {
-            const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
-            setHasCameraPermission(true);
-            if (videoRef.current) {
-              videoRef.current.srcObject = stream;
-              videoRef.current.onloadedmetadata = () => setIsCameraReady(true);
-            }
-          } catch (error) {
-            console.error('Error accessing camera:', error);
-            setHasCameraPermission(false);
-            toast({
-              variant: 'destructive',
-              title: t('cameraAccessDenied'),
-              description: t('cameraAccessDeniedDesc'),
-            });
-          }
-        };
     
-        getCameraPermission();
-        
+    const getCameraPermission = async () => {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        toast({
+            variant: 'destructive',
+            title: t('cameraNotSupported'),
+            description: t('cameraNotSupportedDesc'),
+        });
+        setHasCameraPermission(false);
+        return;
+      }
+
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+        setHasCameraPermission(true);
+        setIsCameraOn(true);
+        setCapturedImage(null);
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+        }
+      } catch (error) {
+        console.error('Error accessing camera:', error);
+        setHasCameraPermission(false);
+        toast({
+          variant: 'destructive',
+          title: t('cameraAccessDenied'),
+          description: t('cameraAccessDeniedDesc'),
+        });
+      }
+    };
+    
+    useEffect(() => {
         return () => {
             if(videoRef.current && videoRef.current.srcObject) {
                 const stream = videoRef.current.srcObject as MediaStream;
                 stream.getTracks().forEach(track => track.stop());
             }
         }
-      }, [t, toast]);
+    }, []);
 
     const handleCapture = () => {
         if (videoRef.current && canvasRef.current) {
@@ -87,6 +96,11 @@ export default function IngredientScannerPage() {
                 const dataUri = canvas.toDataURL('image/jpeg');
                 setCapturedImage(dataUri);
                 setAnalysisResult(null); // Reset previous analysis
+                setIsCameraOn(false); // Turn off camera after capture
+                if (videoRef.current && videoRef.current.srcObject) {
+                    const stream = videoRef.current.srcObject as MediaStream;
+                    stream.getTracks().forEach(track => track.stop());
+                }
             }
         }
     };
@@ -100,6 +114,7 @@ export default function IngredientScannerPage() {
           }
           const dataUri = await fileToDataUri(file);
           setCapturedImage(dataUri);
+          setIsCameraOn(false);
           setAnalysisResult(null); // Reset previous analysis
         }
         // Reset file input to allow re-uploading the same file
@@ -150,21 +165,29 @@ export default function IngredientScannerPage() {
                     </CardHeader>
                     <CardContent className="space-y-4">
                         <div className="relative aspect-video bg-secondary rounded-md overflow-hidden flex items-center justify-center">
-                            <video ref={videoRef} className={cn("w-full h-full object-cover", capturedImage && "hidden")} autoPlay muted playsInline />
+                            <video ref={videoRef} className={cn("w-full h-full object-cover", !isCameraOn && "hidden")} autoPlay muted playsInline />
                             {capturedImage && <img src={capturedImage} alt="Captured ingredients" className="w-full h-full object-contain" />}
-                            {!hasCameraPermission && (
+                            
+                            {!isCameraOn && !capturedImage && (
+                                <div className="flex flex-col items-center gap-4">
+                                     <Camera className="h-16 w-16 text-muted-foreground" />
+                                    <Button onClick={getCameraPermission} disabled={isPending}>
+                                        <Camera className="mr-2"/> {t('turnOnCamera')}
+                                    </Button>
+                                </div>
+                            )}
+
+                            {hasCameraPermission === false && (
                                  <Alert variant="destructive" className="m-4">
                                      <AlertTitle>{t('cameraAccessRequired')}</AlertTitle>
                                      <AlertDescription>{t('cameraAccessDeniedDesc')}</AlertDescription>
                                 </Alert>
                             )}
-                             {hasCameraPermission && !isCameraReady && !capturedImage && (
-                                <Loader2 className="h-10 w-10 animate-spin text-primary absolute" />
-                            )}
                         </div>
+
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <Button onClick={handleCapture} disabled={!isCameraReady || isPending} className="w-full">
-                                <Camera className="mr-2"/> {capturedImage ? t('retakePicture') : t('capturePicture')}
+                             <Button onClick={handleCapture} disabled={!isCameraOn || isPending} className="w-full">
+                                <Camera className="mr-2"/> {t('capturePicture')}
                             </Button>
                             <Button asChild variant="outline">
                                 <Label htmlFor="upload-ingredient-image" className="cursor-pointer">
@@ -243,5 +266,3 @@ export default function IngredientScannerPage() {
         </div>
     );
 }
-
-    

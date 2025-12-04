@@ -322,5 +322,8 @@
   "healthScore": "Health Score",
   "ingredientBreakdown": "Ingredient Breakdown",
   "good": "Good",
-  "bad": "Bad"
+  "bad": "Bad",
+  "turnOnCamera": "Turn On Camera",
+  "cameraNotSupported": "Camera Not Supported",
+  "cameraNotSupportedDesc": "Your browser does not support camera access. Please try uploading an image instead."
 }
