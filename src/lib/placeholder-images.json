@@ -38,14 +38,14 @@
     },
     {
       "id": "your-data-main",
-      "description": "A secure digital vault or server room, symbolizing data privacy and protection.",
-      "imageUrl": "https://images.unsplash.com/photo-1615985250204-b48c0936d4fc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxkYXRhJTIwcHJpdmFjeXxlbnwwfHx8fDE3NjQ3Njk4MTF8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "data privacy"
+      "description": "A medical professional reviews a patient's chart on a tablet, symbolizing digital health records and data management.",
+      "imageUrl": "https://images.unsplash.com/photo-1628329242948-50e4a78b5398?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wzNzEzfDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA&ixlib=rb-4.0.3&q=80&w=1080",
+      "imageHint": "health record"
     },
     {
       "id": "report-reader",
       "description": "A healthcare professional analyzing a medical scan on a large digital screen, representing advanced diagnostics.",
-      "imageUrl": "https://images.unsplash.com/photo-1758691463569-66de91d76452?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxtZWRpY2FsJTIwc2NhbnxlbnwwfHx8fDE3NjQ4NjMzMTZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1612887760794-5ed4511aa409?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxtZWRpY2FsJTIwc2NhbnxlbnwwfHx8fDE3NjQ4NjMzMTZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "medical scan"
     },
     {
