@@ -2,14 +2,14 @@
   "placeholderImages": [
     {
       "id": "hero",
-      "description": "A doctor in a modern setting, symbolizing healthcare and technology.",
-      "imageUrl": "https://images.unsplash.com/photo-1551191093-c7824c16474f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxtZWRpY2FsJTIwYmFja2dyb3VuZHxlbnwwfHx8fDE3MjE4MTQwMjF8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "medical background"
+      "description": "An abstract, dark, and modern background with flowing lines of light.",
+      "imageUrl": "https://user-gen-media-assets.s3.amazonaws.com/astranaut-1721665403063.jpeg",
+      "imageHint": "abstract background"
     },
     {
       "id": "smart-triage",
       "description": "An AI bot interacting with a user on a screen, symbolizing an intelligent health assistant.",
-      "imageUrl": "https://plus.unsplash.com/premium_photo-1679923863193-4737c02c6245?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxtZWRpY2FsJTIwY2hhdGJvdHxlbnwwfHx8fDE3MjE4MTQwMjF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1551191093-c7824c16474f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxtZWRpY2FsJTIwYmFja2dyb3VuZHxlbnwwfHx8fDE3MjE4MTQwMjF8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "medical chatbot"
     },
     {
