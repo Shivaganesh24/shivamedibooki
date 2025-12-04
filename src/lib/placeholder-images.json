@@ -9,73 +9,73 @@
     {
       "id": "smart-triage",
       "description": "Close-up of a doctor using a tablet, symbolizing modern digital healthcare.",
-      "imageUrl": "https://images.unsplash.com/photo-1527613426441-4da17471b66d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxtZWRpY2FsJTIwdGVjaG5vbG9neXxlbnwwfHx8fDE3MjE4MTQwMjF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1578496480240-32d3e0c04525?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxtZWRpY2FsJTIwdGVjaG5vbG9neXxlbnwwfHx8fDE3NjQ3NTg4OTB8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "medical technology"
     },
     {
       "id": "malaria-map-main",
       "description": "A digital interface showing a world map with data visualizations, representing global health tracking.",
-      "imageUrl": "https://images.unsplash.com/photo-1605792657660-596af9009e82?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxkYXRhJTIwdmlzdWFsaXphdGlvbnxlbnwwfHx8fDE3MjE4MTQwMjF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1584291527908-033f4d6542c8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxkYXRhJTIwdmlzdWFsaXphdGlvbnxlbnwwfHx8fDE3NjQ4NTUyOTF8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "data visualization"
     },
     {
       "id": "health-tips-main",
       "description": "A person meditating outdoors at sunrise, representing mental and physical well-being.",
-      "imageUrl": "https://images.unsplash.com/photo-1506126613408-4e7e9b7d5b99?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxtZWRpdGF0aW9ufGVufDB8fHx8MTcyMTgxNDAyMXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1570276095143-a627b6514b1d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxtZWRpdGF0aW9uJTIwd2VsbG5lc3N8ZW58MHx8fHwxNzY0Nzc3Mjc0fDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "meditation wellness"
     },
     {
       "id": "health-quiz",
       "description": "A minimalist flat lay of a stethoscope and a question mark icon, symbolizing medical knowledge.",
-      "imageUrl": "https://images.unsplash.com/photo-1505751172876-8f3c74b67e2d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxoZWFsdGglMjBxdWVzdGlvbnxlbnwwfHx8fDE3MjE4MTQwMjF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1676385616961-d388db8ada4d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxoZWFsdGglMjBxdWVzdGlvbnxlbnwwfHx8fDE3NjQ4NjQ4NTJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "health question"
     },
     {
       "id": "book-appointment",
       "description": "A clean, modern clinic hallway, representing a professional medical environment.",
-      "imageUrl": "https://images.unsplash.com/photo-1551191093-c7824c16474f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxtZWRpY2FsJTIwYmFja2dyb3VuZHxlbnwwfHx8fDE3MjE4MTQwMjF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1731514721772-329626f84c8b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxjbGluaWMlMjBpbnRlcmlvcnxlbnwwfHx8fDE3NjQ4NDkwMTZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "clinic interior"
     },
     {
       "id": "your-data-main",
       "description": "An abstract visualization of secure data blocks, representing digital health records.",
-      "imageUrl": "https://images.unsplash.com/photo-1518770660439-4636190af475?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzZWN1cmUlMjBkYXRhfGVufDB8fHx8MTcyMTgxNDAyMXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1483817101829-339b08e8d83f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxzZWN1cmUlMjBkYXRhfGVufDB8fHx8MTc2NDg2NDg1M3ww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "secure data"
     },
     {
       "id": "report-reader",
       "description": "A radiologist examining an MRI scan on a high-resolution screen.",
-      "imageUrl": "https://images.unsplash.com/photo-1631217871297-590483433a0c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxtZWRpY2FsJTIwc2NhbnxlbnwwfHx8fDE3MjE4MTQwMjF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1758691462519-99076ad0d485?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxtZWRpY2FsJTIwc2NhbnxlbnwwfHx8fDE3NjQ4NjMzMTZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "medical scan"
     },
     {
       "id": "doctor-1",
       "description": "A friendly and professional female doctor in a clinical setting.",
-      "imageUrl": "https://images.unsplash.com/photo-1622253692010-333f2da60710?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxkb2N0b3J8ZW58MHx8fHwxNzIxODE0MDIxfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1680204437044-011a94496b4a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxmZW1hbGUlMjBkb2N0b3J8ZW58MHx8fHwxNzY0ODMyNzkxfDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "female doctor"
     },
     {
       "id": "doctor-2",
       "description": "A smiling male doctor in a lab coat with a stethoscope.",
-      "imageUrl": "https://images.unsplash.com/photo-1618498082410-b4aa22193b38?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxtYWxlJTIwZG9jdG9yfGVufDB8fHx8MTcyMTgxNDAyMXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1612523138351-4643808db8f3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxtYWxlJTIwZG9jdG9yfGVufDB8fHx8MTc2NDc1MzcyNnww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "male doctor"
     },
     {
       "id": "doctor-3",
       "description": "An experienced female doctor reviewing patient files.",
-      "imageUrl": "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxkb2N0b3J8ZW58MHx8fHwxNzIxODE0MDIxfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1673865641073-4479f93a7776?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxmZW1hbGUlMjBkb2N0b3J8ZW58MHx8fHwxNzY0ODMyNzkxfDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "female doctor"
     },
     {
       "id": "doctor-4",
       "description": "A young, confident male doctor standing in a hospital.",
-      "imageUrl": "https://images.unsplash.com/photo-1582750421291-d8bca7d50e5c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxtYWxlJTIwZG9jdG9yfGVufDB8fHx8MTcyMTgxNDAyMXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1645066928295-2506defde470?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxtYWxlJTIwZG9jdG9yfGVufDB8fHx8MTc2NDc1MzcyNnww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "male doctor"
     },
     {
       "id": "doctor-5",
       "description": "A mature female doctor with a reassuring expression.",
-      "imageUrl": "https://plus.unsplash.com/premium_photo-1661757234934-2f273650604b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxmZW1hbGUlMjBkb2N0b3J8ZW58MHx8fHwxNzIxODE0MDIxfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1683348858658-7c6b0eff2a16?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxmZW1hbGUlMjBkb2N0b3J8ZW58MHx8fHwxNzY0ODMyNzkxfDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "female doctor"
     }
   ]
