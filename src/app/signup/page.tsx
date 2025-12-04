@@ -11,19 +11,31 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
-import { useAuth, useUser } from "@/firebase";
+import { useAuth, useUser, useFirestore, setDocumentNonBlocking } from "@/firebase";
 import { initiateEmailSignUp } from "@/firebase/non-blocking-login";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { AuthError } from "firebase/auth";
 import { useTranslation } from "@/hooks/use-translation";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { indianStates } from "@/lib/india-data";
+import { doc } from "firebase/firestore";
+
 
 const signupFormSchema = z.object({
   email: z.string().email("Please enter a valid email address."),
   password: z.string().min(6, "Password must be at least 6 characters."),
   confirmPassword: z.string(),
+  state: z.string().min(1, "Please select a state."),
+  district: z.string().min(1, "Please select a district."),
 }).refine(data => data.password === data.confirmPassword, {
   message: "Passwords do not match",
   path: ["confirmPassword"],
@@ -33,6 +45,7 @@ type SignupFormValues = z.infer<typeof signupFormSchema>;
 
 export default function SignupPage() {
   const auth = useAuth();
+  const firestore = useFirestore();
   const { user } = useUser();
   const router = useRouter();
   const { toast } = useToast();
@@ -44,13 +57,45 @@ export default function SignupPage() {
       email: "",
       password: "",
       confirmPassword: "",
+      state: "",
+      district: "",
     },
   });
 
-  const onSubmit = (data: SignupFormValues) => {
-    if (!auth) return;
-    initiateEmailSignUp(auth, data.email, data.password)
-    .catch((error: AuthError) => {
+  const selectedState = form.watch("state");
+
+  const districts = useMemo(() => {
+    const stateData = indianStates.find((s) => s.name === selectedState);
+    return stateData ? stateData.districts : [];
+  }, [selectedState]);
+
+  useEffect(() => {
+    // Reset district when state changes
+    form.setValue("district", "");
+  }, [selectedState, form]);
+
+  const onSubmit = async (data: SignupFormValues) => {
+    if (!auth || !firestore) return;
+    try {
+      const userCredential = await initiateEmailSignUp(auth, data.email, data.password);
+      const user = userCredential.user;
+      
+      if (user) {
+        const userDocRef = doc(firestore, "users", user.uid);
+        // We are not blocking on this write, but we handle errors.
+        setDocumentNonBlocking(userDocRef, { 
+            state: data.state, 
+            district: data.district,
+            email: user.email,
+            id: user.uid,
+        }, { merge: true });
+      }
+      toast({
+        title: "Account Created",
+        description: "You have been successfully signed up.",
+      });
+      router.push("/");
+    } catch (error: any) {
       let description = t('unexpectedError');
       if (error.code === 'auth/email-already-in-use') {
         description = t('emailInUse');
@@ -62,7 +107,7 @@ export default function SignupPage() {
           title: t('signupFailed'),
           description: description,
       });
-    });
+    }
   };
   
   useEffect(() => {
@@ -123,6 +168,54 @@ export default function SignupPage() {
                       <FormControl>
                         <Input type="password" {...field} />
                       </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                 <FormField
+                  control={form.control}
+                  name="state"
+                  render={({ field }) => (
+                    <FormItem>
+                      <Label>{t('state')}</Label>
+                       <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder={t('selectState')} />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {indianStates.map((state) => (
+                            <SelectItem key={state.name} value={state.name}>
+                              {state.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                 <FormField
+                  control={form.control}
+                  name="district"
+                  render={({ field }) => (
+                    <FormItem>
+                      <Label>{t('district')}</Label>
+                       <Select onValueChange={field.onChange} value={field.value} disabled={!selectedState}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder={t('selectDistrict')} />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {districts.map((district) => (
+                            <SelectItem key={district} value={district}>
+                              {district}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                       <FormMessage />
                     </FormItem>
                   )}

@@ -42,7 +42,6 @@ const navLinks = [
   { href: "/ingredient-scanner", labelKey: "featureIngredientScannerTitle", icon: <ScanLine className="mr-2" />},
   { href: "/pose-perfect", labelKey: "featurePosePerfectTitle", icon: <Target className="mr-2" />},
   { href: "/malaria-map", labelKey: "diseaseSection", icon: <ShieldAlert className="mr-2" /> },
-  { href: "/your-location", labelKey: "yourLocation", icon: <MapPin className="mr-2" /> },
   { href: "/health-quiz", labelKey: "healthQuiz", icon: <TestTube className="mr-2" /> },
   { href: "/book-appointment", labelKey: "bookAppointment", icon: <Stethoscope className="mr-2" /> },
   { href: "/your-data", labelKey: "yourData", icon: <User className="mr-2" /> },
