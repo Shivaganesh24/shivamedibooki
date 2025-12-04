@@ -7,7 +7,7 @@ import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTr
 import { useAuth, useUser } from "@/firebase";
 import { cn } from "@/lib/utils";
 import { signOut } from "firebase/auth";
-import { Bot, ChevronDown, ClipboardCheck, Home, Languages, LayoutDashboard, Loader2, LogOut, Map, Menu, Moon, Sun, Stethoscope, TestTube, User, X, MapPin, Virus } from "lucide-react";
+import { Bot, ChevronDown, ClipboardCheck, Home, Languages, LayoutDashboard, Loader2, LogOut, Map, Menu, Moon, Sun, Stethoscope, TestTube, User, X, MapPin, ShieldAlert } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -39,7 +39,7 @@ const navLinks = [
   { href: "/", labelKey: "home", icon: <Home className="mr-2" /> },
   { href: "/dashboard", labelKey: "dashboard", icon: <LayoutDashboard className="mr-2" /> },
   { href: "/smart-triage", labelKey: "smartTriage", icon: <Bot className="mr-2" /> },
-  { href: "/malaria-map", labelKey: "diseaseSection", icon: <Virus className="mr-2" /> },
+  { href: "/malaria-map", labelKey: "diseaseSection", icon: <ShieldAlert className="mr-2" /> },
   { href: "/your-location", labelKey: "yourLocation", icon: <MapPin className="mr-2" /> },
   { href: "/health-quiz", labelKey: "healthQuiz", icon: <TestTube className="mr-2" /> },
   { href: "/book-appointment", labelKey: "bookAppointment", icon: <Stethoscope className="mr-2" /> },

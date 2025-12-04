@@ -52,7 +52,7 @@ import {
   ShieldCheck,
   Target,
   TrendingUp,
-  Virus
+  ShieldAlert
 } from "lucide-react";
 import {
   simulateDiseaseRates,
@@ -530,7 +530,7 @@ export default function DiseaseSectionPage() {
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="flex items-center gap-4">
-        <Virus className="h-10 w-10 text-primary" />
+        <ShieldAlert className="h-10 w-10 text-primary" />
         <PageTitle>{"Disease Section"}</PageTitle>
       </div>
       <p className="mt-4 text-lg text-muted-foreground max-w-3xl">
@@ -549,7 +549,7 @@ export default function DiseaseSectionPage() {
             <CardContent className="space-y-6">
             <div className="space-y-2">
                 <label className="text-sm font-medium flex items-center gap-2">
-                  <Virus size={16} /> Select Disease
+                  <ShieldAlert size={16} /> Select Disease
                 </label>
                 <Select value={disease} onValueChange={setDisease}>
                     <SelectTrigger>

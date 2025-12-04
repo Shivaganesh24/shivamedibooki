@@ -22,7 +22,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { indianStates } from "@/lib/india-data";
-import { simulateMalariaRates } from "@/ai/flows/simulate-malaria-rates";
+import { simulateDiseaseRates } from "@/ai/flows/simulate-disease-rates";
 import { Loader2 } from "lucide-react";
 import { useTranslation } from "@/hooks/use-translation";
 import { useLanguage } from "@/context/language-context";
@@ -67,7 +67,8 @@ export function LocationSelector() {
           kn: "Kannada",
       };
 
-      const result = await simulateMalariaRates({
+      const result = await simulateDiseaseRates({
+        disease: "Malaria",
         state,
         district,
         year1: new Date().getFullYear(),
