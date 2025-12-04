@@ -3,7 +3,7 @@
     {
       "id": "hero",
       "description": "A professional and inspiring photograph for a health application, showing a modern, clean, and abstract representation of medical technology.",
-      "imageUrl": "https://images.unsplash.com/photo-1579684385127-6f7a6e7c1a58?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxoZWFsdGglMjB0ZWNobm9sb2d5fGVufDB8fHx8MTc2NDc2MDAwNnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1576091160550-2173dba999ef?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxtZWRpY2FsJTIwdGVjaG5vbG9neXxlbnwwfHx8fDE3NjQ4NjMzMTh8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "medical technology"
     },
     {
@@ -15,7 +15,7 @@
     {
       "id": "ingredient-scanner",
       "description": "A close-up shot of a nutritional label on a food package, with a magnifying glass hovering over it.",
-      "imageUrl": "https://images.unsplash.com/photo-1584306670954-161d94fad6b2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxudXRyaXRpb24lMjBsYWJlbHxlbnwwfHx8fDE3NjQ4NzE0MDd8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1610348725531-b435b32cb7b4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxudXRyaXRpb24lMjBsYWJlbHxlbnwwfHx8fDE3NzQxOTY5NTZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "nutrition label"
     },
     {
@@ -63,7 +63,7 @@
     {
       "id": "doctor-2",
       "description": "A smiling male doctor in a lab coat with a stethoscope.",
-      "imageUrl": "https://images.unsplash.com/photo-1637059824899-a441006a6875?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxtYWxlJTIwZG9jdG9yfGVufDB8fHx8MTc2NDc1MzcyNnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1637059824899-a441006a6875?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxtYWxlJTIwZG9jdG9yfGVufDB8fHx8fDE3NjQ3NTM3MjZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "male doctor"
     },
     {
