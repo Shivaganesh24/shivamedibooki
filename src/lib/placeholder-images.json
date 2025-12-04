@@ -3,43 +3,43 @@
     {
       "id": "hero",
       "description": "A doctor using a tablet in a modern clinic, representing digital health.",
-      "imageUrl": "https://images.unsplash.com/photo-1434494878577-86c23bcb06b9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxkaWdpdGFsJTIwaGVhbHRofGVufDB8fHx8MTc2NDg2MzMxNnww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "digital health"
+      "imageUrl": "https://images.unsplash.com/photo-1576091160550-2173dba9996a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxoZWFsdGhjYXJlJTIwdGVjaG5vbG9neXxlbnwwfHx8fDE3NjQ5OTQ3OTV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "healthcare technology"
     },
     {
       "id": "smart-triage",
       "description": "An AI bot interacting with a user on a screen, symbolizing an intelligent health assistant.",
-      "imageUrl": "https://images.unsplash.com/photo-1758202292826-c40e172eed1c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxtZWRpY2FsJTIwQUl8ZW58MHx8fHwxNzY0ODYzMzE2fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1581092916259-15df5391ca78?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxtZWRpY2FsJTIwQUl8ZW58MHx8fHwxNzY0OTk0Nzk1fDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "medical AI"
     },
     {
       "id": "malaria-map-main",
       "description": "A stylized, modern map with glowing data points, representing health data visualization.",
-      "imageUrl": "https://images.unsplash.com/photo-1757820470004-fe7d9f6d57a9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxkYXRhJTIwbWFwfGVufDB8fHx8MTc2NDg2MzMxNnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxkYXRhJTIwbWFwfGVufDB8fHx8fDE3NjQ5OTQ3OTV8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "data map"
     },
     {
       "id": "health-tips-main",
       "description": "A vibrant flat lay of fresh fruits, vegetables, and a measuring tape, representing a healthy lifestyle and nutrition.",
-      "imageUrl": "https://images.unsplash.com/photo-1556911073-a517e752729c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxoZWFsdGh5JTIwbGlmZXN0eWxlfGVufDB8fHx8MTc2NDc1NzMzMnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1542838132-92c53300491e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxoZWFsdGh5JTIwbGlmZXN0eWxlfGVufDB8fHx8fDE3NjQ5OTQ3OTV8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "healthy lifestyle"
     },
     {
       "id": "health-quiz",
       "description": "A person using a tablet with a quiz interface, surrounded by health-related icons.",
-      "imageUrl": "https://images.unsplash.com/photo-1738152878182-869a3fc9e220?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxvbmxpbmUlMjBxdWl6fGVufDB8fHx8MTc2NDg2MzMxNnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1516542076529-1ea3854896f2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxvbmxpbmUlMjBxdWl6fGVufDB8fHx8fDE3NjQ5OTQ3OTV8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "online quiz"
     },
     {
       "id": "book-appointment",
       "description": "A doctor and patient having a consultation in a modern, bright clinic setting.",
-      "imageUrl": "https://images.unsplash.com/photo-1631217871099-88310a909a32?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxkb2N0b3IlMjBjb25zdWx0YXRpb258ZW58MHx8fHwxNzY0ODYzMzE2fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1579684385127-6ab1b2a7a928?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxkb2N0b3IlMjBjb25zdWx0YXRpb258ZW58MHx8fHwxNzY0OTk0Nzk1fDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "doctor consultation"
     },
     {
       "id": "your-data-main",
       "description": "A secure digital vault or server room, symbolizing data privacy and protection.",
-      "imageUrl": "https://images.unsplash.com/photo-1633265486064-086b219458ec?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxkYXRhJTIwcHJpdmFjeXxlbnwwfHx8fDE3NjQ3Njk4MTF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1504711331083-9c895941bf81?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxkYXRhJTIwcHJpdmFjeXxlbnwwfHx8fDE3NjQ3Njk4MTF8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "data privacy"
     },
     {
