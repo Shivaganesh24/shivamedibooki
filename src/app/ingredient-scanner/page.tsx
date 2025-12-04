@@ -14,7 +14,7 @@ import { Camera, CheckCircle, FileUp, Loader2, ScanLine, Sparkles, ThumbsDown, T
 import { useLanguage } from "@/context/language-context";
 import { useTranslation } from "@/hooks/use-translation";
 import { cn } from "@/lib/utils";
-import { Label } from "../ui/label";
+import { Label } from "@/components/ui/label";
 
 const healthScoreColor = (score: number) => {
     if (score >= 75) return "text-green-400";
