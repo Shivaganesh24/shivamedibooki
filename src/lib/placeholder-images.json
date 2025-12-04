@@ -2,81 +2,81 @@
   "placeholderImages": [
     {
       "id": "hero",
-      "description": "An abstract, dark, and modern background with flowing lines of light.",
-      "imageUrl": "https://user-gen-media-assets.s3.amazonaws.com/astranaut-1721665403063.jpeg",
-      "imageHint": "abstract background"
+      "description": "A futuristic, abstract representation of medical technology and data streams.",
+      "imageUrl": "https://images.unsplash.com/photo-1579546929518-9e396f3cc809?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxhYnN0cmFjdCUyMGJsdWUlMjBncmFkaWVudHxlbnwwfHx8fDE3MjE4MTQwMjF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "abstract gradient"
     },
     {
       "id": "smart-triage",
-      "description": "An AI bot interacting with a user on a screen, symbolizing an intelligent health assistant.",
-      "imageUrl": "https://images.unsplash.com/photo-1551191093-c7824c16474f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxtZWRpY2FsJTIwYmFja2dyb3VuZHxlbnwwfHx8fDE3MjE4MTQwMjF8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "medical chatbot"
+      "description": "Close-up of a doctor using a tablet, symbolizing modern digital healthcare.",
+      "imageUrl": "https://images.unsplash.com/photo-1527613426441-4da17471b66d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxtZWRpY2FsJTIwdGVjaG5vbG9neXxlbnwwfHx8fDE3MjE4MTQwMjF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "medical technology"
     },
     {
       "id": "malaria-map-main",
-      "description": "A stylized, modern map with glowing data points, representing health data visualization.",
-      "imageUrl": "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxoZWFsdGglMjB0ZWNobm9sb2d5fGVufDB8fHx8MTcyMTgxNDAyMXww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "health technology"
+      "description": "A digital interface showing a world map with data visualizations, representing global health tracking.",
+      "imageUrl": "https://images.unsplash.com/photo-1605792657660-596af9009e82?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxkYXRhJTIwdmlzdWFsaXphdGlvbnxlbnwwfHx8fDE3MjE4MTQwMjF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "data visualization"
     },
     {
       "id": "health-tips-main",
-      "description": "A vibrant flat lay of fresh fruits, vegetables, and a measuring tape, representing a healthy lifestyle and nutrition.",
-      "imageUrl": "https://images.unsplash.com/photo-1542838132-92c53300491e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxoZWFsdGh5JTIwZm9vZHxlbnwwfHx8fDE3MjE4MTQwMjF8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "healthy food"
+      "description": "A person meditating outdoors at sunrise, representing mental and physical well-being.",
+      "imageUrl": "https://images.unsplash.com/photo-1506126613408-4e7e9b7d5b99?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxtZWRpdGF0aW9ufGVufDB8fHx8MTcyMTgxNDAyMXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "meditation wellness"
     },
     {
       "id": "health-quiz",
-      "description": "A person using a tablet with a quiz interface, surrounded by health-related icons.",
-      "imageUrl": "https://plus.unsplash.com/premium_photo-1683140529578-8374c4442436?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxvbmxpbmUlMjBxdWl6fGVufDB8fHx8MTc2NDg2MzMxNnww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "online quiz"
+      "description": "A minimalist flat lay of a stethoscope and a question mark icon, symbolizing medical knowledge.",
+      "imageUrl": "https://images.unsplash.com/photo-1505751172876-8f3c74b67e2d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxoZWFsdGglMjBxdWVzdGlvbnxlbnwwfHx8fDE3MjE4MTQwMjF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "health question"
     },
     {
       "id": "book-appointment",
-      "description": "A doctor and patient having a consultation in a modern, bright clinic setting.",
-      "imageUrl": "https://images.unsplash.com/photo-1576091160351-a44213706c93?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxkb2N0b3IlMjBwYXRpZW50fGVufDB8fHx8MTcyMTgxNDAyMXww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "doctor patient"
+      "description": "A clean, modern clinic hallway, representing a professional medical environment.",
+      "imageUrl": "https://images.unsplash.com/photo-1551191093-c7824c16474f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxtZWRpY2FsJTIwYmFja2dyb3VuZHxlbnwwfHx8fDE3MjE4MTQwMjF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "clinic interior"
     },
     {
       "id": "your-data-main",
-      "description": "A person using a laptop with charts and graphs on the screen, symbolizing data management.",
-      "imageUrl": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxkYXRhJTIwYW5hbHlzaXN8ZW58MHx8fHwxNzIxODE0MDIxfDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "data analysis"
+      "description": "An abstract visualization of secure data blocks, representing digital health records.",
+      "imageUrl": "https://images.unsplash.com/photo-1518770660439-4636190af475?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzZWN1cmUlMjBkYXRhfGVufDB8fHx8MTcyMTgxNDAyMXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "secure data"
     },
     {
       "id": "report-reader",
-      "description": "A healthcare professional analyzing a medical scan on a large digital screen, representing advanced diagnostics.",
-      "imageUrl": "https://images.unsplash.com/photo-1581091014532-74cda58ae5a5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxtZWRpY2FsJTIwbGFifGVufDB8fHx8MTcyMTgxNDAyMXww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "medical lab"
+      "description": "A radiologist examining an MRI scan on a high-resolution screen.",
+      "imageUrl": "https://images.unsplash.com/photo-1631217871297-590483433a0c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxtZWRpY2FsJTIwc2NhbnxlbnwwfHx8fDE3MjE4MTQwMjF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "medical scan"
     },
     {
       "id": "doctor-1",
-      "description": "Portrait of Dr. Emily Carter",
-      "imageUrl": "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxkb2N0b3IlMjBwb3J0cmFpdHxlbnwwfHx8fDE3NjQ4MTM4NzR8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "doctor portrait"
+      "description": "A friendly and professional female doctor in a clinical setting.",
+      "imageUrl": "https://images.unsplash.com/photo-1622253692010-333f2da60710?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxkb2N0b3J8ZW58MHx8fHwxNzIxODE0MDIxfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "female doctor"
     },
     {
       "id": "doctor-2",
-      "description": "Portrait of Dr. Ben Adams",
-      "imageUrl": "https://images.unsplash.com/photo-1560250097-0b93528c311a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxkb2N0b3IlMjBwb3J0cmFpdHxlbnwwfHx8fDE3NjQ4MTM4NzR8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "doctor portrait"
+      "description": "A smiling male doctor in a lab coat with a stethoscope.",
+      "imageUrl": "https://images.unsplash.com/photo-1618498082410-b4aa22193b38?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxtYWxlJTIwZG9jdG9yfGVufDB8fHx8MTcyMTgxNDAyMXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "male doctor"
     },
     {
       "id": "doctor-3",
-      "description": "Portrait of Dr. Chloe Davis",
-      "imageUrl": "https://images.unsplash.com/photo-1612531385446-f7e6d131e1d0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxkb2N0b3IlMjBwb3J0cmFpdHxlbnwwfHx8fDE3NjQ4MTM4NzR8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "doctor portrait"
+      "description": "An experienced female doctor reviewing patient files.",
+      "imageUrl": "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxkb2N0b3J8ZW58MHx8fHwxNzIxODE0MDIxfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "female doctor"
     },
     {
       "id": "doctor-4",
-      "description": "Portrait of Dr. Olivia White",
-      "imageUrl": "https://images.unsplash.com/photo-1642541724244-83d49288a86b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxkb2N0b3IlMjBwb3J0cmFpdHxlbnwwfHx8fDE3NjQ4MTM4NzR8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "doctor portrait"
+      "description": "A young, confident male doctor standing in a hospital.",
+      "imageUrl": "https://images.unsplash.com/photo-1582750421291-d8bca7d50e5c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxtYWxlJTIwZG9jdG9yfGVufDB8fHx8MTcyMTgxNDAyMXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "male doctor"
     },
     {
       "id": "doctor-5",
-      "description": "Portrait of Dr. Samuel Lee",
-      "imageUrl": "https://images.unsplash.com/photo-1550831107-1553da8c8464?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxkb2N0b3IlMjBwb3J0cmFpdHxlbnwwfHx8fDE3NjQ4MTM4NzR8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "doctor portrait"
+      "description": "A mature female doctor with a reassuring expression.",
+      "imageUrl": "https://plus.unsplash.com/premium_photo-1661757234934-2f273650604b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxmZW1hbGUlMjBkb2N0b3J8ZW58MHx8fHwxNzIxODE0MDIxfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "female doctor"
     }
   ]
 }
