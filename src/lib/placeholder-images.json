@@ -8,45 +8,45 @@
     },
     {
       "id": "smart-triage",
-      "description": "An AI bot icon",
-      "imageUrl": "https://docus-live-cms-storage-us.s3.amazonaws.com/product_guide/images/sections/f45098659a22150d18da5bfbf1c53614.png",
+      "description": "An AI bot interacting with a user on a screen, symbolizing an intelligent health assistant.",
+      "imageUrl": "https://images.unsplash.com/photo-1581092580497-c2d22c648f21?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
       "imageHint": "medical AI"
     },
     {
       "id": "malaria-map-main",
-      "description": "A stylized map of India with a technological feel, representing data and health information across the country.",
-      "imageUrl": "https://cdn.vectorstock.com/i/1000v/55/96/india-map-with-modern-digital-style-futuristic-vector-38935596.jpg",
-      "imageHint": "India map"
+      "description": "A stylized, modern map with glowing data points, representing health data visualization.",
+      "imageUrl": "https://images.unsplash.com/photo-1542044896530-05d85be9b11a?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "imageHint": "data map"
     },
     {
       "id": "health-tips-main",
-      "description": "Fresh fruits and vegetables on a table, representing healthy eating.",
-      "imageUrl": "https://images.unsplash.com/photo-1542838132-92c53300491e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxoZWFsdGh5JTIwZm9vZHxlbnwwfHx8fDE3NjI1NzIwNTd8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "A vibrant flat lay of fresh fruits, vegetables, and a measuring tape, representing a healthy lifestyle and nutrition.",
+      "imageUrl": "https://images.unsplash.com/photo-1543353071-873f17a7a088?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
       "imageHint": "healthy food"
     },
     {
       "id": "health-quiz",
-      "description": "A person taking a quiz on a tablet.",
-      "imageUrl": "https://images.unsplash.com/photo-1659353887222-630895f23cc5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxtZWRpY2FsJTIwcXVpenxlbnwwfHx8fDE3NjI0OTUwOTh8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "medical quiz"
+      "description": "A person using a tablet with a quiz interface, surrounded by health-related icons.",
+      "imageUrl": "https://images.unsplash.com/photo-1576671081839-a8f6834a3f2b?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "imageHint": "health quiz"
     },
     {
       "id": "book-appointment",
-      "description": "A person booking a medical appointment on their smartphone.",
-      "imageUrl": "https://user-gen-media-assets.s3.amazonaws.com/seedream_images/09dc47ab-94a4-4245-8c85-9a9ef6d8262f.png",
-      "imageHint": "medical appointment"
+      "description": "A doctor and patient having a consultation in a modern, bright clinic setting.",
+      "imageUrl": "https://images.unsplash.com/photo-1576091160550-2173dba9996a?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "imageHint": "doctor consultation"
     },
     {
       "id": "your-data-main",
-      "description": "A futuristic digital lock icon, symbolizing data security and privacy.",
-      "imageUrl": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzeWJlcnNlY3VyaXR5fGVufDB8fHx8MTc2MjU3MjA5OHww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "cyber security"
+      "description": "A secure digital vault or server room, symbolizing data privacy and protection.",
+      "imageUrl": "https://images.unsplash.com/photo-1580894908361-967195033215?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "imageHint": "data security"
     },
     {
       "id": "report-reader",
-      "description": "A magnifying glass over a document",
-      "imageUrl": "https://images.unsplash.com/photo-1758691463087-43ac1462410f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxtZWRpY2FsJTIwcmVwb3J0fGVufDB8fHx8MTc2MjQ1NTQ4Mnww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "medical report"
+      "description": "A healthcare professional analyzing a medical scan on a large digital screen, representing advanced diagnostics.",
+      "imageUrl": "https://images.unsplash.com/photo-1580894901729-9a4f48259074?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "imageHint": "medical analysis"
     },
     {
       "id": "doctor-1",
