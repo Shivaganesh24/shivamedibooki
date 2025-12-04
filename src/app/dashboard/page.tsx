@@ -10,7 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useTranslation } from "@/hooks/use-translation";
-import { ArrowRight, Bot, ClipboardCheck, HeartPulse, LayoutDashboard, Stethoscope, TestTube, User, ShieldAlert, ScanLine } from "lucide-react";
+import { ArrowRight, Bot, ClipboardCheck, HeartPulse, LayoutDashboard, Stethoscope, TestTube, User, ShieldAlert, ScanLine, Target } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
@@ -29,6 +29,12 @@ export default function DashboardPage() {
       description: t('featureIngredientScannerDescription'),
       link: "/ingredient-scanner",
       icon: <ScanLine className="h-8 w-8 text-primary" />,
+    },
+    {
+      title: t('featurePosePerfectTitle'),
+      description: t('featurePosePerfectDescription'),
+      link: "/pose-perfect",
+      icon: <Target className="h-8 w-8 text-primary" />,
     },
     {
       title: t('diseaseSection'),

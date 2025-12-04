@@ -4,7 +4,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
-import { ArrowRight, Bot, ClipboardCheck, HeartPulse, Stethoscope, TestTube, User, ShieldAlert, ScanLine } from "lucide-react";
+import { ArrowRight, Bot, ClipboardCheck, HeartPulse, Stethoscope, TestTube, User, ShieldAlert, ScanLine, Target } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { VAIQIcon } from "@/components/icons";
@@ -27,6 +27,13 @@ export default function Home() {
       link: "/ingredient-scanner",
       icon: <ScanLine className="h-8 w-8 text-primary" />,
       image_id: "ingredient-scanner"
+    },
+    {
+      title: t('featurePosePerfectTitle'),
+      description: t('featurePosePerfectDescription'),
+      link: "/pose-perfect",
+      icon: <Target className="h-8 w-8 text-primary" />,
+      image_id: "pose-perfect"
     },
     {
       title: t('diseaseSection'),

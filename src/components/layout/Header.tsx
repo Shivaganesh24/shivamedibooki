@@ -7,7 +7,7 @@ import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTr
 import { useAuth, useUser } from "@/firebase";
 import { cn } from "@/lib/utils";
 import { signOut } from "firebase/auth";
-import { Bot, ChevronDown, ClipboardCheck, Home, Languages, LayoutDashboard, Loader2, LogOut, Map, Menu, Moon, Sun, Stethoscope, TestTube, User, X, MapPin, ShieldAlert, ScanLine } from "lucide-react";
+import { Bot, ChevronDown, ClipboardCheck, Home, Languages, LayoutDashboard, Loader2, LogOut, Map, Menu, Moon, Sun, Stethoscope, TestTube, User, X, MapPin, ShieldAlert, ScanLine, Target } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -40,6 +40,7 @@ const navLinks = [
   { href: "/dashboard", labelKey: "dashboard", icon: <LayoutDashboard className="mr-2" /> },
   { href: "/smart-triage", labelKey: "smartTriage", icon: <Bot className="mr-2" /> },
   { href: "/ingredient-scanner", labelKey: "featureIngredientScannerTitle", icon: <ScanLine className="mr-2" />},
+  { href: "/pose-perfect", labelKey: "featurePosePerfectTitle", icon: <Target className="mr-2" />},
   { href: "/malaria-map", labelKey: "diseaseSection", icon: <ShieldAlert className="mr-2" /> },
   { href: "/your-location", labelKey: "yourLocation", icon: <MapPin className="mr-2" /> },
   { href: "/health-quiz", labelKey: "healthQuiz", icon: <TestTube className="mr-2" /> },

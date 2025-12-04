@@ -8,3 +8,5 @@ import '@/ai/flows/text-to-speech.ts';
 import '@/ai/flows/simulate-disease-rates.ts';
 import '@/ai/flows/get-local-health-alerts.ts';
 import '@/ai/flows/analyze-ingredients.ts';
+import '@/ai/flows/analyze-pose.ts';
+

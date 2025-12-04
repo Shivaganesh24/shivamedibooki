@@ -9,7 +9,7 @@
     {
       "id": "smart-triage",
       "description": "Close-up of a doctor using a tablet, symbolizing modern digital healthcare.",
-      "imageUrl": "https://images.unsplash.com/photo-1606206873764-fd15e242df52?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxtZWRpY2FsJTIwdGVjaG5vbG9neXxlbnwwfHx8fDE3NjQ3NTg4OTB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1576091160550-2173dba999ef?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxtZWRpY2FsJTIwdGVjaG5vbG9neXxlbnwwfHx8fDE3NjQ4NjMzMTh8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "medical technology"
     },
     {
@@ -17,6 +17,12 @@
       "description": "A close-up shot of a nutritional label on a food package, with a magnifying glass hovering over it.",
       "imageUrl": "https://images.unsplash.com/photo-1610348725531-b435b32cb7b4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxudXRyaXRpb24lMjBsYWJlbHxlbnwwfHx8fDE3NzQxOTY5NTZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "nutrition label"
+    },
+    {
+      "id": "pose-perfect",
+      "description": "A person doing yoga in a bright, modern studio, symbolizing wellness and fitness technology.",
+      "imageUrl": "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx5b2dhfGVufDB8fHx8MTc3NDI4MjY5NHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "yoga fitness"
     },
     {
       "id": "malaria-map-main",
