@@ -2,9 +2,9 @@
   "placeholderImages": [
     {
       "id": "hero",
-      "description": "An abstract, dark, and modern background with flowing lines of light.",
-      "imageUrl": "https://user-gen-media-assets.s3.amazonaws.com/astranaut-1721665403063.jpeg",
-      "imageHint": "abstract background"
+      "description": "A doctor in a modern setting, symbolizing healthcare and technology.",
+      "imageUrl": "https://images.unsplash.com/photo-1576091160550-2173dba999ef?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxtZWRpY2FsJTIwdGVjaG5vbG9neXxlbnwwfHx8fDE3MjE3NDgxNTd8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "medical technology"
     },
     {
       "id": "smart-triage",
@@ -45,7 +45,7 @@
     {
       "id": "report-reader",
       "description": "A healthcare professional analyzing a medical scan on a large digital screen, representing advanced diagnostics.",
-      "imageUrl": "https://images.unsplash.com/photo-1758206523747-69af03fb56e4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxtZWRpY2FsJTIwc2NhbnxlbnwwfHx8fDE3NjQ4NjMzMTZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1758691463569-66de91d76452?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxtZWRpY2FsJTIwc2NhbnxlbnwwfHx8fDE3NjQ4NjMzMTZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "medical scan"
     },
     {
