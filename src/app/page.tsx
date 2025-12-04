@@ -89,11 +89,19 @@ export default function Home() {
     <div className="flex flex-col">
       {/* Hero Section */}
       <section 
-        className="relative py-20 sm:py-32 bg-secondary bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: heroImage ? `url(${heroImage.imageUrl})` : 'none' }}
+        className="relative py-20 sm:py-32 bg-secondary"
       >
-      <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent" />
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative text-center z-10">
+        {heroImage && (
+            <Image
+                src={heroImage.imageUrl}
+                alt={heroImage.description}
+                fill
+                className="object-cover z-0"
+                data-ai-hint={heroImage.imageHint}
+            />
+        )}
+      <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent z-10" />
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative text-center z-20">
           <VAIQIcon className="h-24 w-auto mx-auto text-primary" />
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-headline font-bold mt-4">
             {t('welcomeToVAIQ')}
