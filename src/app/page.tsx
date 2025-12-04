@@ -4,7 +4,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
-import { ArrowRight, Bot, ClipboardCheck, HeartPulse, Stethoscope, TestTube, User, Map } from "lucide-react";
+import { ArrowRight, Bot, ClipboardCheck, HeartPulse, Stethoscope, TestTube, User, Virus } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { VAIQIcon } from "@/components/icons";
@@ -22,10 +22,10 @@ export default function Home() {
       image_id: "smart-triage"
     },
     {
-      title: t('featureMalariaMapTitle'),
-      description: t('featureMalariaMapDescription'),
+      title: t('diseaseSection'),
+      description: t('featureDiseaseSectionDescription'),
       link: "/malaria-map",
-      icon: <Map className="h-8 w-8 text-primary" />,
+      icon: <Virus className="h-8 w-8 text-primary" />,
       image_id: "malaria-map-main"
     },
     {
@@ -88,25 +88,26 @@ export default function Home() {
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
-      <section 
-        className="relative py-20 sm:py-32 bg-secondary"
-      >
-        {heroImage && (
+      <section className="relative bg-background">
+        <div className="absolute inset-0 z-0">
+          {heroImage && (
             <Image
-                src={heroImage.imageUrl}
-                alt={heroImage.description}
-                fill
-                className="object-cover z-0"
-                data-ai-hint={heroImage.imageHint}
+              src={heroImage.imageUrl}
+              alt={heroImage.description}
+              fill
+              className="object-cover"
+              priority
+              data-ai-hint={heroImage.imageHint}
             />
-        )}
-      <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent z-10" />
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative text-center z-20">
-          <VAIQIcon className="h-24 w-auto mx-auto text-primary" />
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-headline font-bold mt-4">
+          )}
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent" />
+        </div>
+        <div className="container relative z-10 mx-auto px-4 py-20 text-center sm:px-6 sm:py-32 lg:px-8">
+          <VAIQIcon className="mx-auto h-24 w-auto text-primary" />
+          <h1 className="mt-4 text-4xl font-bold font-headline sm:text-5xl lg:text-6xl">
             {t('welcomeToVAIQ')}
           </h1>
-          <p className="mt-6 text-lg sm:text-xl max-w-3xl mx-auto text-muted-foreground">
+          <p className="mx-auto mt-6 max-w-3xl text-lg text-muted-foreground sm:text-xl">
             {t('welcomeSubtitle')}
           </p>
           <div className="mt-10">

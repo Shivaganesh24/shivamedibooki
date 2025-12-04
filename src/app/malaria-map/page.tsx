@@ -52,11 +52,12 @@ import {
   ShieldCheck,
   Target,
   TrendingUp,
+  Virus
 } from "lucide-react";
 import {
-  simulateMalariaRates,
-  type SimulateMalariaRatesOutput,
-} from "@/ai/flows/simulate-malaria-rates";
+  simulateDiseaseRates,
+  type SimulateDiseaseRatesOutput,
+} from "@/ai/flows/simulate-disease-rates";
 import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { cn } from "@/lib/utils";
@@ -79,6 +80,8 @@ import { PlaceHolderImages } from "@/lib/placeholder-images";
 const availableYears = Array.from({ length: 15 }, (_, i) =>
   (new Date().getFullYear() - i).toString()
 );
+
+const availableDiseases = ["Malaria", "Dengue", "Influenza", "Tuberculosis"];
 
 const intensityStyles: { [key: string]: string } = {
   Low: "bg-green-500/20 text-green-400 border-green-500/30",
@@ -160,7 +163,7 @@ const StateHeatMapGrid = ({
 };
 
 
-const HeatMap = ({ data }: { data: SimulateMalariaRatesOutput | null }) => {
+const HeatMap = ({ data }: { data: SimulateDiseaseRatesOutput | null }) => {
   if (!data) return null;
   const { simulation, comparisonRegion } = data;
 
@@ -184,12 +187,13 @@ const HeatMap = ({ data }: { data: SimulateMalariaRatesOutput | null }) => {
   );
 };
 
-export default function MalariaMapPage() {
+export default function DiseaseSectionPage() {
   const [isPending, startTransition] = useTransition();
   const { toast } = useToast();
   const { t } = useTranslation();
   const { language } = useLanguage();
 
+  const [disease, setDisease] = useState<string>("Malaria");
   // Primary region selections
   const [state1, setState1] = useState<string>("");
   const [district1, setDistrict1] = useState<string>("");
@@ -206,7 +210,7 @@ export default function MalariaMapPage() {
   const [year2, setYear2] = useState<string>(availableYears[0]);
 
   const [simulationData, setSimulationData] =
-    useState<SimulateMalariaRatesOutput | null>(null);
+    useState<SimulateDiseaseRatesOutput | null>(null);
   const [chartDataType, setChartDataType] =
     useState<ChartDataType>("simulatedCases");
   const [chartType, setChartType] = useState<ChartType>("bar");
@@ -221,7 +225,7 @@ export default function MalariaMapPage() {
     return selected ? selected.districts : [];
   }, [state2]);
 
-  const malariaMapImage = useMemo(() => PlaceHolderImages.find(p => p.id === "malaria-map-main"), []);
+  const diseaseMapImage = useMemo(() => PlaceHolderImages.find(p => p.id === "malaria-map-main"), []);
 
   const handleYear1Change = (value: string) => {
     setYear1(value);
@@ -304,7 +308,7 @@ export default function MalariaMapPage() {
   }, [simulationData, chartDataType, chartType, t]);
 
   const handleRunSimulation = () => {
-    if (!state1 || !district1 || !year1) {
+    if (!state1 || !district1 || !year1 || !disease) {
       toast({
         variant: "destructive",
         title: t("incompleteSelection"),
@@ -334,7 +338,8 @@ export default function MalariaMapPage() {
           kn: "Kannada",
         };
   
-        const result = await simulateMalariaRates({
+        const result = await simulateDiseaseRates({
+          disease: disease,
           state: state1,
           district: district1,
           year1: parseInt(year1),
@@ -358,8 +363,8 @@ export default function MalariaMapPage() {
   const renderDataCard = (
     title: string,
     data:
-      | SimulateMalariaRatesOutput["simulation"]
-      | SimulateMalariaRatesOutput["comparisonRegion"],
+      | SimulateDiseaseRatesOutput["simulation"]
+      | SimulateDiseaseRatesOutput["comparisonRegion"],
     icon: React.ReactNode
   ) => {
     if (!data) return null;
@@ -525,11 +530,11 @@ export default function MalariaMapPage() {
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="flex items-center gap-4">
-        <Map className="h-10 w-10 text-primary" />
-        <PageTitle>{t("malariaMap")}</PageTitle>
+        <Virus className="h-10 w-10 text-primary" />
+        <PageTitle>{"Disease Section"}</PageTitle>
       </div>
       <p className="mt-4 text-lg text-muted-foreground max-w-3xl">
-        {t("malariaMapSubtitle")}
+        {"Explore and compare simulated disease case rates across India for educational and awareness purposes."}
       </p>
 
       <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
@@ -539,9 +544,26 @@ export default function MalariaMapPage() {
                 <Droplets />
                 {t("simulationControls")}
             </CardTitle>
-            <CardDescription>{t("simulationControlsDesc")}</CardDescription>
+            <CardDescription>{"Select a disease, regions and years to generate the simulation."}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
+            <div className="space-y-2">
+                <label className="text-sm font-medium flex items-center gap-2">
+                  <Virus size={16} /> Select Disease
+                </label>
+                <Select value={disease} onValueChange={setDisease}>
+                    <SelectTrigger>
+                        <SelectValue placeholder="Select a disease" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {availableDiseases.map((d) => (
+                        <SelectItem key={d} value={d}>
+                            {d}
+                        </SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
                 {/* Primary Region */}
                 <div className="space-y-4 p-4 border rounded-lg bg-secondary/50">
@@ -712,13 +734,13 @@ export default function MalariaMapPage() {
             </CardContent>
         </Card>
         <div className="hidden lg:block relative w-full h-full min-h-[500px] rounded-lg overflow-hidden">
-            {malariaMapImage && (
+            {diseaseMapImage && (
                 <Image
-                    src={malariaMapImage.imageUrl}
-                    alt={malariaMapImage.description}
+                    src={diseaseMapImage.imageUrl}
+                    alt={diseaseMapImage.description}
                     fill
                     className="object-cover"
-                    data-ai-hint={malariaMapImage.imageHint}
+                    data-ai-hint={diseaseMapImage.imageHint}
                 />
             )}
         </div>

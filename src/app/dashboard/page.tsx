@@ -10,7 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useTranslation } from "@/hooks/use-translation";
-import { ArrowRight, Bot, ClipboardCheck, HeartPulse, LayoutDashboard, Stethoscope, TestTube, User, Map } from "lucide-react";
+import { ArrowRight, Bot, ClipboardCheck, HeartPulse, LayoutDashboard, Stethoscope, TestTube, User, Virus } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
@@ -25,10 +25,10 @@ export default function DashboardPage() {
       icon: <Bot className="h-8 w-8 text-primary" />,
     },
     {
-      title: t('featureMalariaMapTitle'),
-      description: t('featureMalariaMapDescription'),
+      title: t('diseaseSection'),
+      description: t('featureDiseaseSectionDescription'),
       link: "/malaria-map",
-      icon: <Map className="h-8 w-8 text-primary" />,
+      icon: <Virus className="h-8 w-8 text-primary" />,
     },
     {
       title: t('featureHealthTipsTitle'),
