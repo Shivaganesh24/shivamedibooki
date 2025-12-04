@@ -2,15 +2,21 @@
   "placeholderImages": [
     {
       "id": "hero",
-      "description": "A professional and inspiring photograph for a health application, showing a cityscape at dawn.",
-      "imageUrl": "https://images.unsplash.com/photo-1549492423-400259a2e574?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxhZXN0aGV0aWMlMjBjaXR5c2NhcGV8ZW58MHx8fHwxNzI0NTg5MjMwfDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "cityscape dawn"
+      "description": "A professional and inspiring photograph for a health application, showing a modern, clean, and abstract representation of medical technology.",
+      "imageUrl": "https://images.unsplash.com/photo-1579684385127-6f7a6e7c1a58?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxoZWFsdGglMjB0ZWNobm9sb2d5fGVufDB8fHx8MTc2NDc2MDAwNnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "medical technology"
     },
     {
       "id": "smart-triage",
       "description": "Close-up of a doctor using a tablet, symbolizing modern digital healthcare.",
       "imageUrl": "https://images.unsplash.com/photo-1606206873764-fd15e242df52?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxtZWRpY2FsJTIwdGVjaG5vbG9neXxlbnwwfHx8fDE3NjQ3NTg4OTB8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "medical technology"
+    },
+    {
+      "id": "ingredient-scanner",
+      "description": "A close-up shot of a nutritional label on a food package, with a magnifying glass hovering over it.",
+      "imageUrl": "https://images.unsplash.com/photo-1584306670954-161d94fad6b2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxudXRyaXRpb24lMjBsYWJlbHxlbnwwfHx8fDE3NjQ4NzE0MDd8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "nutrition label"
     },
     {
       "id": "malaria-map-main",
