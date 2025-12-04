@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useEffect, useRef, useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition, ChangeEvent } from "react";
 import { PageTitle } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,10 +10,11 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { analyzeIngredients, type AnalyzeIngredientsOutput } from "@/ai/flows/analyze-ingredients";
-import { Camera, CheckCircle, Loader2, ScanLine, Sparkles, ThumbsDown, ThumbsUp, XCircle } from "lucide-react";
+import { Camera, CheckCircle, FileUp, Loader2, ScanLine, Sparkles, ThumbsDown, ThumbsUp, XCircle } from "lucide-react";
 import { useLanguage } from "@/context/language-context";
 import { useTranslation } from "@/hooks/use-translation";
 import { cn } from "@/lib/utils";
+import { Label } from "../ui/label";
 
 const healthScoreColor = (score: number) => {
     if (score >= 75) return "text-green-400";
@@ -21,9 +22,19 @@ const healthScoreColor = (score: number) => {
     return "text-red-400";
 };
 
+const fileToDataUri = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  };
+
 export default function IngredientScannerPage() {
     const videoRef = useRef<HTMLVideoElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
     const [hasCameraPermission, setHasCameraPermission] = useState(true);
     const [isCameraReady, setIsCameraReady] = useState(false);
     const [capturedImage, setCapturedImage] = useState<string | null>(null);
@@ -77,6 +88,23 @@ export default function IngredientScannerPage() {
                 setCapturedImage(dataUri);
                 setAnalysisResult(null); // Reset previous analysis
             }
+        }
+    };
+
+    const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (file) {
+          if (file.size > 4 * 1024 * 1024) { // 4MB limit
+            toast({ variant: 'destructive', title: t('fileTooLarge'), description: t('fileTooLargeDesc') });
+            return;
+          }
+          const dataUri = await fileToDataUri(file);
+          setCapturedImage(dataUri);
+          setAnalysisResult(null); // Reset previous analysis
+        }
+        // Reset file input to allow re-uploading the same file
+        if (fileInputRef.current) {
+            fileInputRef.current.value = '';
         }
     };
 
@@ -134,15 +162,28 @@ export default function IngredientScannerPage() {
                                 <Loader2 className="h-10 w-10 animate-spin text-primary absolute" />
                             )}
                         </div>
-                        <div className="flex gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <Button onClick={handleCapture} disabled={!isCameraReady || isPending} className="w-full">
                                 <Camera className="mr-2"/> {capturedImage ? t('retakePicture') : t('capturePicture')}
                             </Button>
-                            <Button onClick={handleAnalyze} disabled={!capturedImage || isPending} className="w-full">
-                                {isPending ? <Loader2 className="mr-2 animate-spin"/> : <Sparkles className="mr-2"/>}
-                                {t('analyzeIngredients')}
+                            <Button asChild variant="outline">
+                                <Label htmlFor="upload-ingredient-image" className="cursor-pointer">
+                                    <FileUp className="mr-2" /> Upload Image
+                                    <input
+                                        ref={fileInputRef}
+                                        id="upload-ingredient-image"
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={handleFileChange}
+                                        className="sr-only"
+                                    />
+                                </Label>
                             </Button>
                         </div>
+                         <Button onClick={handleAnalyze} disabled={!capturedImage || isPending} className="w-full">
+                            {isPending ? <Loader2 className="mr-2 animate-spin"/> : <Sparkles className="mr-2"/>}
+                            {t('analyzeIngredients')}
+                        </Button>
                     </CardContent>
                 </Card>
 
@@ -202,3 +243,5 @@ export default function IngredientScannerPage() {
         </div>
     );
 }
+
+    
