@@ -20,4 +20,4 @@ VA!Q is an intelligent, simplified platform for personal health management, desi
   - **Firebase Authentication** for user management.
   - **Firestore** as a scalable NoSQL database for all user data.
 - **Generative AI**: A custom Python pipeline integrating **MobileNetV2** for advanced image analysis and **BioBERT** for deep understanding of medical text.
-- **Deployment**: **Firebase App Hosting** for continuous deployment and scalable, secure hosting.
+- **Deployment**: **vercel App Hosting** for continuous deployment and scalable, secure hosting.
