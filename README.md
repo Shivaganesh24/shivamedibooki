@@ -19,9 +19,5 @@ VA!Q is an intelligent, simplified platform for personal health management, desi
 - **Backend & Database**: **Firebase**
   - **Firebase Authentication** for user management.
   - **Firestore** as a scalable NoSQL database for all user data.
-- **Generative AI**:
-  - **Google's Genkit** as the framework for creating and managing AI flows.
-  - **Google's Gemini Models** (including Gemini 2.5 Flash) for powering all intelligent features like triage, report analysis, and text-to-speech.
+- **Generative AI**: A custom Python pipeline integrating **MobileNetV2** for advanced image analysis and **BioBERT** for deep understanding of medical text.
 - **Deployment**: **Firebase App Hosting** for continuous deployment and scalable, secure hosting.
-
--

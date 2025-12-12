@@ -84,7 +84,7 @@
   "techReact": "For building a robust and type-safe user interface.",
   "techTailwind": "For modern, accessible, and aesthetically pleasing component styling.",
   "techFirebase": "For secure user authentication and a scalable NoSQL Firestore database.",
-  "techGenkit": "Google's latest generative AI model and framework, powering all intelligent features.",
+  "techGenkit": "A custom Python pipeline integrating **MobileNetV2** for advanced image analysis and **BioBERT** for deep understanding of medical text.",
   "techAppHosting": "For continuous deployment and scalable, secure hosting.",
   "appointmentConfirmedTitle": "Appointment Confirmed!",
   "appointmentConfirmedSubtitle": "Your appointment has been successfully booked. You will receive a confirmation email shortly.",
