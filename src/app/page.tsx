@@ -1,9 +1,10 @@
+
 "use client";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
-import { ArrowRight, Bot, ClipboardCheck, HeartPulse, Map, Stethoscope, TestTube, User } from "lucide-react";
+import { ArrowRight, Bot, ClipboardCheck, HeartPulse, Stethoscope, TestTube, User } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { VAIQIcon } from "@/components/icons";
@@ -19,13 +20,6 @@ export default function Home() {
       link: "/smart-triage",
       icon: <Bot className="h-8 w-8 text-primary" />,
       image_id: "smart-triage"
-    },
-    {
-      title: t('featureMalariaMapTitle'),
-      description: t('featureMalariaMapDescription'),
-      link: "/malaria-map",
-      icon: <Map className="h-8 w-8 text-primary" />,
-      image_id: "malaria-map"
     },
     {
       title: t('featureHealthTipsTitle'),

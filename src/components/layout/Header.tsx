@@ -1,3 +1,4 @@
+
 "use client";
 
 import { VAIQIcon } from "@/components/icons";
@@ -28,7 +29,6 @@ import { useTheme } from "next-themes";
 const navLinks = [
   { href: "/", labelKey: "home" },
   { href: "/smart-triage", labelKey: "smartTriage" },
-  { href: "/malaria-map", labelKey: "malariaMap" },
   { href: "/dashboard", labelKey: "healthTips" },
   { href: "/health-quiz", labelKey: "healthQuiz" },
   { href: "/book-appointment", labelKey: "bookAppointment" },

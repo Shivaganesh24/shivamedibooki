@@ -22,7 +22,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { indianStates } from "@/lib/india-data";
-import { simulateMalariaRates } from "@/ai/flows/simulate-malaria-rates";
 import { Loader2 } from "lucide-react";
 import { useTranslation } from "@/hooks/use-translation";
 import { useLanguage } from "@/context/language-context";
@@ -58,48 +57,7 @@ export function LocationSelector() {
       sessionStorage.setItem(`location_check_${user.uid}`, 'true');
     }
   }, [user, userData, isUserDocLoading]);
-
-  const runSimulation = async (state: string, district: string) => {
-    try {
-      const languageMap = {
-          en: "English",
-          hi: "Hindi",
-          kn: "Kannada",
-      };
-
-      const result = await simulateMalariaRates({
-        state,
-        district,
-        year1: new Date().getFullYear(),
-        language: languageMap[language],
-      });
-
-      const intensity = result.simulation.year1.intensity;
-      if (intensity === "High" || intensity === "Very High") {
-        toast({
-          duration: 10000,
-          title: "🚨 " + t('malariaAlertTitle'),
-          description: (
-            <div>
-              <p>{t('malariaAlertDescription', { district, state })}</p>
-              <p className="mt-2 font-semibold">{t('malariaAlertHealthTip')}: {result.comparison.healthTip}</p>
-            </div>
-          ),
-        });
-      }
-    } catch (error) {
-      console.error("Failed to run background malaria simulation:", error);
-    }
-  };
-
-  useEffect(() => {
-    const hasRunSimulation = sessionStorage.getItem(`simulation_ran_${user?.uid}`);
-    if (user && userData?.state && userData?.district && !hasRunSimulation) {
-      runSimulation(userData.state, userData.district);
-      sessionStorage.setItem(`simulation_ran_${user.uid}`, 'true');
-    }
-  }, [user, userData, runSimulation]);
-
+  
   const handleSaveLocation = async () => {
     if (!selectedState || !selectedDistrict) {
       toast({
@@ -119,7 +77,6 @@ export function LocationSelector() {
         description: t('locationSavedDesc', { district: selectedDistrict, state: selectedState }),
       });
       setIsDialogOpen(false);
-      runSimulation(selectedState, selectedDistrict);
     } catch (error) {
       toast({
         variant: "destructive",
@@ -137,12 +94,8 @@ export function LocationSelector() {
         <DialogHeader>
           <DialogTitle>{t('setLocationWelcomeTitle')}</DialogTitle>
           <DialogDescription className="space-y-2 text-left">
-            <p>{t('setLocationWelcomePara1')}</p>
-            <p>{t('setLocationWelcomePara2')}</p>
-            <p className="p-2 bg-secondary rounded-md text-sm">
-                <strong className="text-destructive">{t('alert')}:</strong> {t('setLocationWelcomePara3')}
-            </p>
-            <p>{t('setLocationWelcomePara4')}</p>
+             <p>{t('setLocationWelcomePara1')}</p>
+             <p>{t('setLocationWelcomePara2')}</p>
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
